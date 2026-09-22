@@ -38,9 +38,9 @@ This version of Usher does not connect to any external service. No data leaves y
 
 No. Usher never adds anything to your site's front end. It only looks at your content from the admin side.
 
-= Does this guarantee my site is WCAG compliant? =
+= Does this make my site meet accessibility standards? =
 
-No, and Usher will never claim that. It checks a specific, honestly-scoped set of rules and tells you exactly what it found — full compliance is a broader effort than any single tool can certify.
+No single automated tool can promise that, and Usher will never claim otherwise. It checks a specific, honestly-scoped set of rules and tells you exactly what it found — meeting a standard like WCAG is a broader, ongoing effort than any one tool can settle.
 
 = Does this work with page builders like Elementor or Divi? =
 

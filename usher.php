@@ -34,6 +34,7 @@ define( 'USHER_PLUGIN_FILE', __FILE__ );
 define( 'USHER_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'USHER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 
+require_once USHER_PLUGIN_DIR . 'includes/forbidden-phrases.php';
 require_once USHER_PLUGIN_DIR . 'includes/dismissals.php';
 require_once USHER_PLUGIN_DIR . 'includes/checks/contrast.php';
 require_once USHER_PLUGIN_DIR . 'includes/checks/heading-order.php';
@@ -41,6 +42,7 @@ require_once USHER_PLUGIN_DIR . 'includes/checks/form-labels.php';
 require_once USHER_PLUGIN_DIR . 'includes/checks/link-text.php';
 require_once USHER_PLUGIN_DIR . 'includes/scan-engine.php';
 require_once USHER_PLUGIN_DIR . 'includes/admin-page.php';
+require_once USHER_PLUGIN_DIR . 'includes/cli.php';
 
 /**
  * No load_plugin_textdomain() call: discouraged since WP 4.6 for plugins
