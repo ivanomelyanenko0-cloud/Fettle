@@ -154,6 +154,16 @@ function usher_render_admin_page() {
 		}
 	}
 
+	if ( isset( $_POST['usher_check_landmarks'] ) && check_admin_referer( 'usher_check_landmarks' ) ) {
+		$landmark_result = usher_run_landmark_check();
+		if ( $landmark_result['error'] ) {
+			$notice      = $landmark_result['error'];
+			$notice_type = 'error';
+		} else {
+			$notice = __( 'Theme landmark check complete.', 'usher' );
+		}
+	}
+
 	$results = array();
 	$posts   = get_posts(
 		array(
@@ -219,6 +229,38 @@ function usher_render_admin_page() {
 			</label>
 			<button type="submit" name="usher_scan" value="1" class="button button-primary">
 				<?php esc_html_e( 'Scan now', 'usher' ); ?>
+			</button>
+		</form>
+
+		<h2><?php esc_html_e( 'Theme landmarks', 'usher' ); ?></h2>
+		<p><?php esc_html_e( 'Checked once per active theme (not per post) - landmark regions like the main content area come from your theme\'s templates, not your post content.', 'usher' ); ?></p>
+		<?php $landmark_cache = usher_get_cached_landmark_result(); ?>
+		<?php if ( $landmark_cache ) : ?>
+			<?php if ( empty( $landmark_cache['findings'] ) ) : ?>
+				<p><?php esc_html_e( 'No landmark issues found on the front page.', 'usher' ); ?></p>
+			<?php else : ?>
+				<ul>
+					<?php foreach ( $landmark_cache['findings'] as $finding ) : ?>
+						<li><strong><?php echo esc_html( 'critical' === $finding['severity'] ? __( 'Critical:', 'usher' ) : __( 'Warning:', 'usher' ) ); ?></strong> <?php echo esc_html( $finding['message'] ); ?></li>
+					<?php endforeach; ?>
+				</ul>
+			<?php endif; ?>
+			<p>
+				<?php
+				printf(
+					/* translators: %s: human-readable time, e.g. "5 minutes ago" */
+					esc_html__( 'Last checked %s ago.', 'usher' ),
+					esc_html( human_time_diff( $landmark_cache['checked_at'] ) )
+				);
+				?>
+			</p>
+		<?php else : ?>
+			<p><?php esc_html_e( 'Not checked yet for the current theme.', 'usher' ); ?></p>
+		<?php endif; ?>
+		<form method="post" style="margin-bottom: 1.5em;">
+			<?php wp_nonce_field( 'usher_check_landmarks' ); ?>
+			<button type="submit" name="usher_check_landmarks" value="1" class="button">
+				<?php esc_html_e( 'Check theme landmarks now', 'usher' ); ?>
 			</button>
 		</form>
 

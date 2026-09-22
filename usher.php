@@ -47,6 +47,7 @@ require_once USHER_PLUGIN_DIR . 'includes/checks/heading-order.php';
 require_once USHER_PLUGIN_DIR . 'includes/checks/form-labels.php';
 require_once USHER_PLUGIN_DIR . 'includes/checks/link-text.php';
 require_once USHER_PLUGIN_DIR . 'includes/checks/alt-text.php';
+require_once USHER_PLUGIN_DIR . 'includes/checks/aria-landmarks.php';
 require_once USHER_PLUGIN_DIR . 'includes/scan-engine.php';
 require_once USHER_PLUGIN_DIR . 'includes/admin-page.php';
 require_once USHER_PLUGIN_DIR . 'includes/cli.php';
