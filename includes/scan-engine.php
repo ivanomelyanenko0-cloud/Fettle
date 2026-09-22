@@ -25,6 +25,7 @@ function usher_get_registered_checks() {
 		'heading-order' => 'usher_check_heading_order',
 		'form-labels'   => 'usher_check_form_labels',
 		'link-text'     => 'usher_check_link_text',
+		'alt-text'      => 'usher_check_alt_text',
 	);
 
 	return apply_filters( 'usher_checks', $checks );
