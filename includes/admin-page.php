@@ -3,8 +3,8 @@
  * Admin page: a plain-language digest first, then per-post findings with a
  * "mark as false positive" action on each instance (USHER_V1_SPEC.md §4 -
  * "digest at the top, not a raw list"), plus a one-issue-at-a-time AI-fix
- * flow for alt-text findings (generate -> preview -> explicit Apply/Discard,
- * spec §0/§1.3: never auto-applied).
+ * flow for alt-text, contrast, and link-text findings (generate -> preview
+ * -> explicit Apply/Discard, spec §0/§1.3: never auto-applied).
  *
  * Synchronous scan-on-request and synchronous AI-fix generation for this
  * first pass, not the AJAX-batched pattern from IntelliDesc's duplicate
@@ -33,6 +33,33 @@ function usher_register_admin_page() {
 	);
 }
 add_action( 'admin_menu', 'usher_register_admin_page' );
+
+/**
+ * The three finding types with an AI-fix, and the pair of functions each
+ * one plugs into the generate -> preview -> confirm flow below. Every
+ * generate callback takes ( $post_id, $finding ) and returns a suggestion
+ * (string, or array{color, used_fallback} for contrast) or WP_Error; every
+ * apply callback takes ( $post_id, $instance_key, $value ) and returns
+ * true-ish or WP_Error.
+ *
+ * @return array<string, array{generate: callable, apply: callable}>
+ */
+function usher_ai_fix_registry() {
+	return array(
+		'alt-text'  => array(
+			'generate' => 'usher_generate_alt_text_suggestion',
+			'apply'    => 'usher_apply_alt_text_fix',
+		),
+		'contrast'  => array(
+			'generate' => 'usher_generate_contrast_suggestion',
+			'apply'    => 'usher_apply_contrast_fix',
+		),
+		'link-text' => array(
+			'generate' => 'usher_generate_link_text_suggestion',
+			'apply'    => 'usher_apply_link_text_fix',
+		),
+	);
+}
 
 /**
  * @param array<int, array> $results post_id => scan result.
@@ -67,7 +94,7 @@ function usher_summarise_results( $results ) {
 /**
  * Finds one finding by instance_key across a scan result, needed because
  * the AI-fix POST actions only carry post_id + instance_key, not the full
- * finding data (src, attachment_id, context_text) generate needs.
+ * finding data (src, attachment_id, colours, etc.) generate needs.
  *
  * @param array  $result Scan result from usher_scan_post().
  * @param string $instance_key
@@ -82,13 +109,35 @@ function usher_find_finding_by_key( $result, $instance_key ) {
 	return null;
 }
 
+/**
+ * Normalises a generate callback's return value into { value, display } -
+ * "value" is what the apply callback expects, "display" is what the admin
+ * sees in the preview. Only contrast's generator returns the richer
+ * array{color, used_fallback} shape today.
+ *
+ * @param string|array $suggestion
+ * @return array{value: string, display: string}
+ */
+function usher_normalise_ai_suggestion( $suggestion ) {
+	if ( is_array( $suggestion ) && isset( $suggestion['color'] ) ) {
+		$display = $suggestion['color'];
+		if ( ! empty( $suggestion['used_fallback'] ) ) {
+			$display .= ' ' . __( '(the AI\'s own suggestion did not actually pass verification, so this is a black/white fallback that reliably passes instead)', 'usher' );
+		}
+		return array( 'value' => $suggestion['color'], 'display' => $display );
+	}
+
+	return array( 'value' => (string) $suggestion, 'display' => (string) $suggestion );
+}
+
 function usher_render_admin_page() {
 	if ( ! current_user_can( 'edit_others_posts' ) ) {
 		return;
 	}
 
-	$notice       = '';
-	$notice_type  = 'success';
+	$notice      = '';
+	$notice_type = 'success';
+	$registry    = usher_ai_fix_registry();
 
 	if ( isset( $_POST['usher_scan'] ) && check_admin_referer( 'usher_scan' ) ) {
 		usher_scan_site( ! empty( $_POST['usher_force'] ) );
@@ -109,17 +158,19 @@ function usher_render_admin_page() {
 		$instance_key = isset( $_POST['instance_key'] ) ? sanitize_text_field( wp_unslash( $_POST['instance_key'] ) ) : '';
 		$scan         = $fix_post_id ? usher_scan_post( $fix_post_id ) : null;
 		$finding      = $scan && ! is_wp_error( $scan ) ? usher_find_finding_by_key( $scan, $instance_key ) : null;
+		$fix_type     = $finding['type'] ?? '';
 
-		if ( ! $finding ) {
+		if ( ! $finding || empty( $registry[ $fix_type ] ) ) {
 			$notice      = __( 'Could not find that issue - try scanning again.', 'usher' );
 			$notice_type = 'error';
 		} else {
-			$suggestion = usher_generate_alt_text_suggestion( $fix_post_id, $finding );
+			$suggestion = call_user_func( $registry[ $fix_type ]['generate'], $fix_post_id, $finding );
 			if ( is_wp_error( $suggestion ) ) {
 				$notice      = $suggestion->get_error_message();
 				$notice_type = 'error';
 			} else {
-				usher_store_pending_fix( $fix_post_id, $instance_key, $suggestion );
+				$normalised = usher_normalise_ai_suggestion( $suggestion );
+				usher_store_pending_fix( $fix_post_id, $instance_key, wp_json_encode( array_merge( $normalised, array( 'type' => $fix_type ) ) ) );
 				$notice = __( 'Suggestion generated - review it below before applying.', 'usher' );
 			}
 		}
@@ -128,19 +179,20 @@ function usher_render_admin_page() {
 	if ( isset( $_POST['usher_apply_fix'] ) && check_admin_referer( 'usher_apply_fix' ) ) {
 		$fix_post_id  = isset( $_POST['post_id'] ) ? (int) $_POST['post_id'] : 0;
 		$instance_key = isset( $_POST['instance_key'] ) ? sanitize_text_field( wp_unslash( $_POST['instance_key'] ) ) : '';
-		$suggestion   = $fix_post_id ? usher_get_pending_fix( $fix_post_id, $instance_key ) : false;
+		$stored       = $fix_post_id ? usher_get_pending_fix( $fix_post_id, $instance_key ) : false;
+		$decoded      = false !== $stored ? json_decode( $stored, true ) : null;
 
-		if ( false === $suggestion ) {
+		if ( ! is_array( $decoded ) || empty( $registry[ $decoded['type'] ?? '' ] ) ) {
 			$notice      = __( 'That suggestion expired - generate it again.', 'usher' );
 			$notice_type = 'error';
 		} else {
-			$result = usher_apply_alt_text_fix( $fix_post_id, $instance_key, $suggestion );
+			$result = call_user_func( $registry[ $decoded['type'] ]['apply'], $fix_post_id, $instance_key, $decoded['value'] );
 			if ( is_wp_error( $result ) ) {
 				$notice      = $result->get_error_message();
 				$notice_type = 'error';
 			} else {
 				usher_clear_pending_fix( $fix_post_id, $instance_key );
-				$notice = __( 'Alt text applied.', 'usher' );
+				$notice = __( 'Fix applied.', 'usher' );
 			}
 		}
 	}
@@ -280,25 +332,45 @@ function usher_render_admin_page() {
 					</thead>
 					<tbody>
 						<?php foreach ( $result['findings'] as $finding ) : ?>
-							<?php $pending = 'alt-text' === ( $finding['type'] ?? '' ) && ! empty( $finding['instance_key'] ) ? usher_get_pending_fix( $post_id, $finding['instance_key'] ) : false; ?>
+							<?php
+							$fix_type = $finding['type'] ?? '';
+							$fixable  = isset( $registry[ $fix_type ] ) && ! empty( $finding['instance_key'] );
+							$pending  = $fixable ? usher_get_pending_fix( $post_id, $finding['instance_key'] ) : false;
+							$decoded  = false !== $pending ? json_decode( $pending, true ) : null;
+							?>
 							<tr>
 								<td><strong><?php echo esc_html( 'critical' === ( $finding['severity'] ?? '' ) ? __( 'Critical', 'usher' ) : __( 'Warning', 'usher' ) ); ?></strong></td>
-								<td><code><?php echo esc_html( $finding['type'] ?? '' ); ?></code></td>
+								<td><code><?php echo esc_html( $fix_type ); ?></code></td>
 								<td>
 									<?php echo esc_html( $finding['message'] ?? '' ); ?>
-									<?php if ( 'alt-text' === ( $finding['type'] ?? '' ) && ! empty( $finding['src'] ) ) : ?>
+
+									<?php if ( 'alt-text' === $fix_type && ! empty( $finding['src'] ) ) : ?>
 										<br /><img src="<?php echo esc_url( $finding['src'] ); ?>" alt="" style="max-width: 80px; max-height: 60px; margin-top: 0.5em;" />
+									<?php elseif ( 'contrast' === $fix_type && ! empty( $finding['bg_hex'] ) ) : ?>
+										<br />
+										<span style="display: inline-block; padding: 0.3em 0.6em; margin-top: 0.5em; background: <?php echo esc_attr( $finding['bg_hex'] ); ?>; color: <?php echo esc_attr( $finding['text_hex'] ); ?>;">
+											<?php esc_html_e( 'Sample text (current)', 'usher' ); ?>
+										</span>
+									<?php elseif ( 'link-text' === $fix_type && ! empty( $finding['href'] ) ) : ?>
+										<br /><code style="font-size: 0.9em;"><?php echo esc_html( $finding['href'] ); ?></code>
 									<?php endif; ?>
-									<?php if ( false !== $pending ) : ?>
+
+									<?php if ( is_array( $decoded ) ) : ?>
 										<p style="margin-top: 0.5em;">
-											<strong><?php esc_html_e( 'Suggested alt text:', 'usher' ); ?></strong>
-											"<?php echo esc_html( $pending ); ?>"
+											<strong><?php esc_html_e( 'Suggestion:', 'usher' ); ?></strong>
+											"<?php echo esc_html( $decoded['display'] ?? '' ); ?>"
+											<?php if ( 'contrast' === $fix_type && ! empty( $finding['bg_hex'] ) && ! empty( $decoded['value'] ) ) : ?>
+												<br />
+												<span style="display: inline-block; padding: 0.3em 0.6em; margin-top: 0.3em; background: <?php echo esc_attr( $finding['bg_hex'] ); ?>; color: <?php echo esc_attr( $decoded['value'] ); ?>;">
+													<?php esc_html_e( 'Sample text (proposed)', 'usher' ); ?>
+												</span>
+											<?php endif; ?>
 										</p>
 									<?php endif; ?>
 								</td>
 								<td>
-									<?php if ( 'alt-text' === ( $finding['type'] ?? '' ) && ! empty( $finding['instance_key'] ) ) : ?>
-										<?php if ( false !== $pending ) : ?>
+									<?php if ( $fixable ) : ?>
+										<?php if ( is_array( $decoded ) ) : ?>
 											<form method="post" style="display: inline-block; margin-right: 0.3em;">
 												<?php wp_nonce_field( 'usher_apply_fix' ); ?>
 												<input type="hidden" name="post_id" value="<?php echo esc_attr( $post_id ); ?>" />

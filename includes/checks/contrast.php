@@ -75,6 +75,35 @@ function usher_wcag_aa_threshold( $font_size_px, $bold ) {
 }
 
 /**
+ * @param array $rgb array( $r, $g, $b ).
+ * @return string '#rrggbb'.
+ */
+function usher_rgb_to_hex( $rgb ) {
+	return sprintf( '#%02x%02x%02x', $rgb[0], $rgb[1], $rgb[2] );
+}
+
+/**
+ * A finding's instance_key, built from *resolved* colours rather than the
+ * raw class/style string. Deliberate: WordPress's own block rendering can
+ * append classes (e.g. a `wp-block-paragraph` class WP 7.0's paragraph
+ * block adds server-side) that are present in do_blocks()-rendered HTML
+ * (what the scan sees) but not in the raw stored post_content (what an
+ * AI-fix apply step edits) - keying on the raw string made a finding
+ * un-relocatable at apply time whenever rendering added anything. Keying
+ * on the resolved colour pair instead is immune to that, and finds every
+ * element sharing the same actual colour problem, not just one with
+ * byte-for-byte identical markup.
+ *
+ * @param string $tag
+ * @param string $text_hex
+ * @param string $bg_hex
+ * @return string
+ */
+function usher_contrast_instance_key( $tag, $text_hex, $bg_hex ) {
+	return md5( $tag . '|' . $text_hex . '|' . $bg_hex );
+}
+
+/**
  * @param string $hex '#rgb' or '#rrggbb'.
  * @return array|null array( $r, $g, $b ), or null if not a valid hex colour.
  */
@@ -274,6 +303,10 @@ function usher_check_contrast( $html ) {
 			'type'          => 'contrast',
 			'severity'      => $ratio < 3.0 ? 'critical' : 'warning',
 			'tag'           => $tag,
+			'class'         => $class,
+			'style'         => $style,
+			'text_hex'      => usher_rgb_to_hex( $text_rgb ),
+			'bg_hex'        => usher_rgb_to_hex( $bg_rgb ),
 			'ratio'         => round( $ratio, 2 ),
 			'threshold'     => $threshold,
 			'message'       => sprintf(
@@ -283,7 +316,7 @@ function usher_check_contrast( $html ) {
 				$threshold
 			),
 			'needs_review'  => false,
-			'instance_key'  => md5( $dedupe_key ),
+			'instance_key'  => usher_contrast_instance_key( $tag, usher_rgb_to_hex( $text_rgb ), usher_rgb_to_hex( $bg_rgb ) ),
 		);
 	}
 

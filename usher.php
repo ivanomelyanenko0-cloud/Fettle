@@ -40,6 +40,8 @@ require_once USHER_PLUGIN_DIR . 'includes/ai/settings.php';
 require_once USHER_PLUGIN_DIR . 'includes/ai/image-helpers.php';
 require_once USHER_PLUGIN_DIR . 'includes/ai/dispatch.php';
 require_once USHER_PLUGIN_DIR . 'includes/ai/alt-text-fix.php';
+require_once USHER_PLUGIN_DIR . 'includes/ai/contrast-fix.php';
+require_once USHER_PLUGIN_DIR . 'includes/ai/link-text-fix.php';
 require_once USHER_PLUGIN_DIR . 'includes/settings-page.php';
 require_once USHER_PLUGIN_DIR . 'includes/site-health.php';
 require_once USHER_PLUGIN_DIR . 'includes/checks/contrast.php';
