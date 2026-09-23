@@ -37,12 +37,12 @@ define( 'USHER_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 require_once USHER_PLUGIN_DIR . 'includes/forbidden-phrases.php';
 require_once USHER_PLUGIN_DIR . 'includes/dismissals.php';
 require_once USHER_PLUGIN_DIR . 'includes/ai/settings.php';
+require_once USHER_PLUGIN_DIR . 'includes/ai/models.php';
 require_once USHER_PLUGIN_DIR . 'includes/ai/image-helpers.php';
 require_once USHER_PLUGIN_DIR . 'includes/ai/dispatch.php';
 require_once USHER_PLUGIN_DIR . 'includes/ai/alt-text-fix.php';
 require_once USHER_PLUGIN_DIR . 'includes/ai/contrast-fix.php';
 require_once USHER_PLUGIN_DIR . 'includes/ai/link-text-fix.php';
-require_once USHER_PLUGIN_DIR . 'includes/settings-page.php';
 require_once USHER_PLUGIN_DIR . 'includes/site-health.php';
 require_once USHER_PLUGIN_DIR . 'includes/checks/contrast.php';
 require_once USHER_PLUGIN_DIR . 'includes/checks/heading-order.php';
@@ -52,6 +52,7 @@ require_once USHER_PLUGIN_DIR . 'includes/checks/alt-text.php';
 require_once USHER_PLUGIN_DIR . 'includes/checks/aria-landmarks.php';
 require_once USHER_PLUGIN_DIR . 'includes/scan-engine.php';
 require_once USHER_PLUGIN_DIR . 'includes/admin-page.php';
+require_once USHER_PLUGIN_DIR . 'includes/settings-page.php';
 require_once USHER_PLUGIN_DIR . 'includes/cli.php';
 
 /**

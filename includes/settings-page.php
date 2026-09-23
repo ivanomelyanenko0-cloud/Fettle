@@ -10,6 +10,20 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
+/**
+ * Registered at priority 20, after the default-priority (10)
+ * usher_register_admin_page() in includes/admin-page.php: a submenu's
+ * add_submenu_page( 'usher', ... ) call needs the top-level 'usher' page's
+ * own add_menu_page() to have already run in this same admin_menu pass, or
+ * WordPress's internal $admin_page_hooks lookup for the parent slug comes
+ * up empty and computes the wrong hook name for this page's callback - the
+ * submenu link would render without the "admin.php?page=" prefix it needs,
+ * and the page itself would refuse direct access ("Sorry, you are not
+ * allowed to access this page.") even for a user who has the capability.
+ * Explicit priority here is the defensive fix (not just require() order in
+ * usher.php, which is where this was first caught but is a fragile,
+ * implicit way to guarantee it).
+ */
 function usher_register_settings_page() {
 	add_submenu_page(
 		'usher',
@@ -20,7 +34,7 @@ function usher_register_settings_page() {
 		'usher_render_settings_page'
 	);
 }
-add_action( 'admin_menu', 'usher_register_settings_page' );
+add_action( 'admin_menu', 'usher_register_settings_page', 20 );
 
 function usher_render_settings_page() {
 	if ( ! current_user_can( 'manage_options' ) ) {
@@ -102,22 +116,20 @@ function usher_render_settings_page() {
 				<tr>
 					<th scope="row"><label for="usher_active_provider"><?php esc_html_e( 'Active provider', 'usher' ); ?></label></th>
 					<td>
-						<select name="usher_active_provider" id="usher_active_provider">
+						<select name="usher_active_provider" id="usher-provider-select">
 							<?php foreach ( usher_ai_providers() as $provider_slug ) : ?>
 								<option value="<?php echo esc_attr( $provider_slug ); ?>" <?php selected( $active_provider, $provider_slug ); ?>>
 									<?php echo esc_html( usher_ai_provider_label( $provider_slug ) ); ?>
 								</option>
 							<?php endforeach; ?>
 						</select>
+						<p class="description"><?php esc_html_e( 'Only the selected provider is used - its fields below are the ones that matter.', 'usher' ); ?></p>
 					</td>
 				</tr>
-			</table>
 
-			<?php foreach ( usher_ai_providers() as $provider_slug ) : ?>
-				<h2><?php echo esc_html( usher_ai_provider_label( $provider_slug ) ); ?></h2>
-				<table class="form-table" role="presentation">
-					<tr>
-						<th scope="row"><label for="usher_api_key_<?php echo esc_attr( $provider_slug ); ?>"><?php esc_html_e( 'API key', 'usher' ); ?></label></th>
+				<?php foreach ( usher_ai_providers() as $provider_slug ) : ?>
+					<tr class="usher-provider-row usher-provider-row-<?php echo esc_attr( $provider_slug ); ?>" style="display:none;">
+						<th scope="row"><label for="usher_api_key_<?php echo esc_attr( $provider_slug ); ?>"><?php echo esc_html( usher_ai_provider_label( $provider_slug ) ); ?> <?php esc_html_e( 'API key', 'usher' ); ?></label></th>
 						<td>
 							<input
 								type="password"
@@ -132,20 +144,51 @@ function usher_render_settings_page() {
 							</p>
 						</td>
 					</tr>
-					<tr>
+					<tr class="usher-provider-row usher-provider-row-<?php echo esc_attr( $provider_slug ); ?>" style="display:none;">
 						<th scope="row"><label for="usher_model_<?php echo esc_attr( $provider_slug ); ?>"><?php esc_html_e( 'Model', 'usher' ); ?></label></th>
 						<td>
-							<input
-								type="text"
-								class="regular-text"
-								id="usher_model_<?php echo esc_attr( $provider_slug ); ?>"
-								name="usher_model_<?php echo esc_attr( $provider_slug ); ?>"
-								value="<?php echo esc_attr( usher_get_model_for_provider( $provider_slug ) ); ?>"
-							/>
+							<?php
+							$models        = usher_get_models_for_provider( $provider_slug );
+							$current_model = usher_get_model_for_provider( $provider_slug );
+							?>
+							<?php if ( empty( $models ) ) : ?>
+								<p class="description" style="color:#b32d2e;"><?php esc_html_e( 'Save a valid API key first to fetch the available models.', 'usher' ); ?></p>
+								<input
+									type="text"
+									class="regular-text"
+									id="usher_model_<?php echo esc_attr( $provider_slug ); ?>"
+									name="usher_model_<?php echo esc_attr( $provider_slug ); ?>"
+									value="<?php echo esc_attr( $current_model ); ?>"
+									placeholder="<?php echo esc_attr( usher_default_model_for_provider( $provider_slug ) ); ?>"
+								/>
+							<?php else : ?>
+								<select id="usher_model_<?php echo esc_attr( $provider_slug ); ?>" name="usher_model_<?php echo esc_attr( $provider_slug ); ?>">
+									<?php foreach ( $models as $model_id => $label ) : ?>
+										<option value="<?php echo esc_attr( $model_id ); ?>" <?php selected( $current_model, $model_id ); ?>><?php echo esc_html( $label ); ?></option>
+									<?php endforeach; ?>
+								</select>
+								<p class="description">
+									<a href="<?php echo esc_url( add_query_arg( array( 'usher_refresh_models' => $provider_slug, '_wpnonce' => wp_create_nonce( 'usher_refresh_models' ) ) ) ); ?>">
+										<?php esc_html_e( 'Refresh model list', 'usher' ); ?>
+									</a>
+								</p>
+							<?php endif; ?>
 						</td>
 					</tr>
-				</table>
-			<?php endforeach; ?>
+				<?php endforeach; ?>
+			</table>
+
+			<script>
+			( function ( $ ) {
+				function usherToggleProviderRows() {
+					var provider = $( '#usher-provider-select' ).val();
+					$( '.usher-provider-row' ).hide();
+					$( '.usher-provider-row-' + provider ).show();
+				}
+				$( document ).on( 'change', '#usher-provider-select', usherToggleProviderRows );
+				$( usherToggleProviderRows );
+			} )( jQuery );
+			</script>
 
 			<?php submit_button( __( 'Save settings', 'usher' ), 'primary', 'usher_save_settings' ); ?>
 		</form>
