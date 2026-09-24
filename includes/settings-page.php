@@ -1,9 +1,9 @@
 <?php
 /**
- * AI provider settings: pick an active provider, paste its API key (BYO,
- * per USHER_STRATEGY.md - Usher never ships or proxies its own key), pick
- * a model. A capability check gate here, not just on the main page: API
- * keys are more sensitive than read-only findings.
+ * AI provider settings: pick an active provider, paste its API key (BYO -
+ * Usher never ships or proxies its own key), pick a model. A capability
+ * check gate here, not just on the main page: API keys are more sensitive
+ * than read-only findings.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

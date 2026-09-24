@@ -4,9 +4,8 @@
  * an extension of IntelliDesc's text-only ildesc_ai_call() pattern
  * (includes/ai-dispatch.php there) to support the image input every AI-fix
  * in Usher needs. Error handling/labelling mirrors that plugin's
- * ildesc_ai_error_from_response() for the same reason spec §0 gives for
- * reusing the engine at all: this is a battle-tested pattern, not a place
- * to improvise.
+ * ildesc_ai_error_from_response(): a battle-tested pattern, not a place to
+ * improvise.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

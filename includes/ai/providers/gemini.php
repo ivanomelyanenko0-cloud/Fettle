@@ -8,8 +8,8 @@
  * image URL, so guessing at that shape here would risk a confusing failure
  * mode at AI-fix time. usher_image_to_base64() does the URL fetch when
  * needed. This is a deliberate, documented trade against the "send a URL,
- * let the provider fetch it" efficiency spec §1.3 describes for published
- * content - correctness over that optimisation, for this one provider.
+ * let the provider fetch it" efficiency used for published content
+ * elsewhere - correctness over that optimisation, for this one provider.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

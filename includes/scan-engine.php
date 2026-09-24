@@ -3,7 +3,7 @@
  * Runs the registered rule-based checks against a post's rendered content
  * and caches the result by content hash - rescans a post only when its
  * content actually changed since last time, not the whole site every time
- * (USHER_V1_SPEC.md §4, critical for a catalogue of hundreds of posts).
+ * (critical for a catalogue of hundreds of posts).
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

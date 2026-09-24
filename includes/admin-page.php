@@ -1,20 +1,19 @@
 <?php
 /**
  * Admin page: a plain-language digest first, then per-post findings with a
- * "mark as false positive" action on each instance (USHER_V1_SPEC.md §4 -
- * "digest at the top, not a raw list"), plus a one-issue-at-a-time AI-fix
- * flow for alt-text, contrast, and link-text findings (generate -> preview
- * -> explicit Apply/Discard, spec §0/§1.3: never auto-applied).
+ * "mark as false positive" action on each instance, plus a
+ * one-issue-at-a-time AI-fix flow for alt-text, contrast, and link-text
+ * findings (generate -> preview -> explicit Apply/Discard, never
+ * auto-applied).
  *
  * Synchronous scan-on-request and synchronous AI-fix generation for this
  * first pass, not the AJAX-batched pattern from IntelliDesc's duplicate
- * scanner (spec §4) - fine at the post counts and one-at-a-time AI calls
- * this runs today; batching is a follow-up once real catalogue sizes are
- * being tested, not a 1.0.0 blocker.
+ * scanner - fine at the post counts and one-at-a-time AI calls this runs
+ * today; batching is a follow-up once real catalogue sizes are being
+ * tested, not a 1.0.0 blocker.
  *
- * Accessibility of this page is not optional for an accessibility plugin
- * (spec §4): no colour-only severity signalling (text labels alongside),
- * no motion.
+ * Accessibility of this page is not optional for an accessibility plugin:
+ * no colour-only severity signalling (text labels alongside), no motion.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

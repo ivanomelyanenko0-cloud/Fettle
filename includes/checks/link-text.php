@@ -3,7 +3,7 @@
  * Link-text quality check: flags uninformative link text ("click here",
  * "here", "read more", a bare URL as the visible text) with a plain text
  * heuristic - no AI needed to detect this, only to optionally suggest
- * better wording as an AI-fix later (USHER_V1_SPEC.md §2.5).
+ * better wording as an AI-fix later.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -14,8 +14,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * Lowercase, whitespace/punctuation-normalised phrases that carry no
  * information about the link's destination on their own. Deliberately a
  * short, high-confidence list rather than an exhaustive one - a false
- * positive here erodes trust faster than a missed one (see spec §4 on
- * "false positive fatigue").
+ * positive here erodes trust faster than a missed one.
  */
 function usher_uninformative_link_phrases() {
 	return array(

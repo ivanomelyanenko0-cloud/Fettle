@@ -1,7 +1,7 @@
 <?php
 /**
  * Colour-contrast check: standard W3C relative-luminance WCAG formula, not
- * an approximation (USHER_V1_SPEC.md §2.1). Pure math, nothing external.
+ * an approximation. Pure math, nothing external.
  *
  * Scope, stated honestly rather than silently: this plugin has no headless
  * browser, so it cannot see the real rendered result of a full CSS cascade.
@@ -205,7 +205,7 @@ function usher_resolve_color_slug( $slug ) {
  * element's class/style attributes, if both sides are unambiguous. Returns
  * null when only one side is set, or either side is not a resolvable solid
  * colour (image/gradient background, unresolvable class/var) - the "don't
- * guess" cases from spec §2.1.
+ * guess" cases.
  *
  * @param string $class Element's class attribute value.
  * @param string $style Element's style attribute value.
@@ -292,7 +292,7 @@ function usher_check_contrast( $html ) {
 		list( $text_rgb, $bg_rgb ) = $pair;
 
 		$bold      = ( false !== stripos( $class, 'has-large-font-size' ) ) || preg_match( '/font-weight\s*:\s*(bold|[6-9]00)/i', $style );
-		$threshold = usher_wcag_aa_threshold( 16, (bool) $bold ); // Font-size in px is not reliably knowable without full cascade resolution; assume base body size (spec §5 documented limitation) unless a bold/large-size class says otherwise.
+		$threshold = usher_wcag_aa_threshold( 16, (bool) $bold ); // Font-size in px is not reliably knowable without full cascade resolution; assume base body size (a documented limitation) unless a bold/large-size class says otherwise.
 		$ratio     = usher_contrast_ratio( $text_rgb, $bg_rgb );
 
 		if ( $ratio + 0.005 >= $threshold ) {

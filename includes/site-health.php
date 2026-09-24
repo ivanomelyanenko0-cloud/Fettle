@@ -1,8 +1,7 @@
 <?php
 /**
- * Site Health check for the AI provider (USHER_V1_SPEC.md §1: "Site
- * Health-перевірка з'єднання з AI-провайдером"). Deliberately passive -
- * checks that a provider/key/model are configured, does not make a live
+ * Site Health check for the AI provider. Deliberately passive - checks
+ * that a provider/key/model are configured, does not make a live
  * API call. A live call costs the user real money on their own BYO key;
  * Site Health runs on every visit to that admin screen and on a
  * recurring WP-Cron schedule, so making one automatically here would spend

@@ -1,13 +1,13 @@
 <?php
 /**
  * Form-label check: every <input>/<select>/<textarea> needs a <label for>
- * with a matching id, or aria-label/aria-labelledby (USHER_V1_SPEC.md §2.3).
+ * with a matching id, or aria-label/aria-labelledby.
  *
  * Scope, deliberately: this is about raw HTML in post content/blocks, not
  * WooCommerce/CF7/WPForms output - those are already labelled correctly in
  * the overwhelming majority of cases, and re-verifying every form plugin's
- * own markup is not where 1.0.0's effort belongs (spec §2.3). The real risk
- * is hand-written HTML in a Custom HTML block or a theme's page template.
+ * own markup is not where 1.0.0's effort belongs. The real risk is
+ * hand-written HTML in a Custom HTML block or a theme's page template.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -51,7 +51,7 @@ function usher_check_form_labels( $html ) {
 			continue;
 		}
 
-		// Respect aria-hidden / role="presentation" - a field deliberately hidden from assistive tech is not a labelling gap (USHER_V1_SPEC.md §4).
+		// Respect aria-hidden / role="presentation" - a field deliberately hidden from assistive tech is not a labelling gap.
 		$aria_hidden = $processor->get_attribute( 'aria-hidden' );
 		$role        = strtolower( (string) $processor->get_attribute( 'role' ) );
 		if ( 'true' === $aria_hidden || 'presentation' === $role || 'none' === $role ) {

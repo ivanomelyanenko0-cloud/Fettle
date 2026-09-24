@@ -2,9 +2,9 @@
 /**
  * AI provider configuration: BYO API key, per provider, same multi-provider
  * shape as IntelliDesc's ildesc_get_*_for_provider() functions (reused
- * deliberately, not reinvented - USHER_V1_SPEC-v2.md §0/§1.3 both point at
- * that engine). Every option is autoload=false: API keys should not sit in
- * the autoloaded options blob that loads on every request.
+ * deliberately, not reinvented). Every option is autoload=false: API keys
+ * should not sit in the autoloaded options blob that loads on every
+ * request.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

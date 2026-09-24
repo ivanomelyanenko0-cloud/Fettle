@@ -14,16 +14,14 @@
  * Domain Path:       /languages
  *
  * "Usher" is a working name and may still change before the first public
- * release (see USHER_STRATEGY.md) - every internal identifier lives behind
- * the USHER_/usher_ prefix below so a rename stays a mechanical find/replace
- * instead of an architecture change.
+ * release - every internal identifier lives behind the USHER_/usher_
+ * prefix below so a rename stays a mechanical find/replace instead of an
+ * architecture change.
  *
- * Scope note (USHER_V1_SPEC-v2.md Part 1): this is the full Free 1.0.0
- * scope - the rule-based audit engine (contrast, heading order, form
- * labels, link text, theme landmarks) plus the one-at-a-time AI-suggested
- * alt-text/contrast/link-text fix flow, always previewed and explicitly
- * confirmed before anything is applied. USHER_V1_SPEC.md is the earlier,
- * superseded spec kept for history only.
+ * This is the full Free 1.0.0 scope - the rule-based audit engine
+ * (contrast, heading order, form labels, link text, theme landmarks) plus
+ * the one-at-a-time AI-suggested alt-text/contrast/link-text fix flow,
+ * always previewed and explicitly confirmed before anything is applied.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

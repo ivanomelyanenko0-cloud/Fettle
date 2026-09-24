@@ -1,12 +1,11 @@
 <?php
 /**
  * The list of phrases Usher never uses in any user-facing text - UI,
- * readme, a generated report, email (USHER_V1_SPEC-v2.md §0, shared
- * between Free and Pro). This is the exact class of claim the FTC's 2023
- * order against accessiBe forbids that company from making for 20 years
- * ($1M fine) - "fully accessible", "WCAG compliant", "guaranteed" all
- * promise a legal conclusion this plugin (or any automated scanner) cannot
- * actually deliver. See USHER_STRATEGY.md §0/§7 for the sourcing.
+ * readme, a generated report, email (shared between Free and Pro). This is
+ * the exact class of claim the FTC's 2023 order against accessiBe forbids
+ * that company from making for 20 years ($1M fine) - "fully accessible",
+ * "WCAG compliant", "guaranteed" all promise a legal conclusion this
+ * plugin (or any automated scanner) cannot actually deliver.
  *
  * This file is the list itself, plus a small helper to check a string
  * against it. The enforcement tool that runs this against every

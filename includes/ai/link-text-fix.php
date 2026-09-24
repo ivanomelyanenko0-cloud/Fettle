@@ -1,8 +1,8 @@
 <?php
 /**
- * AI-fix flow for uninformative link text (USHER_V1_SPEC.md §2.5: "AI не
- * потрібен для детекції, лише опційно для пропозиції кращого тексту").
- * Text-only prompt - no image needed.
+ * AI-fix flow for uninformative link text: AI is only used to suggest
+ * better wording, never to detect the problem. Text-only prompt - no image
+ * needed.
  *
  * Applying this one is different from the other two AI-fixes: an anchor's
  * visible text is a text *node*, not an attribute, and

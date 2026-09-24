@@ -1,11 +1,11 @@
 <?php
 /**
  * ARIA-landmark check: not a per-post check like the others in this
- * directory (USHER_V1_SPEC-v2.md §1.2 - "Не per-post — раз на активну
- * тему, через реальний рендер"). Landmarks (<header>, <nav>, <main>,
- * <footer>, or their ARIA role equivalents) come from the theme's own
- * template structure, not from post content, so this fetches one real
- * rendered page (the front page) instead of walking post_content.
+ * directory - it runs once against the active theme via a real render,
+ * not per post. Landmarks (<header>, <nav>, <main>, <footer>, or their
+ * ARIA role equivalents) come from the theme's own template structure,
+ * not from post content, so this fetches one real rendered page (the
+ * front page) instead of walking post_content.
  *
  * Known, documented simplification: a <header> is only actually the page
  * banner landmark when it is not nested inside <article>/<aside>/<main>/

@@ -4,7 +4,7 @@
  * WP_HTML_Tag_Processor (core, WP 6.2+) walks tag structure; a lightweight,
  * position-tracked substring scan pulls each heading's own text, since the
  * tag processor is attribute-focused and does not expose element text
- * content directly (USHER_V1_SPEC.md §2.2).
+ * content directly.
  *
  * Scope: this walks one post's content in isolation. It cannot see the
  * theme's own H1 (usually the post title, rendered outside post_content),

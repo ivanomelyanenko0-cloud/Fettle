@@ -1,11 +1,11 @@
 <?php
 /**
  * Shared image-fetching helper for the vision providers. Callers building
- * an AI-fix image reference decide base64-vs-URL once, per
- * USHER_V1_SPEC-v2.md §1.3 (base64 for drafts/unpublished content so a
- * private URL is never sent to the provider; a direct URL for published
- * public content, cheaper/faster since the provider fetches it itself).
- * A provider that cannot reliably accept an arbitrary external URL falls
+ * an AI-fix image reference decide base64-vs-URL once (base64 for
+ * drafts/unpublished content so a private URL is never sent to the
+ * provider; a direct URL for published public content, cheaper/faster
+ * since the provider fetches it itself). A provider that cannot reliably
+ * accept an arbitrary external URL falls
  * back to fetching and base64-encoding it here instead of guessing at an
  * unsupported request shape.
  */

@@ -1,12 +1,10 @@
 <?php
 /**
- * Missing alt-text check. Not explicitly itemised as its own numbered
- * sub-section in USHER_V1_SPEC(-v2).md §2/§1.2 the way contrast/headings/
- * forms/links are, but it is the check the spec's entire AI-fix flow
- * section (§1.3) is written around ("для alt-тексту - лише саме
- * зображення + сусідній абзац") - the spec assumes it exists. Added here
- * to close that gap rather than silently ship an AI-fix flow with no
- * check that actually produces alt-text findings to fix.
+ * Missing alt-text check - the check this plugin's entire AI-fix flow is
+ * built around (alt text is generated from just the image plus its
+ * neighbouring paragraph). Added here so the AI-fix flow has an actual
+ * check producing alt-text findings to fix, not just a generation path
+ * with nothing feeding it.
  *
  * WCAG-correct on purpose: `alt=""` (empty, but present) is a deliberate,
  * valid way to mark an image decorative - not a violation. Only a
@@ -53,7 +51,7 @@ function usher_check_alt_text( $html ) {
 			$attachment_id = (int) $m[1];
 		}
 
-		// Pull the text of the nearest following paragraph as AI-fix context (spec §1.3: "саме зображення + сусідній абзац, не вся сторінка"). A bounded forward scan from this <img>'s position, not a full DOM walk.
+		// Pull the text of the nearest following paragraph as AI-fix context (the image plus its neighbouring paragraph, not the whole page). A bounded forward scan from this <img>'s position, not a full DOM walk.
 		$context_text = '';
 		$img_at       = strpos( $html_lower, '<img', $text_cursor );
 		if ( false !== $img_at ) {

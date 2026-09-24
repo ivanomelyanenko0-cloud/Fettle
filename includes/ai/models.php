@@ -3,9 +3,8 @@
  * Fetches and caches each provider's available model list, so Settings can
  * offer a dropdown instead of a free-text model-id field - the same
  * pattern IntelliDesc uses (includes/admin-settings.php there:
- * ildesc_get_{provider}_models()), reused rather than reinvented per
- * USHER_V1_SPEC-v2.md §0's "reuse the engine" instruction, which applies
- * to this supporting piece as much as the completion calls themselves.
+ * ildesc_get_{provider}_models()), reused rather than reinvented for this
+ * supporting piece as much as the completion calls themselves.
  *
  * Usher-specific difference from that source: every model offered here
  * must actually support image input, since every AI-fix in this plugin

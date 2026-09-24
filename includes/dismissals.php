@@ -2,8 +2,8 @@
 /**
  * Per-instance "mark as false positive" - not a global rule toggle. Cheap to
  * do even in Free, and critical for trust: generic scanners are notorious
- * for false-positive fatigue (USHER_V1_SPEC.md §4). Stored as postmeta
- * keyed by the finding's instance_key, scoped to that one post.
+ * for false-positive fatigue. Stored as postmeta keyed by the finding's
+ * instance_key, scoped to that one post.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {

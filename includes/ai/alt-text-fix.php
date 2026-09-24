@@ -1,17 +1,15 @@
 <?php
 /**
- * AI-fix flow for missing alt text - the flagship example
- * USHER_V1_SPEC-v2.md §1.3 is written around. One image at a time, always
- * human-confirmed (§0: "AI ніколи не застосовується без явної дії людини").
+ * AI-fix flow for missing alt text - the flagship example this plugin's
+ * AI-fix flow is built around. One image at a time, always human-confirmed.
  *
  * Draft/private vs published is resolved to *how the image reaches the AI
  * provider*, not just which request shape is used: for anything not
  * publicly published, the image is read straight off local disk and sent
  * as base64 - its URL is never even constructed, let alone transmitted,
  * because a URL an AI provider (or anything logging its requests) could
- * later re-fetch is exactly the leak spec §1.3 says to avoid. Only for a
- * publicly published, public post does this hand the provider a URL to
- * fetch itself.
+ * later re-fetch is exactly the leak this avoids. Only for a publicly
+ * published, public post does this hand the provider a URL to fetch itself.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -105,7 +103,7 @@ function usher_build_alt_text_prompt( $context_text ) {
 /**
  * Generates an alt-text suggestion for one finding. Does not apply
  * anything - the caller (admin-page.php) is responsible for the
- * preview/confirm step per spec §0/§1.3.
+ * preview/confirm step.
  *
  * @param int   $post_id
  * @param array $finding A finding from usher_check_alt_text(), i.e. has

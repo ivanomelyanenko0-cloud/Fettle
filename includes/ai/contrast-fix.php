@@ -1,9 +1,9 @@
 <?php
 /**
- * AI-fix flow for low contrast (USHER_V1_SPEC-v2.md §1.3: "AI пропонує
- * колір, власна детерміністична функція перевіряє, що він дійсно проходить
- * AA, а не довіра до арифметики моделі"). Text-only prompt - no image
- * needed, unlike the alt-text fix.
+ * AI-fix flow for low contrast: AI suggests a colour, a separate
+ * deterministic function verifies it actually passes AA rather than
+ * trusting the model's own arithmetic. Text-only prompt - no image needed,
+ * unlike the alt-text fix.
  *
  * Simplification, deliberate: only the *text* colour is ever adjusted,
  * never the background. Changing a background risks a much bigger visual

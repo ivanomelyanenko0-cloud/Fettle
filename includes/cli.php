@@ -4,8 +4,7 @@
  * includes/forbidden-phrases.php. Scans every translatable string in the
  * plugin's own PHP files, plus readme.txt, for the banned phrases and
  * fails (non-zero exit) if it finds one. Meant to run before every
- * release (USHER_V1_SPEC-v2.md §0: "прогонити по всіх рядках локалізації
- * перед кожним релізом"), not at runtime on a live site - WP-CLI only.
+ * release, not at runtime on a live site - WP-CLI only.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
