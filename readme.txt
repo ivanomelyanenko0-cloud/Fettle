@@ -1,8 +1,8 @@
-=== Fettle – WCAG Checks with AI-Suggested Fixes ===
+=== Fettle ===
 Contributors: lukystile
 Tags: accessibility, accessibility checker, wcag, alt text, contrast checker
 Requires at least: 6.2
-Tested up to: 7.1.2
+Tested up to: 7.1
 Stable tag: 1.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
