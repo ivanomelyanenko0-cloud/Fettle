@@ -21,13 +21,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'USHER_LANDMARKS_CACHE_OPTION', 'usher_landmarks_cache' );
+define( 'LEGIBLE_LANDMARKS_CACHE_OPTION', 'legible_landmarks_cache' );
 
 /**
  * @param string $html Rendered page HTML.
  * @return array[] Findings: each { type, severity, message }.
  */
-function usher_parse_landmarks( $html ) {
+function legible_parse_landmarks( $html ) {
 	if ( '' === trim( (string) $html ) || ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
 		return array();
 	}
@@ -58,7 +58,7 @@ function usher_parse_landmarks( $html ) {
 		$findings[] = array(
 			'type'     => 'aria-landmarks',
 			'severity' => 'critical',
-			'message'  => __( 'No <main> landmark found on the front page - screen reader users have no quick way to skip to the main content.', 'usher' ),
+			'message'  => __( 'No <main> landmark found on the front page - screen reader users have no quick way to skip to the main content.', 'legible' ),
 		);
 	} elseif ( $counts['main'] > 1 ) {
 		$findings[] = array(
@@ -66,7 +66,7 @@ function usher_parse_landmarks( $html ) {
 			'severity' => 'critical',
 			'message'  => sprintf(
 				/* translators: %d: number of <main> elements found */
-				__( '%d <main> landmarks found on the front page - there should be exactly one.', 'usher' ),
+				__( '%d <main> landmarks found on the front page - there should be exactly one.', 'legible' ),
 				$counts['main']
 			),
 		);
@@ -76,7 +76,7 @@ function usher_parse_landmarks( $html ) {
 		$findings[] = array(
 			'type'     => 'aria-landmarks',
 			'severity' => 'warning',
-			'message'  => __( 'No navigation landmark (<nav> or role="navigation") found on the front page.', 'usher' ),
+			'message'  => __( 'No navigation landmark (<nav> or role="navigation") found on the front page.', 'legible' ),
 		);
 	}
 
@@ -84,7 +84,7 @@ function usher_parse_landmarks( $html ) {
 		$findings[] = array(
 			'type'     => 'aria-landmarks',
 			'severity' => 'warning',
-			'message'  => __( 'No footer landmark (<footer> or role="contentinfo") found on the front page.', 'usher' ),
+			'message'  => __( 'No footer landmark (<footer> or role="contentinfo") found on the front page.', 'legible' ),
 		);
 	}
 
@@ -92,7 +92,7 @@ function usher_parse_landmarks( $html ) {
 		$findings[] = array(
 			'type'     => 'aria-landmarks',
 			'severity' => 'warning',
-			'message'  => __( 'No banner landmark (<header> or role="banner") found on the front page.', 'usher' ),
+			'message'  => __( 'No banner landmark (<header> or role="banner") found on the front page.', 'legible' ),
 		);
 	}
 
@@ -115,7 +115,7 @@ function usher_parse_landmarks( $html ) {
  *     error: string,
  * }
  */
-function usher_run_landmark_check() {
+function legible_run_landmark_check() {
 	$result = array(
 		'theme'      => get_stylesheet(),
 		'checked_at' => time(),
@@ -139,13 +139,13 @@ function usher_run_landmark_check() {
 	$http_code = wp_remote_retrieve_response_code( $response );
 	if ( 200 !== $http_code ) {
 		/* translators: %d: HTTP status code */
-		$result['error'] = sprintf( __( 'Unexpected response fetching the front page (HTTP %d).', 'usher' ), $http_code );
+		$result['error'] = sprintf( __( 'Unexpected response fetching the front page (HTTP %d).', 'legible' ), $http_code );
 		return $result;
 	}
 
-	$result['findings'] = usher_parse_landmarks( wp_remote_retrieve_body( $response ) );
+	$result['findings'] = legible_parse_landmarks( wp_remote_retrieve_body( $response ) );
 
-	update_option( USHER_LANDMARKS_CACHE_OPTION, $result, false );
+	update_option( LEGIBLE_LANDMARKS_CACHE_OPTION, $result, false );
 
 	return $result;
 }
@@ -154,8 +154,8 @@ function usher_run_landmark_check() {
  * @return array|null Cached result for the *current* active theme, or null
  *                     if never checked (or the theme changed since).
  */
-function usher_get_cached_landmark_result() {
-	$cached = get_option( USHER_LANDMARKS_CACHE_OPTION, null );
+function legible_get_cached_landmark_result() {
+	$cached = get_option( LEGIBLE_LANDMARKS_CACHE_OPTION, null );
 	if ( ! is_array( $cached ) || ( $cached['theme'] ?? '' ) !== get_stylesheet() ) {
 		return null;
 	}
@@ -167,7 +167,7 @@ function usher_get_cached_landmark_result() {
  * invalidates it outright rather than leaving a stale result attributed
  * to a theme that is no longer active.
  */
-add_action( 'switch_theme', 'usher_clear_landmark_cache' );
-function usher_clear_landmark_cache() {
-	delete_option( USHER_LANDMARKS_CACHE_OPTION );
+add_action( 'switch_theme', 'legible_clear_landmark_cache' );
+function legible_clear_landmark_cache() {
+	delete_option( LEGIBLE_LANDMARKS_CACHE_OPTION );
 }

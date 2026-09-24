@@ -1,6 +1,6 @@
 <?php
 /**
- * The list of phrases Usher never uses in any user-facing text - UI,
+ * The list of phrases Legible never uses in any user-facing text - UI,
  * readme, a generated report, email (shared between Free and Pro). This is
  * the exact class of claim the FTC's 2023 order against accessiBe forbids
  * that company from making for 20 years ($1M fine) - "fully accessible",
@@ -10,7 +10,7 @@
  * This file is the list itself, plus a small helper to check a string
  * against it. The enforcement tool that runs this against every
  * translatable string in the plugin before a release lives in
- * includes/cli.php ("wp usher check-phrases").
+ * includes/cli.php ("wp legible check-phrases").
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  *                   surface (a VPAT-style report, an email alert) can add
  *                   its own additional bans without touching this file.
  */
-function usher_forbidden_phrases() {
+function legible_forbidden_phrases() {
 	$phrases = array(
 		'fully accessible',
 		'wcag compliant',
@@ -35,18 +35,18 @@ function usher_forbidden_phrases() {
 		'certified compliant',
 	);
 
-	return apply_filters( 'usher_forbidden_phrases', $phrases );
+	return apply_filters( 'legible_forbidden_phrases', $phrases );
 }
 
 /**
  * @param string $text Text to check (any case).
  * @return string[] The forbidden phrases found in $text, if any.
  */
-function usher_find_forbidden_phrases( $text ) {
+function legible_find_forbidden_phrases( $text ) {
 	$text  = strtolower( (string) $text );
 	$found = array();
 
-	foreach ( usher_forbidden_phrases() as $phrase ) {
+	foreach ( legible_forbidden_phrases() as $phrase ) {
 		if ( false !== strpos( $text, $phrase ) ) {
 			$found[] = $phrase;
 		}

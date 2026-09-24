@@ -14,13 +14,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-const USHER_LABELABLE_TAGS = array( 'input', 'select', 'textarea' );
+const LEGIBLE_LABELABLE_TAGS = array( 'input', 'select', 'textarea' );
 
 /**
  * @param string $html Rendered block HTML (post_content).
  * @return array[] Findings: each { type, severity, message, instance_key }.
  */
-function usher_check_form_labels( $html ) {
+function legible_check_form_labels( $html ) {
 	if ( '' === trim( (string) $html ) || ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
 		return array();
 	}
@@ -41,7 +41,7 @@ function usher_check_form_labels( $html ) {
 
 	while ( $processor->next_tag() ) {
 		$tag = strtolower( (string) $processor->get_tag() );
-		if ( ! in_array( $tag, USHER_LABELABLE_TAGS, true ) ) {
+		if ( ! in_array( $tag, LEGIBLE_LABELABLE_TAGS, true ) ) {
 			continue;
 		}
 
@@ -76,7 +76,7 @@ function usher_check_form_labels( $html ) {
 			'severity'     => 'critical',
 			'message'      => sprintf(
 				/* translators: %s: element tag, e.g. "input" */
-				__( 'A <%s> field has no associated label, aria-label, or aria-labelledby - screen reader users cannot tell what it is for.', 'usher' ),
+				__( 'A <%s> field has no associated label, aria-label, or aria-labelledby - screen reader users cannot tell what it is for.', 'legible' ),
 				$tag
 			),
 			'instance_key' => md5( $tag . '|' . $position . '|' . (string) $id . '|' . (string) $type ),

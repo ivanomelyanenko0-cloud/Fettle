@@ -18,7 +18,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param array $image array{ base64?: string, url?: string, mime: string }.
  * @return array{ data: string, mime: string }|WP_Error base64 data + mime type.
  */
-function usher_image_to_base64( $image ) {
+function legible_image_to_base64( $image ) {
 	if ( ! empty( $image['base64'] ) ) {
 		return array(
 			'data' => $image['base64'],
@@ -27,7 +27,7 @@ function usher_image_to_base64( $image ) {
 	}
 
 	if ( empty( $image['url'] ) ) {
-		return new WP_Error( 'usher_ai_no_image', __( 'No image data or URL was provided.', 'usher' ) );
+		return new WP_Error( 'legible_ai_no_image', __( 'No image data or URL was provided.', 'legible' ) );
 	}
 
 	$response = wp_remote_get(
@@ -39,16 +39,16 @@ function usher_image_to_base64( $image ) {
 	);
 
 	if ( is_wp_error( $response ) ) {
-		return new WP_Error( 'usher_ai_image_fetch_failed', __( 'Could not fetch the image to send to the AI provider: ', 'usher' ) . $response->get_error_message() );
+		return new WP_Error( 'legible_ai_image_fetch_failed', __( 'Could not fetch the image to send to the AI provider: ', 'legible' ) . $response->get_error_message() );
 	}
 
 	if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
-		return new WP_Error( 'usher_ai_image_fetch_failed', __( 'Could not fetch the image to send to the AI provider (unexpected HTTP status).', 'usher' ) );
+		return new WP_Error( 'legible_ai_image_fetch_failed', __( 'Could not fetch the image to send to the AI provider (unexpected HTTP status).', 'legible' ) );
 	}
 
 	$body = wp_remote_retrieve_body( $response );
 	if ( '' === $body ) {
-		return new WP_Error( 'usher_ai_image_fetch_failed', __( 'The fetched image was empty.', 'usher' ) );
+		return new WP_Error( 'legible_ai_image_fetch_failed', __( 'The fetched image was empty.', 'legible' ) );
 	}
 
 	$mime = wp_remote_retrieve_header( $response, 'content-type' );

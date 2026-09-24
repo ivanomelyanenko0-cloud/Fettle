@@ -10,14 +10,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'USHER_DISMISSALS_META_KEY', '_usher_dismissed' );
+define( 'LEGIBLE_DISMISSALS_META_KEY', '_legible_dismissed' );
 
 /**
  * @param int $post_id
  * @return array<string, true> Set of dismissed instance_keys for this post.
  */
-function usher_get_dismissals( $post_id ) {
-	$dismissed = get_post_meta( $post_id, USHER_DISMISSALS_META_KEY, true );
+function legible_get_dismissals( $post_id ) {
+	$dismissed = get_post_meta( $post_id, LEGIBLE_DISMISSALS_META_KEY, true );
 	return is_array( $dismissed ) ? $dismissed : array();
 }
 
@@ -25,23 +25,23 @@ function usher_get_dismissals( $post_id ) {
  * @param int    $post_id
  * @param string $instance_key
  */
-function usher_dismiss_finding( $post_id, $instance_key ) {
-	$dismissed                  = usher_get_dismissals( $post_id );
+function legible_dismiss_finding( $post_id, $instance_key ) {
+	$dismissed                  = legible_get_dismissals( $post_id );
 	$dismissed[ $instance_key ] = true;
-	update_post_meta( $post_id, USHER_DISMISSALS_META_KEY, $dismissed );
+	update_post_meta( $post_id, LEGIBLE_DISMISSALS_META_KEY, $dismissed );
 }
 
 /**
  * @param int    $post_id
  * @param string $instance_key
  */
-function usher_undismiss_finding( $post_id, $instance_key ) {
-	$dismissed = usher_get_dismissals( $post_id );
+function legible_undismiss_finding( $post_id, $instance_key ) {
+	$dismissed = legible_get_dismissals( $post_id );
 	unset( $dismissed[ $instance_key ] );
 	if ( empty( $dismissed ) ) {
-		delete_post_meta( $post_id, USHER_DISMISSALS_META_KEY );
+		delete_post_meta( $post_id, LEGIBLE_DISMISSALS_META_KEY );
 	} else {
-		update_post_meta( $post_id, USHER_DISMISSALS_META_KEY, $dismissed );
+		update_post_meta( $post_id, LEGIBLE_DISMISSALS_META_KEY, $dismissed );
 	}
 }
 
@@ -50,8 +50,8 @@ function usher_undismiss_finding( $post_id, $instance_key ) {
  * @param int     $post_id
  * @return array[] Findings with dismissed instances removed.
  */
-function usher_filter_dismissed( $findings, $post_id ) {
-	$dismissed = usher_get_dismissals( $post_id );
+function legible_filter_dismissed( $findings, $post_id ) {
+	$dismissed = legible_get_dismissals( $post_id );
 	if ( empty( $dismissed ) ) {
 		return $findings;
 	}

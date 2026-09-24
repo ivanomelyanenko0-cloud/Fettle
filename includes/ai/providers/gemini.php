@@ -6,7 +6,7 @@
  * caller only has a URL - Gemini's `file_data.file_uri` is documented for
  * Files-API-uploaded resources, not reliably for an arbitrary external
  * image URL, so guessing at that shape here would risk a confusing failure
- * mode at AI-fix time. usher_image_to_base64() does the URL fetch when
+ * mode at AI-fix time. legible_image_to_base64() does the URL fetch when
  * needed. This is a deliberate, documented trade against the "send a URL,
  * let the provider fetch it" efficiency used for published content
  * elsewhere - correctness over that optimisation, for this one provider.
@@ -19,18 +19,18 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * @param string     $model   Gemini model id.
  * @param string     $prompt  Plain-text instruction.
- * @param array|null $image   See usher_ai_call_vision().
+ * @param array|null $image   See legible_ai_call_vision().
  * @param string     $api_key Gemini API key.
  * @param array      $options ['timeout'].
  * @return string|WP_Error
  */
-function usher_ai_call_vision_gemini( $model, $prompt, $image, $api_key, $options = array() ) {
+function legible_ai_call_vision_gemini( $model, $prompt, $image, $api_key, $options = array() ) {
 	$timeout = $options['timeout'] ?? 60;
 
 	$parts = array( array( 'text' => $prompt ) );
 
 	if ( $image ) {
-		$resolved = usher_image_to_base64( $image );
+		$resolved = legible_image_to_base64( $image );
 		if ( is_wp_error( $resolved ) ) {
 			return $resolved;
 		}
@@ -58,12 +58,12 @@ function usher_ai_call_vision_gemini( $model, $prompt, $image, $api_key, $option
 	);
 
 	if ( is_wp_error( $response ) ) {
-		return new WP_Error( 'usher_ai_connection', __( 'Connection failed: ', 'usher' ) . $response->get_error_message() );
+		return new WP_Error( 'legible_ai_connection', __( 'Connection failed: ', 'legible' ) . $response->get_error_message() );
 	}
 
 	$http_code = wp_remote_retrieve_response_code( $response );
 	if ( 200 !== $http_code ) {
-		return usher_ai_error_from_response( 'gemini', $http_code, wp_remote_retrieve_body( $response ), $model );
+		return legible_ai_error_from_response( 'gemini', $http_code, wp_remote_retrieve_body( $response ), $model );
 	}
 
 	$data = json_decode( wp_remote_retrieve_body( $response ), true );
@@ -71,9 +71,9 @@ function usher_ai_call_vision_gemini( $model, $prompt, $image, $api_key, $option
 	if ( ! isset( $data['candidates'][0]['content']['parts'][0]['text'] ) ) {
 		$finish_reason = $data['candidates'][0]['finishReason'] ?? '';
 		if ( 'SAFETY' === $finish_reason ) {
-			return new WP_Error( 'usher_ai_safety', __( 'Gemini blocked the response due to safety filters.', 'usher' ) );
+			return new WP_Error( 'legible_ai_safety', __( 'Gemini blocked the response due to safety filters.', 'legible' ) );
 		}
-		return new WP_Error( 'usher_ai_unexpected_response', __( 'Unexpected API response structure from Gemini.', 'usher' ) );
+		return new WP_Error( 'legible_ai_unexpected_response', __( 'Unexpected API response structure from Gemini.', 'legible' ) );
 	}
 
 	return $data['candidates'][0]['content']['parts'][0]['text'];

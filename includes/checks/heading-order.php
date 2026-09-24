@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param string $html Rendered block HTML (post_content).
  * @return array[] Findings: each { type, severity, message, instance_key }.
  */
-function usher_check_heading_order( $html ) {
+function legible_check_heading_order( $html ) {
 	if ( '' === trim( (string) $html ) || ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
 		return array();
 	}
@@ -72,7 +72,7 @@ function usher_check_heading_order( $html ) {
 			'severity'     => 'warning',
 			'message'      => sprintf(
 				/* translators: %d: number of H1 headings found */
-				__( 'This content has %d H1 headings; a page should normally have one.', 'usher' ),
+				__( 'This content has %d H1 headings; a page should normally have one.', 'legible' ),
 				$h1_count
 			),
 			'instance_key' => 'multiple-h1',
@@ -87,7 +87,7 @@ function usher_check_heading_order( $html ) {
 				'severity'     => 'warning',
 				'message'      => sprintf(
 					/* translators: %s: heading tag, e.g. "H3" */
-					__( 'Empty %s heading - screen reader users hear nothing where a heading is announced.', 'usher' ),
+					__( 'Empty %s heading - screen reader users hear nothing where a heading is announced.', 'legible' ),
 					'H' . $heading['level']
 				),
 				'instance_key' => $heading['instance_key'],
@@ -100,7 +100,7 @@ function usher_check_heading_order( $html ) {
 				'severity'     => 'warning',
 				'message'      => sprintf(
 					/* translators: 1: previous heading level e.g. "H2", 2: skipped-to heading level e.g. "H4" */
-					__( 'Heading level jumps from %1$s to %2$s, skipping a level.', 'usher' ),
+					__( 'Heading level jumps from %1$s to %2$s, skipping a level.', 'legible' ),
 					'H' . $previous_level,
 					'H' . $heading['level']
 				),

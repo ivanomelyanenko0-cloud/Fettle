@@ -11,45 +11,45 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'USHER_AI_PROVIDER_OPTION', 'usher_ai_provider' );
+define( 'LEGIBLE_AI_PROVIDER_OPTION', 'legible_ai_provider' );
 
 /**
  * @return string[] The providers this plugin knows how to call.
  */
-function usher_ai_providers() {
+function legible_ai_providers() {
 	return array( 'gemini', 'anthropic', 'openai', 'xai', 'openrouter' );
 }
 
 /**
  * @return string Currently configured provider slug; 'gemini' if unset/invalid.
  */
-function usher_get_current_provider() {
-	$provider = get_option( USHER_AI_PROVIDER_OPTION, 'gemini' );
-	return in_array( $provider, usher_ai_providers(), true ) ? $provider : 'gemini';
+function legible_get_current_provider() {
+	$provider = get_option( LEGIBLE_AI_PROVIDER_OPTION, 'gemini' );
+	return in_array( $provider, legible_ai_providers(), true ) ? $provider : 'gemini';
 }
 
 /**
  * @param string $provider
  * @return string Option name storing that provider's API key.
  */
-function usher_api_key_option_name( $provider ) {
-	return 'usher_' . $provider . '_api_key';
+function legible_api_key_option_name( $provider ) {
+	return 'legible_' . $provider . '_api_key';
 }
 
 /**
  * @param string $provider
  * @return string Option name storing that provider's selected model id.
  */
-function usher_model_option_name( $provider ) {
-	return 'usher_' . $provider . '_model';
+function legible_model_option_name( $provider ) {
+	return 'legible_' . $provider . '_model';
 }
 
 /**
  * @param string $provider
  * @return string Raw API key, or '' if not configured.
  */
-function usher_get_api_key_for_provider( $provider ) {
-	return (string) get_option( usher_api_key_option_name( $provider ), '' );
+function legible_get_api_key_for_provider( $provider ) {
+	return (string) get_option( legible_api_key_option_name( $provider ), '' );
 }
 
 /**
@@ -60,7 +60,7 @@ function usher_get_api_key_for_provider( $provider ) {
  * @param string $provider
  * @return string
  */
-function usher_default_model_for_provider( $provider ) {
+function legible_default_model_for_provider( $provider ) {
 	$defaults = array(
 		'gemini'     => 'gemini-3.1-flash-lite',
 		'anthropic'  => 'claude-sonnet-4-5-20250929',
@@ -76,16 +76,16 @@ function usher_default_model_for_provider( $provider ) {
  * @param string $provider
  * @return string Configured model id, falling back to that provider's default.
  */
-function usher_get_model_for_provider( $provider ) {
-	$model = get_option( usher_model_option_name( $provider ), '' );
-	return '' !== $model ? $model : usher_default_model_for_provider( $provider );
+function legible_get_model_for_provider( $provider ) {
+	$model = get_option( legible_model_option_name( $provider ), '' );
+	return '' !== $model ? $model : legible_default_model_for_provider( $provider );
 }
 
 /**
  * @param string $provider
  * @return string Human-readable label for admin UI / error messages.
  */
-function usher_ai_provider_label( $provider ) {
+function legible_ai_provider_label( $provider ) {
 	$labels = array(
 		'gemini'     => 'Gemini',
 		'anthropic'  => 'Claude',
@@ -100,6 +100,6 @@ function usher_ai_provider_label( $provider ) {
 /**
  * @return bool Whether the currently configured provider has an API key set.
  */
-function usher_ai_is_configured() {
-	return '' !== usher_get_api_key_for_provider( usher_get_current_provider() );
+function legible_ai_is_configured() {
+	return '' !== legible_get_api_key_for_provider( legible_get_current_provider() );
 }

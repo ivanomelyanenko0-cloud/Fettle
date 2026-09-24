@@ -20,7 +20,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @return array[] Findings: each { type, severity, message, instance_key,
  *                 src, attachment_id, context_text }.
  */
-function usher_check_alt_text( $html ) {
+function legible_check_alt_text( $html ) {
 	if ( '' === trim( (string) $html ) || ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
 		return array();
 	}
@@ -69,7 +69,7 @@ function usher_check_alt_text( $html ) {
 		$findings[] = array(
 			'type'          => 'alt-text',
 			'severity'      => 'critical',
-			'message'       => __( 'Image has no alt attribute - screen reader users get no description of it at all.', 'usher' ),
+			'message'       => __( 'Image has no alt attribute - screen reader users get no description of it at all.', 'legible' ),
 			'instance_key'  => md5( 'img|' . $position . '|' . $src ),
 			'src'           => $src,
 			'attachment_id' => $attachment_id,
