@@ -3,12 +3,12 @@ Contributors: lukystile
 Tags: accessibility, wcag, contrast checker, ada, ai
 Requires at least: 6.2
 Tested up to: 7.1
-Stable tag: 0.1.0
+Stable tag: 1.0.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Real WCAG 2.1 AA checks for your published content, plus an optional AI-suggested alt text fix - not another overlay widget.
+Real WCAG 2.1 AA checks for your published content, plus optional AI-suggested fixes - not another overlay widget.
 
 == Description ==
 
@@ -21,13 +21,19 @@ Real WCAG 2.1 AA checks for your published content, plus an optional AI-suggeste
 * **Link text** — flags "click here", bare URLs, and other link text that doesn't describe its destination.
 * **Theme landmarks** — checks your active theme's front page once for a main content area, navigation, banner, and footer region.
 * **Mark as false positive** — dismiss any single finding without hiding the whole check.
-* **AI-suggested alt text (optional)** — bring your own API key for Gemini, Claude, OpenAI, Grok, or OpenRouter, and Usher can suggest alt text for one image at a time. You always review and explicitly apply or discard the suggestion - nothing is ever applied automatically.
+* **AI-suggested fixes (optional)** — bring your own API key for Gemini, Claude, OpenAI, Grok, or OpenRouter, and Usher can suggest a fix for one finding at a time: alt text for an image, a passing replacement text colour for a contrast failure, or a descriptive replacement for uninformative link text. You always review and explicitly apply or discard the suggestion - nothing is ever applied automatically.
 
 This is an early, evolving plugin — the name itself may still change before a public release.
 
 == External services ==
 
-Every check in this plugin works entirely locally and sends nothing anywhere. The one exception, and it is entirely optional, is the AI alt-text suggestion feature: if you add your own API key for an AI provider (Gemini, Claude, OpenAI, Grok, or OpenRouter) in Usher's settings, clicking "Generate AI fix" on a specific image sends that one image - and, for a published public page, its public URL - to whichever provider you configured, to receive a suggested description back. For a draft, private, or password-protected post, the image is read from your server and sent directly instead, so its URL is never transmitted. No image is ever sent without you clicking that button for that specific image, and nothing is applied to your content until you separately click Apply. See that provider's own privacy policy for how they handle a received image. Without an API key configured, no such request is ever made, and every other check in this plugin is unaffected either way.
+Every check in this plugin works entirely locally and sends nothing anywhere. The one exception, and it is entirely optional, is the AI-suggested fix feature: if you add your own API key for an AI provider (Gemini, Claude, OpenAI, Grok, or OpenRouter) in Usher's settings, clicking "Generate AI fix" on a specific finding sends that finding's data to whichever provider you configured, to receive a suggestion back.
+
+* For a missing-alt-text finding, that one image - and, for a published public page, its public URL - is sent. For a draft, private, or password-protected post, the image is read from your server and sent directly instead, so its URL is never transmitted.
+* For a contrast finding, only the two colour hex codes involved (background and failing text colour) are sent - no image, no content.
+* For a link-text finding, only the link's current visible text and its destination URL are sent - no image, no other page content.
+
+No request is ever sent without you clicking that button for that specific finding, and nothing is applied to your content until you separately click Apply. See that provider's own privacy policy for how they handle a received request. Without an API key configured, no such request is ever made, and every other check in this plugin is unaffected either way.
 
 == Installation ==
 
@@ -48,7 +54,7 @@ No single automated tool can promise that, and Usher will never claim otherwise.
 
 = Do I have to use the AI features? =
 
-No. Every rule-based check works with no AI provider configured at all. AI alt-text suggestions are an entirely optional add-on you turn on yourself by adding an API key.
+No. Every rule-based check works with no AI provider configured at all. AI-suggested fixes are an entirely optional add-on you turn on yourself by adding an API key.
 
 = Does this work with page builders like Elementor or Divi? =
 
@@ -56,9 +62,10 @@ Not in this version. Usher currently checks Gutenberg block content and classic-
 
 == Changelog ==
 
-= 0.1.0 =
+= 1.0.0 =
+* First public release.
 * Rule-based checks: missing alt text, contrast, heading order, form labels, link text, theme landmarks.
 * Content-hash-cached scanning, per-instance false-positive dismissal, admin page with a plain-language digest.
-* Optional AI-suggested alt text: bring your own key for Gemini, Claude, OpenAI, Grok, or OpenRouter; always previewed and explicitly confirmed before it's applied.
+* Optional AI-suggested fixes, one finding at a time: alt text, contrast (replacement text colour), link text. Bring your own key for Gemini, Claude, OpenAI, Grok, or OpenRouter; always previewed and explicitly confirmed before anything is applied.
 * Site Health check for AI provider configuration (never makes a live API call automatically); a separate "Test connection" button for an explicit, one-off check.
 * `wp usher check-phrases`: a release-time check against a list of accessibility-compliance claims this plugin never makes.
