@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * short, high-confidence list rather than an exhaustive one - a false
  * positive here erodes trust faster than a missed one.
  */
-function legible_uninformative_link_phrases() {
+function fettle_uninformative_link_phrases() {
 	return array(
 		'click here',
 		'here',
@@ -37,13 +37,13 @@ function legible_uninformative_link_phrases() {
  * @param string $html Rendered block HTML (post_content).
  * @return array[] Findings: each { type, severity, message, instance_key }.
  */
-function legible_check_link_text( $html ) {
+function fettle_check_link_text( $html ) {
 	if ( '' === trim( (string) $html ) || ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
 		return array();
 	}
 
 	$findings    = array();
-	$phrases     = legible_uninformative_link_phrases();
+	$phrases     = fettle_uninformative_link_phrases();
 	$processor   = new WP_HTML_Tag_Processor( $html );
 	$html_lower  = strtolower( $html );
 	$text_cursor = 0;
@@ -92,10 +92,10 @@ function legible_check_link_text( $html ) {
 			'type'         => 'link-text',
 			'severity'     => 'warning',
 			'message'      => $is_bare_url
-				? __( 'Link text is a bare URL, which is hard to understand out of context when read aloud.', 'legible' )
+				? __( 'Link text is a bare URL, which is hard to understand out of context when read aloud.', 'fettle' )
 				: sprintf(
 					/* translators: %s: the link's actual visible text */
-					__( 'Link text "%s" does not describe where the link goes.', 'legible' ),
+					__( 'Link text "%s" does not describe where the link goes.', 'fettle' ),
 					$text
 				),
 			'link_text'    => $text,

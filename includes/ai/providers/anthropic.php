@@ -3,7 +3,7 @@
  * Anthropic Messages API, vision-capable. Supports both an image URL
  * source and a base64 source natively; passes a public URL straight
  * through when the caller has one, base64-encodes (via
- * legible_image_to_base64()) otherwise - same shape as the OpenAI-compatible
+ * fettle_image_to_base64()) otherwise - same shape as the OpenAI-compatible
  * provider, different field names.
  */
 
@@ -12,10 +12,10 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * @param array $image See legible_ai_call_vision().
+ * @param array $image See fettle_ai_call_vision().
  * @return array|WP_Error A Messages API image content block's `source` object.
  */
-function legible_anthropic_image_source( $image ) {
+function fettle_anthropic_image_source( $image ) {
 	if ( ! empty( $image['url'] ) && empty( $image['base64'] ) ) {
 		return array(
 			'type' => 'url',
@@ -23,7 +23,7 @@ function legible_anthropic_image_source( $image ) {
 		);
 	}
 
-	$resolved = legible_image_to_base64( $image );
+	$resolved = fettle_image_to_base64( $image );
 	if ( is_wp_error( $resolved ) ) {
 		return $resolved;
 	}
@@ -38,18 +38,18 @@ function legible_anthropic_image_source( $image ) {
 /**
  * @param string     $model   Claude model id.
  * @param string     $prompt  Plain-text instruction.
- * @param array|null $image   See legible_ai_call_vision().
+ * @param array|null $image   See fettle_ai_call_vision().
  * @param string     $api_key Anthropic API key.
  * @param array      $options ['timeout', 'max_tokens'].
  * @return string|WP_Error
  */
-function legible_ai_call_vision_anthropic( $model, $prompt, $image, $api_key, $options = array() ) {
+function fettle_ai_call_vision_anthropic( $model, $prompt, $image, $api_key, $options = array() ) {
 	$timeout    = $options['timeout'] ?? 60;
 	$max_tokens = $options['max_tokens'] ?? 1024;
 
 	$content = array();
 	if ( $image ) {
-		$source = legible_anthropic_image_source( $image );
+		$source = fettle_anthropic_image_source( $image );
 		if ( is_wp_error( $source ) ) {
 			return $source;
 		}
@@ -80,12 +80,12 @@ function legible_ai_call_vision_anthropic( $model, $prompt, $image, $api_key, $o
 	);
 
 	if ( is_wp_error( $response ) ) {
-		return new WP_Error( 'legible_ai_connection', __( 'Connection failed: ', 'legible' ) . $response->get_error_message() );
+		return new WP_Error( 'fettle_ai_connection', __( 'Connection failed: ', 'fettle' ) . $response->get_error_message() );
 	}
 
 	$http_code = wp_remote_retrieve_response_code( $response );
 	if ( 200 !== $http_code ) {
-		return legible_ai_error_from_response( 'anthropic', $http_code, wp_remote_retrieve_body( $response ), $model );
+		return fettle_ai_error_from_response( 'anthropic', $http_code, wp_remote_retrieve_body( $response ), $model );
 	}
 
 	$data = json_decode( wp_remote_retrieve_body( $response ), true );
@@ -100,7 +100,7 @@ function legible_ai_call_vision_anthropic( $model, $prompt, $image, $api_key, $o
 	}
 
 	if ( '' === $text ) {
-		return new WP_Error( 'legible_ai_unexpected_response', __( 'Unexpected API response structure from Claude.', 'legible' ) );
+		return new WP_Error( 'fettle_ai_unexpected_response', __( 'Unexpected API response structure from Claude.', 'fettle' ) );
 	}
 
 	return $text;

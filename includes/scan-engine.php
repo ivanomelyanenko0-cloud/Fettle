@@ -10,25 +10,25 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'LEGIBLE_SCAN_META_KEY', '_legible_scan' );
+define( 'FETTLE_SCAN_META_KEY', '_fettle_scan' );
 
 /**
- * The checks Legible 1.0.0 runs, as { type => callable }. Filterable so a
+ * The checks Fettle 1.0.0 runs, as { type => callable }. Filterable so a
  * future Pro release (or this plugin's own later versions) can add checks
  * without touching the engine itself.
  *
  * @return array<string, callable>
  */
-function legible_get_registered_checks() {
+function fettle_get_registered_checks() {
 	$checks = array(
-		'contrast'      => 'legible_check_contrast',
-		'heading-order' => 'legible_check_heading_order',
-		'form-labels'   => 'legible_check_form_labels',
-		'link-text'     => 'legible_check_link_text',
-		'alt-text'      => 'legible_check_alt_text',
+		'contrast'      => 'fettle_check_contrast',
+		'heading-order' => 'fettle_check_heading_order',
+		'form-labels'   => 'fettle_check_form_labels',
+		'link-text'     => 'fettle_check_link_text',
+		'alt-text'      => 'fettle_check_alt_text',
 	);
 
-	return apply_filters( 'legible_checks', $checks );
+	return apply_filters( 'fettle_checks', $checks );
 }
 
 /**
@@ -40,7 +40,7 @@ function legible_get_registered_checks() {
  * @param WP_Post $post
  * @return string
  */
-function legible_render_post_content( $post ) {
+function fettle_render_post_content( $post ) {
 	return do_blocks( $post->post_content );
 }
 
@@ -56,22 +56,22 @@ function legible_render_post_content( $post ) {
  *     findings: array[],
  * }|WP_Error
  */
-function legible_scan_post( $post_id, $force = false ) {
+function fettle_scan_post( $post_id, $force = false ) {
 	$post = get_post( $post_id );
 	if ( ! $post ) {
-		return new WP_Error( 'legible_post_not_found', __( 'No post exists with that ID.', 'legible' ) );
+		return new WP_Error( 'fettle_post_not_found', __( 'No post exists with that ID.', 'fettle' ) );
 	}
 
 	$hash  = md5( $post->post_content );
-	$cache = get_post_meta( $post_id, LEGIBLE_SCAN_META_KEY, true );
+	$cache = get_post_meta( $post_id, FETTLE_SCAN_META_KEY, true );
 
 	if ( ! $force && is_array( $cache ) && ( $cache['hash'] ?? '' ) === $hash ) {
 		$result = $cache;
 	} else {
-		$html     = legible_render_post_content( $post );
+		$html     = fettle_render_post_content( $post );
 		$findings = array();
 
-		foreach ( legible_get_registered_checks() as $type => $callback ) {
+		foreach ( fettle_get_registered_checks() as $type => $callback ) {
 			if ( ! is_callable( $callback ) ) {
 				continue;
 			}
@@ -86,10 +86,10 @@ function legible_scan_post( $post_id, $force = false ) {
 			'scanned_at' => time(),
 			'findings'   => $findings,
 		);
-		update_post_meta( $post_id, LEGIBLE_SCAN_META_KEY, $result );
+		update_post_meta( $post_id, FETTLE_SCAN_META_KEY, $result );
 	}
 
-	$result['findings'] = legible_filter_dismissed( $result['findings'], $post_id );
+	$result['findings'] = fettle_filter_dismissed( $result['findings'], $post_id );
 
 	return $result;
 }
@@ -103,7 +103,7 @@ function legible_scan_post( $post_id, $force = false ) {
  * @param bool $force Bypass the content-hash cache for every post.
  * @return array<int, array> post_id => scan result.
  */
-function legible_scan_site( $force = false ) {
+function fettle_scan_site( $force = false ) {
 	$results = array();
 	$posts   = get_posts(
 		array(
@@ -115,7 +115,7 @@ function legible_scan_site( $force = false ) {
 	);
 
 	foreach ( $posts as $post_id ) {
-		$result = legible_scan_post( $post_id, $force );
+		$result = fettle_scan_post( $post_id, $force );
 		if ( ! is_wp_error( $result ) ) {
 			$results[ $post_id ] = $result;
 		}

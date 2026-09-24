@@ -10,14 +10,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'LEGIBLE_DISMISSALS_META_KEY', '_legible_dismissed' );
+define( 'FETTLE_DISMISSALS_META_KEY', '_fettle_dismissed' );
 
 /**
  * @param int $post_id
  * @return array<string, true> Set of dismissed instance_keys for this post.
  */
-function legible_get_dismissals( $post_id ) {
-	$dismissed = get_post_meta( $post_id, LEGIBLE_DISMISSALS_META_KEY, true );
+function fettle_get_dismissals( $post_id ) {
+	$dismissed = get_post_meta( $post_id, FETTLE_DISMISSALS_META_KEY, true );
 	return is_array( $dismissed ) ? $dismissed : array();
 }
 
@@ -25,23 +25,23 @@ function legible_get_dismissals( $post_id ) {
  * @param int    $post_id
  * @param string $instance_key
  */
-function legible_dismiss_finding( $post_id, $instance_key ) {
-	$dismissed                  = legible_get_dismissals( $post_id );
+function fettle_dismiss_finding( $post_id, $instance_key ) {
+	$dismissed                  = fettle_get_dismissals( $post_id );
 	$dismissed[ $instance_key ] = true;
-	update_post_meta( $post_id, LEGIBLE_DISMISSALS_META_KEY, $dismissed );
+	update_post_meta( $post_id, FETTLE_DISMISSALS_META_KEY, $dismissed );
 }
 
 /**
  * @param int    $post_id
  * @param string $instance_key
  */
-function legible_undismiss_finding( $post_id, $instance_key ) {
-	$dismissed = legible_get_dismissals( $post_id );
+function fettle_undismiss_finding( $post_id, $instance_key ) {
+	$dismissed = fettle_get_dismissals( $post_id );
 	unset( $dismissed[ $instance_key ] );
 	if ( empty( $dismissed ) ) {
-		delete_post_meta( $post_id, LEGIBLE_DISMISSALS_META_KEY );
+		delete_post_meta( $post_id, FETTLE_DISMISSALS_META_KEY );
 	} else {
-		update_post_meta( $post_id, LEGIBLE_DISMISSALS_META_KEY, $dismissed );
+		update_post_meta( $post_id, FETTLE_DISMISSALS_META_KEY, $dismissed );
 	}
 }
 
@@ -50,8 +50,8 @@ function legible_undismiss_finding( $post_id, $instance_key ) {
  * @param int     $post_id
  * @return array[] Findings with dismissed instances removed.
  */
-function legible_filter_dismissed( $findings, $post_id ) {
-	$dismissed = legible_get_dismissals( $post_id );
+function fettle_filter_dismissed( $findings, $post_id ) {
+	$dismissed = fettle_get_dismissals( $post_id );
 	if ( empty( $dismissed ) ) {
 		return $findings;
 	}

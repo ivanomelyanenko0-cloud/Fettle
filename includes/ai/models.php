@@ -6,7 +6,7 @@
  * ildesc_get_{provider}_models()), reused rather than reinvented for this
  * supporting piece as much as the completion calls themselves.
  *
- * Legible-specific difference from that source: every model offered here
+ * Fettle-specific difference from that source: every model offered here
  * must actually support image input, since every AI-fix in this plugin
  * sends one (alt-text) or could in a future check - text-only models are
  * filtered out wherever the provider's own API exposes enough to tell,
@@ -18,14 +18,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'LEGIBLE_MODELS_CACHE_TTL', DAY_IN_SECONDS );
+define( 'FETTLE_MODELS_CACHE_TTL', DAY_IN_SECONDS );
 
 /**
  * @param string $provider
  * @return string
  */
-function legible_models_transient_key( $provider ) {
-	return 'legible_' . $provider . '_models_list';
+function fettle_models_transient_key( $provider ) {
+	return 'fettle_' . $provider . '_models_list';
 }
 
 /**
@@ -34,13 +34,13 @@ function legible_models_transient_key( $provider ) {
  *
  * @param string $provider
  */
-function legible_maybe_clear_models_cache( $provider ) {
-	$requested_provider = isset( $_GET['legible_refresh_models'] ) ? sanitize_key( wp_unslash( $_GET['legible_refresh_models'] ) ) : '';
+function fettle_maybe_clear_models_cache( $provider ) {
+	$requested_provider = isset( $_GET['fettle_refresh_models'] ) ? sanitize_key( wp_unslash( $_GET['fettle_refresh_models'] ) ) : '';
 	if ( $provider === $requested_provider
 		&& current_user_can( 'manage_options' )
-		&& isset( $_GET['_wpnonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'legible_refresh_models' )
+		&& isset( $_GET['_wpnonce'] ) && wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['_wpnonce'] ) ), 'fettle_refresh_models' )
 	) {
-		delete_transient( legible_models_transient_key( $provider ) );
+		delete_transient( fettle_models_transient_key( $provider ) );
 	}
 }
 
@@ -50,16 +50,16 @@ function legible_maybe_clear_models_cache( $provider ) {
  *                             across providers whose id naming overlaps
  *                             (embeddings, TTS, image-generation-only, etc).
  */
-function legible_model_blacklist_words() {
+function fettle_model_blacklist_words() {
 	return array( 'embedding', 'tts', 'whisper', 'audio', 'voice', 'speech', 'transcribe', 'realtime', 'moderation', 'dall-e', 'image-generation' );
 }
 
 /**
  * @param string $id
- * @return bool True if $id contains none of legible_model_blacklist_words().
+ * @return bool True if $id contains none of fettle_model_blacklist_words().
  */
-function legible_model_id_allowed( $id ) {
-	foreach ( legible_model_blacklist_words() as $bad ) {
+function fettle_model_id_allowed( $id ) {
+	foreach ( fettle_model_blacklist_words() as $bad ) {
 		if ( false !== strpos( $id, $bad ) ) {
 			return false;
 		}
@@ -70,15 +70,15 @@ function legible_model_id_allowed( $id ) {
 /**
  * @return array<string, string> model id => display label. Empty if no key configured or the fetch failed.
  */
-function legible_get_gemini_models() {
-	legible_maybe_clear_models_cache( 'gemini' );
+function fettle_get_gemini_models() {
+	fettle_maybe_clear_models_cache( 'gemini' );
 
-	$api_key = legible_get_api_key_for_provider( 'gemini' );
+	$api_key = fettle_get_api_key_for_provider( 'gemini' );
 	if ( '' === $api_key ) {
 		return array();
 	}
 
-	$cached = get_transient( legible_models_transient_key( 'gemini' ) );
+	$cached = get_transient( fettle_models_transient_key( 'gemini' ) );
 	if ( false !== $cached ) {
 		return $cached;
 	}
@@ -100,14 +100,14 @@ function legible_get_gemini_models() {
 			continue;
 		}
 		$id = str_replace( 'models/', '', $name );
-		if ( ! legible_model_id_allowed( $id ) || false !== strpos( $id, 'embedding' ) ) {
+		if ( ! fettle_model_id_allowed( $id ) || false !== strpos( $id, 'embedding' ) ) {
 			continue;
 		}
 		$models[ $id ] = ( $model['displayName'] ?? $id ) . ( isset( $model['version'] ) ? ' (' . $model['version'] . ')' : '' );
 	}
 
 	krsort( $models );
-	set_transient( legible_models_transient_key( 'gemini' ), $models, LEGIBLE_MODELS_CACHE_TTL );
+	set_transient( fettle_models_transient_key( 'gemini' ), $models, FETTLE_MODELS_CACHE_TTL );
 
 	return $models;
 }
@@ -115,15 +115,15 @@ function legible_get_gemini_models() {
 /**
  * @return array<string, string>
  */
-function legible_get_anthropic_models() {
-	legible_maybe_clear_models_cache( 'anthropic' );
+function fettle_get_anthropic_models() {
+	fettle_maybe_clear_models_cache( 'anthropic' );
 
-	$api_key = legible_get_api_key_for_provider( 'anthropic' );
+	$api_key = fettle_get_api_key_for_provider( 'anthropic' );
 	if ( '' === $api_key ) {
 		return array();
 	}
 
-	$cached = get_transient( legible_models_transient_key( 'anthropic' ) );
+	$cached = get_transient( fettle_models_transient_key( 'anthropic' ) );
 	if ( false !== $cached ) {
 		return $cached;
 	}
@@ -150,14 +150,14 @@ function legible_get_anthropic_models() {
 	$models = array();
 	foreach ( $body['data'] as $model ) {
 		$id = (string) $model['id'];
-		if ( ! legible_model_id_allowed( $id ) ) {
+		if ( ! fettle_model_id_allowed( $id ) ) {
 			continue;
 		}
 		// Every current Claude model in this endpoint (3+) is vision-capable; no further filtering needed beyond the shared blacklist.
 		$models[ $id ] = $model['display_name'] ?? $id;
 	}
 
-	set_transient( legible_models_transient_key( 'anthropic' ), $models, LEGIBLE_MODELS_CACHE_TTL );
+	set_transient( fettle_models_transient_key( 'anthropic' ), $models, FETTLE_MODELS_CACHE_TTL );
 
 	return $models;
 }
@@ -165,15 +165,15 @@ function legible_get_anthropic_models() {
 /**
  * @return array<string, string>
  */
-function legible_get_openai_models() {
-	legible_maybe_clear_models_cache( 'openai' );
+function fettle_get_openai_models() {
+	fettle_maybe_clear_models_cache( 'openai' );
 
-	$api_key = legible_get_api_key_for_provider( 'openai' );
+	$api_key = fettle_get_api_key_for_provider( 'openai' );
 	if ( '' === $api_key ) {
 		return array();
 	}
 
-	$cached = get_transient( legible_models_transient_key( 'openai' ) );
+	$cached = get_transient( fettle_models_transient_key( 'openai' ) );
 	if ( false !== $cached ) {
 		return $cached;
 	}
@@ -209,7 +209,7 @@ function legible_get_openai_models() {
 				break;
 			}
 		}
-		if ( ! $is_allowed || ! legible_model_id_allowed( $id ) ) {
+		if ( ! $is_allowed || ! fettle_model_id_allowed( $id ) ) {
 			continue;
 		}
 		foreach ( $extra_blacklist as $bad ) {
@@ -222,7 +222,7 @@ function legible_get_openai_models() {
 	}
 
 	krsort( $models );
-	set_transient( legible_models_transient_key( 'openai' ), $models, LEGIBLE_MODELS_CACHE_TTL );
+	set_transient( fettle_models_transient_key( 'openai' ), $models, FETTLE_MODELS_CACHE_TTL );
 
 	return $models;
 }
@@ -230,15 +230,15 @@ function legible_get_openai_models() {
 /**
  * @return array<string, string>
  */
-function legible_get_xai_models() {
-	legible_maybe_clear_models_cache( 'xai' );
+function fettle_get_xai_models() {
+	fettle_maybe_clear_models_cache( 'xai' );
 
-	$api_key = legible_get_api_key_for_provider( 'xai' );
+	$api_key = fettle_get_api_key_for_provider( 'xai' );
 	if ( '' === $api_key ) {
 		return array();
 	}
 
-	$cached = get_transient( legible_models_transient_key( 'xai' ) );
+	$cached = get_transient( fettle_models_transient_key( 'xai' ) );
 	if ( false !== $cached ) {
 		return $cached;
 	}
@@ -262,14 +262,14 @@ function legible_get_xai_models() {
 	$models = array();
 	foreach ( $body['data'] as $model ) {
 		$id = (string) $model['id'];
-		if ( ! legible_model_id_allowed( $id ) ) {
+		if ( ! fettle_model_id_allowed( $id ) ) {
 			continue;
 		}
 		$models[ $id ] = $id;
 	}
 
 	krsort( $models );
-	set_transient( legible_models_transient_key( 'xai' ), $models, LEGIBLE_MODELS_CACHE_TTL );
+	set_transient( fettle_models_transient_key( 'xai' ), $models, FETTLE_MODELS_CACHE_TTL );
 
 	return $models;
 }
@@ -277,15 +277,15 @@ function legible_get_xai_models() {
 /**
  * @return array<string, string>
  */
-function legible_get_openrouter_models() {
-	legible_maybe_clear_models_cache( 'openrouter' );
+function fettle_get_openrouter_models() {
+	fettle_maybe_clear_models_cache( 'openrouter' );
 
-	$api_key = legible_get_api_key_for_provider( 'openrouter' );
+	$api_key = fettle_get_api_key_for_provider( 'openrouter' );
 	if ( '' === $api_key ) {
 		return array();
 	}
 
-	$cached = get_transient( legible_models_transient_key( 'openrouter' ) );
+	$cached = get_transient( fettle_models_transient_key( 'openrouter' ) );
 	if ( false !== $cached ) {
 		return $cached;
 	}
@@ -309,7 +309,7 @@ function legible_get_openrouter_models() {
 	$models = array();
 	foreach ( $body['data'] as $model ) {
 		$id = (string) $model['id'];
-		if ( ! legible_model_id_allowed( $id ) ) {
+		if ( ! fettle_model_id_allowed( $id ) ) {
 			continue;
 		}
 
@@ -323,7 +323,7 @@ function legible_get_openrouter_models() {
 	}
 
 	krsort( $models );
-	set_transient( legible_models_transient_key( 'openrouter' ), $models, LEGIBLE_MODELS_CACHE_TTL );
+	set_transient( fettle_models_transient_key( 'openrouter' ), $models, FETTLE_MODELS_CACHE_TTL );
 
 	return $models;
 }
@@ -332,18 +332,18 @@ function legible_get_openrouter_models() {
  * @param string $provider
  * @return array<string, string>
  */
-function legible_get_models_for_provider( $provider ) {
+function fettle_get_models_for_provider( $provider ) {
 	switch ( $provider ) {
 		case 'anthropic':
-			return legible_get_anthropic_models();
+			return fettle_get_anthropic_models();
 		case 'openai':
-			return legible_get_openai_models();
+			return fettle_get_openai_models();
 		case 'xai':
-			return legible_get_xai_models();
+			return fettle_get_xai_models();
 		case 'openrouter':
-			return legible_get_openrouter_models();
+			return fettle_get_openrouter_models();
 		case 'gemini':
 		default:
-			return legible_get_gemini_models();
+			return fettle_get_gemini_models();
 	}
 }

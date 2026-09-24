@@ -6,7 +6,7 @@
  * Site Health runs on every visit to that admin screen and on a
  * recurring WP-Cron schedule, so making one automatically here would spend
  * the user's API budget without an explicit action from them. The
- * "Test connection" button on the Legible settings page is the explicit,
+ * "Test connection" button on the Fettle settings page is the explicit,
  * one-shot equivalent (see includes/settings-page.php).
  */
 
@@ -14,14 +14,14 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-function legible_register_site_health_tests( $tests ) {
-	$tests['direct']['legible_ai_provider'] = array(
-		'label' => __( 'Legible AI provider', 'legible' ),
-		'test'  => 'legible_test_ai_provider',
+function fettle_register_site_health_tests( $tests ) {
+	$tests['direct']['fettle_ai_provider'] = array(
+		'label' => __( 'Fettle AI provider', 'fettle' ),
+		'test'  => 'fettle_test_ai_provider',
 	);
 	return $tests;
 }
-add_filter( 'site_status_tests', 'legible_register_site_health_tests' );
+add_filter( 'site_status_tests', 'fettle_register_site_health_tests' );
 
 /**
  * @param string $label
@@ -29,49 +29,49 @@ add_filter( 'site_status_tests', 'legible_register_site_health_tests' );
  * @param string $description
  * @return array
  */
-function legible_health_result( $label, $status, $description ) {
+function fettle_health_result( $label, $status, $description ) {
 	$badge_color = 'critical' === $status ? 'red' : ( 'recommended' === $status ? 'orange' : 'blue' );
 
 	return array(
 		'label'       => $label,
 		'status'      => $status,
 		'badge'       => array(
-			'label' => __( 'Legible', 'legible' ),
+			'label' => __( 'Fettle', 'fettle' ),
 			'color' => $badge_color,
 		),
 		'description' => '<p>' . esc_html( $description ) . '</p>',
 		'actions'     => sprintf(
 			'<a href="%s">%s</a>',
-			esc_url( admin_url( 'admin.php?page=legible-settings' ) ),
-			esc_html__( 'Go to Legible settings', 'legible' )
+			esc_url( admin_url( 'admin.php?page=fettle-settings' ) ),
+			esc_html__( 'Go to Fettle settings', 'fettle' )
 		),
-		'test'        => 'legible_ai_provider',
+		'test'        => 'fettle_ai_provider',
 	);
 }
 
-function legible_test_ai_provider() {
-	if ( ! legible_ai_is_configured() ) {
-		return legible_health_result(
-			__( 'Legible has no AI provider configured', 'legible' ),
+function fettle_test_ai_provider() {
+	if ( ! fettle_ai_is_configured() ) {
+		return fettle_health_result(
+			__( 'Fettle has no AI provider configured', 'fettle' ),
 			'recommended',
-			__( 'The rule-based accessibility checks work without this, but AI-suggested fixes (like alt text) need an API key for one provider.', 'legible' )
+			__( 'The rule-based accessibility checks work without this, but AI-suggested fixes (like alt text) need an API key for one provider.', 'fettle' )
 		);
 	}
 
-	$provider = legible_get_current_provider();
-	$model    = legible_get_model_for_provider( $provider );
+	$provider = fettle_get_current_provider();
+	$model    = fettle_get_model_for_provider( $provider );
 
-	return legible_health_result(
+	return fettle_health_result(
 		sprintf(
 			/* translators: %s: AI provider name, e.g. "Gemini" */
-			__( 'Legible is configured to use %s', 'legible' ),
-			legible_ai_provider_label( $provider )
+			__( 'Fettle is configured to use %s', 'fettle' ),
+			fettle_ai_provider_label( $provider )
 		),
 		'good',
 		sprintf(
 			/* translators: 1: AI provider name, 2: model id */
-			__( 'Provider: %1$s, model: %2$s. This does not confirm the key actually works - use "Test connection" on the Legible settings page for that.', 'legible' ),
-			legible_ai_provider_label( $provider ),
+			__( 'Provider: %1$s, model: %2$s. This does not confirm the key actually works - use "Test connection" on the Fettle settings page for that.', 'fettle' ),
+			fettle_ai_provider_label( $provider ),
 			$model
 		)
 	);

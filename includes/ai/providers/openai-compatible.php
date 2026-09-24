@@ -16,16 +16,16 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * @param array $image See legible_ai_call_vision().
+ * @param array $image See fettle_ai_call_vision().
  * @return string|WP_Error The `image_url.url` value: either the direct
  *                         external URL, or a `data:` URI.
  */
-function legible_openai_image_url_value( $image ) {
+function fettle_openai_image_url_value( $image ) {
 	if ( ! empty( $image['url'] ) && empty( $image['base64'] ) ) {
 		return $image['url'];
 	}
 
-	$resolved = legible_image_to_base64( $image );
+	$resolved = fettle_image_to_base64( $image );
 	if ( is_wp_error( $resolved ) ) {
 		return $resolved;
 	}
@@ -38,19 +38,19 @@ function legible_openai_image_url_value( $image ) {
  * @param string     $provider_slug 'openai' | 'xai' | 'openrouter' - for error labelling.
  * @param string     $model         Model id.
  * @param string     $prompt        Plain-text instruction.
- * @param array|null $image         See legible_ai_call_vision().
+ * @param array|null $image         See fettle_ai_call_vision().
  * @param string     $api_key       Bearer API key.
  * @param array      $options       ['timeout', 'max_tokens'].
  * @return string|WP_Error
  */
-function legible_ai_call_vision_openai_compatible( $base_url, $provider_slug, $model, $prompt, $image, $api_key, $options = array() ) {
+function fettle_ai_call_vision_openai_compatible( $base_url, $provider_slug, $model, $prompt, $image, $api_key, $options = array() ) {
 	$timeout    = $options['timeout'] ?? 60;
 	$max_tokens = $options['max_tokens'] ?? 1024;
 
 	$content = array( array( 'type' => 'text', 'text' => $prompt ) );
 
 	if ( $image ) {
-		$image_url = legible_openai_image_url_value( $image );
+		$image_url = fettle_openai_image_url_value( $image );
 		if ( is_wp_error( $image_url ) ) {
 			return $image_url;
 		}
@@ -79,23 +79,23 @@ function legible_ai_call_vision_openai_compatible( $base_url, $provider_slug, $m
 	);
 
 	if ( is_wp_error( $response ) ) {
-		return new WP_Error( 'legible_ai_connection', __( 'Connection failed: ', 'legible' ) . $response->get_error_message() );
+		return new WP_Error( 'fettle_ai_connection', __( 'Connection failed: ', 'fettle' ) . $response->get_error_message() );
 	}
 
 	$http_code = wp_remote_retrieve_response_code( $response );
 	if ( 200 !== $http_code ) {
-		return legible_ai_error_from_response( $provider_slug, $http_code, wp_remote_retrieve_body( $response ), $model );
+		return fettle_ai_error_from_response( $provider_slug, $http_code, wp_remote_retrieve_body( $response ), $model );
 	}
 
 	$data = json_decode( wp_remote_retrieve_body( $response ), true );
 
 	if ( ! isset( $data['choices'][0]['message']['content'] ) ) {
 		return new WP_Error(
-			'legible_ai_unexpected_response',
+			'fettle_ai_unexpected_response',
 			sprintf(
 				/* translators: %s: AI provider name */
-				__( 'Unexpected API response structure from %s.', 'legible' ),
-				legible_ai_provider_label( $provider_slug )
+				__( 'Unexpected API response structure from %s.', 'fettle' ),
+				fettle_ai_provider_label( $provider_slug )
 			)
 		);
 	}

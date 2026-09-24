@@ -16,13 +16,13 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'LEGIBLE_AI_MAX_IMAGE_BYTES', 8 * 1024 * 1024 ); // 8MB - generous for a web image, small enough to not blow past a provider's own request-size limit or run up needless cost on an oversized upload.
+define( 'FETTLE_AI_MAX_IMAGE_BYTES', 8 * 1024 * 1024 ); // 8MB - generous for a web image, small enough to not blow past a provider's own request-size limit or run up needless cost on an oversized upload.
 
 /**
  * @param int $post_id
  * @return bool True if this post is published, publicly visible, and not password-protected.
  */
-function legible_post_is_publicly_visible( $post_id ) {
+function fettle_post_is_publicly_visible( $post_id ) {
 	$post = get_post( $post_id );
 	if ( ! $post ) {
 		return false;
@@ -48,8 +48,8 @@ function legible_post_is_publicly_visible( $post_id ) {
  * @param int    $attachment_id 0 if not a registered Media Library attachment.
  * @return array{base64?: string, url?: string, mime: string}|WP_Error
  */
-function legible_get_image_reference_for_ai( $post_id, $src, $attachment_id ) {
-	if ( legible_post_is_publicly_visible( $post_id ) ) {
+function fettle_get_image_reference_for_ai( $post_id, $src, $attachment_id ) {
+	if ( fettle_post_is_publicly_visible( $post_id ) ) {
 		$mime = wp_check_filetype( $src )['type'] ?? 'image/jpeg';
 		return array(
 			'url'  => $src,
@@ -60,12 +60,12 @@ function legible_get_image_reference_for_ai( $post_id, $src, $attachment_id ) {
 	// Not public: read from local disk when we can, so no URL for this image is ever put on the wire.
 	$local_path = $attachment_id ? get_attached_file( $attachment_id ) : '';
 	if ( $local_path && file_exists( $local_path ) ) {
-		if ( filesize( $local_path ) > LEGIBLE_AI_MAX_IMAGE_BYTES ) {
-			return new WP_Error( 'legible_ai_image_too_large', __( 'This image is too large to send to an AI provider (over 8MB).', 'legible' ) );
+		if ( filesize( $local_path ) > FETTLE_AI_MAX_IMAGE_BYTES ) {
+			return new WP_Error( 'fettle_ai_image_too_large', __( 'This image is too large to send to an AI provider (over 8MB).', 'fettle' ) );
 		}
 		$bytes = file_get_contents( $local_path ); // phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- reading a local Media Library file already resolved via get_attached_file(), not a remote fetch.
 		if ( false === $bytes ) {
-			return new WP_Error( 'legible_ai_image_read_failed', __( 'Could not read the image file from disk.', 'legible' ) );
+			return new WP_Error( 'fettle_ai_image_read_failed', __( 'Could not read the image file from disk.', 'fettle' ) );
 		}
 		$mime = wp_check_filetype( $local_path )['type'] ?? 'image/jpeg';
 		return array(
@@ -76,17 +76,17 @@ function legible_get_image_reference_for_ai( $post_id, $src, $attachment_id ) {
 
 	// Not a registered attachment we can read locally (e.g. an externally hosted image) - the only option left is fetching it, but still base64-encoded ourselves so the URL itself is never handed to the provider.
 	if ( '' === $src ) {
-		return new WP_Error( 'legible_ai_no_image_src', __( 'This image has no readable source.', 'legible' ) );
+		return new WP_Error( 'fettle_ai_no_image_src', __( 'This image has no readable source.', 'fettle' ) );
 	}
 
-	return legible_image_to_base64( array( 'url' => $src, 'mime' => 'image/jpeg' ) );
+	return fettle_image_to_base64( array( 'url' => $src, 'mime' => 'image/jpeg' ) );
 }
 
 /**
  * @param string $context_text Nearby paragraph text, or ''.
  * @return string
  */
-function legible_build_alt_text_prompt( $context_text ) {
+function fettle_build_alt_text_prompt( $context_text ) {
 	$prompt = "Write concise, descriptive alt text for this image, for a screen reader user who cannot see it. "
 		. "One sentence, no more than 125 characters. Describe what is actually shown, not a guess at intent. "
 		. "Do not start with \"Image of\" or \"Picture of\" - a screen reader already announces it as an image. "
@@ -106,26 +106,26 @@ function legible_build_alt_text_prompt( $context_text ) {
  * preview/confirm step.
  *
  * @param int   $post_id
- * @param array $finding A finding from legible_check_alt_text(), i.e. has
+ * @param array $finding A finding from fettle_check_alt_text(), i.e. has
  *                        'src', 'attachment_id', 'context_text'.
  * @return string|WP_Error Suggested alt text, or WP_Error.
  */
-function legible_generate_alt_text_suggestion( $post_id, $finding ) {
-	if ( ! legible_ai_is_configured() ) {
-		return new WP_Error( 'legible_ai_not_configured', __( 'No AI provider is configured yet. Add an API key in Legible settings.', 'legible' ) );
+function fettle_generate_alt_text_suggestion( $post_id, $finding ) {
+	if ( ! fettle_ai_is_configured() ) {
+		return new WP_Error( 'fettle_ai_not_configured', __( 'No AI provider is configured yet. Add an API key in Fettle settings.', 'fettle' ) );
 	}
 
-	$image = legible_get_image_reference_for_ai( $post_id, $finding['src'] ?? '', (int) ( $finding['attachment_id'] ?? 0 ) );
+	$image = fettle_get_image_reference_for_ai( $post_id, $finding['src'] ?? '', (int) ( $finding['attachment_id'] ?? 0 ) );
 	if ( is_wp_error( $image ) ) {
 		return $image;
 	}
 
-	$provider = legible_get_current_provider();
-	$model    = legible_get_model_for_provider( $provider );
-	$api_key  = legible_get_api_key_for_provider( $provider );
-	$prompt   = legible_build_alt_text_prompt( $finding['context_text'] ?? '' );
+	$provider = fettle_get_current_provider();
+	$model    = fettle_get_model_for_provider( $provider );
+	$api_key  = fettle_get_api_key_for_provider( $provider );
+	$prompt   = fettle_build_alt_text_prompt( $finding['context_text'] ?? '' );
 
-	$result = legible_ai_call_vision( $provider, $model, $prompt, $image, $api_key, array( 'max_tokens' => 200 ) );
+	$result = fettle_ai_call_vision( $provider, $model, $prompt, $image, $api_key, array( 'max_tokens' => 200 ) );
 	if ( is_wp_error( $result ) ) {
 		return $result;
 	}
@@ -134,7 +134,7 @@ function legible_generate_alt_text_suggestion( $post_id, $finding ) {
 	$text = trim( $result, " \t\n\r\0\x0B\"'" );
 
 	if ( '' === $text ) {
-		return new WP_Error( 'legible_ai_empty_response', __( 'The AI provider returned an empty suggestion.', 'legible' ) );
+		return new WP_Error( 'fettle_ai_empty_response', __( 'The AI provider returned an empty suggestion.', 'fettle' ) );
 	}
 
 	return $text;
@@ -147,15 +147,15 @@ function legible_generate_alt_text_suggestion( $post_id, $finding ) {
  * A transient rather than postmeta: this is disposable UI state, not
  * something that should survive indefinitely if never confirmed.
  */
-define( 'LEGIBLE_PENDING_FIX_TTL', 15 * MINUTE_IN_SECONDS );
+define( 'FETTLE_PENDING_FIX_TTL', 15 * MINUTE_IN_SECONDS );
 
 /**
  * @param int    $post_id
  * @param string $instance_key
  * @return string
  */
-function legible_pending_fix_transient_key( $post_id, $instance_key ) {
-	return 'legible_fix_' . $post_id . '_' . substr( $instance_key, 0, 20 );
+function fettle_pending_fix_transient_key( $post_id, $instance_key ) {
+	return 'fettle_fix_' . $post_id . '_' . substr( $instance_key, 0, 20 );
 }
 
 /**
@@ -163,8 +163,8 @@ function legible_pending_fix_transient_key( $post_id, $instance_key ) {
  * @param string $instance_key
  * @param string $suggestion
  */
-function legible_store_pending_fix( $post_id, $instance_key, $suggestion ) {
-	set_transient( legible_pending_fix_transient_key( $post_id, $instance_key ), $suggestion, LEGIBLE_PENDING_FIX_TTL );
+function fettle_store_pending_fix( $post_id, $instance_key, $suggestion ) {
+	set_transient( fettle_pending_fix_transient_key( $post_id, $instance_key ), $suggestion, FETTLE_PENDING_FIX_TTL );
 }
 
 /**
@@ -172,16 +172,16 @@ function legible_store_pending_fix( $post_id, $instance_key, $suggestion ) {
  * @param string $instance_key
  * @return string|false
  */
-function legible_get_pending_fix( $post_id, $instance_key ) {
-	return get_transient( legible_pending_fix_transient_key( $post_id, $instance_key ) );
+function fettle_get_pending_fix( $post_id, $instance_key ) {
+	return get_transient( fettle_pending_fix_transient_key( $post_id, $instance_key ) );
 }
 
 /**
  * @param int    $post_id
  * @param string $instance_key
  */
-function legible_clear_pending_fix( $post_id, $instance_key ) {
-	delete_transient( legible_pending_fix_transient_key( $post_id, $instance_key ) );
+function fettle_clear_pending_fix( $post_id, $instance_key ) {
+	delete_transient( fettle_pending_fix_transient_key( $post_id, $instance_key ) );
 }
 
 /**
@@ -196,13 +196,13 @@ function legible_clear_pending_fix( $post_id, $instance_key ) {
  * @param string $alt_text
  * @return true|WP_Error
  */
-function legible_apply_alt_text_fix( $post_id, $instance_key, $alt_text ) {
+function fettle_apply_alt_text_fix( $post_id, $instance_key, $alt_text ) {
 	$post = get_post( $post_id );
 	if ( ! $post ) {
-		return new WP_Error( 'legible_post_not_found', __( 'No post exists with that ID.', 'legible' ) );
+		return new WP_Error( 'fettle_post_not_found', __( 'No post exists with that ID.', 'fettle' ) );
 	}
 	if ( ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
-		return new WP_Error( 'legible_no_tag_processor', __( 'This WordPress version does not support the required HTML processor.', 'legible' ) );
+		return new WP_Error( 'fettle_no_tag_processor', __( 'This WordPress version does not support the required HTML processor.', 'fettle' ) );
 	}
 
 	$processor      = new WP_HTML_Tag_Processor( $post->post_content );
@@ -229,7 +229,7 @@ function legible_apply_alt_text_fix( $post_id, $instance_key, $alt_text ) {
 	}
 
 	if ( ! $applied ) {
-		return new WP_Error( 'legible_finding_not_found', __( 'This image could not be found in the current content - it may have already changed since the last scan.', 'legible' ) );
+		return new WP_Error( 'fettle_finding_not_found', __( 'This image could not be found in the current content - it may have already changed since the last scan.', 'fettle' ) );
 	}
 
 	$update = wp_update_post(

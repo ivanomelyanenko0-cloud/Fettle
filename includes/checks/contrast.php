@@ -22,7 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param float $c_srgb A single sRGB channel in the 0-1 range.
  * @return float Linearised channel value.
  */
-function legible_linearise_channel( $c_srgb ) {
+function fettle_linearise_channel( $c_srgb ) {
 	if ( $c_srgb <= 0.03928 ) {
 		return $c_srgb / 12.92;
 	}
@@ -35,12 +35,12 @@ function legible_linearise_channel( $c_srgb ) {
  * @param array $rgb array( $r, $g, $b ), each 0-255.
  * @return float Relative luminance, 0 (black) to 1 (white).
  */
-function legible_relative_luminance( $rgb ) {
+function fettle_relative_luminance( $rgb ) {
 	list( $r, $g, $b ) = $rgb;
 
-	$r_lin = legible_linearise_channel( $r / 255 );
-	$g_lin = legible_linearise_channel( $g / 255 );
-	$b_lin = legible_linearise_channel( $b / 255 );
+	$r_lin = fettle_linearise_channel( $r / 255 );
+	$g_lin = fettle_linearise_channel( $g / 255 );
+	$b_lin = fettle_linearise_channel( $b / 255 );
 
 	return 0.2126 * $r_lin + 0.7152 * $g_lin + 0.0722 * $b_lin;
 }
@@ -50,9 +50,9 @@ function legible_relative_luminance( $rgb ) {
  * @param array $rgb2 array( $r, $g, $b ).
  * @return float Contrast ratio, 1 (no contrast) to 21 (black on white).
  */
-function legible_contrast_ratio( $rgb1, $rgb2 ) {
-	$l1 = legible_relative_luminance( $rgb1 );
-	$l2 = legible_relative_luminance( $rgb2 );
+function fettle_contrast_ratio( $rgb1, $rgb2 ) {
+	$l1 = fettle_relative_luminance( $rgb1 );
+	$l2 = fettle_relative_luminance( $rgb2 );
 
 	$lighter = max( $l1, $l2 );
 	$darker  = min( $l1, $l2 );
@@ -67,7 +67,7 @@ function legible_contrast_ratio( $rgb1, $rgb2 ) {
  * @param bool  $bold         Whether the text is bold (or font-weight >= 700).
  * @return float 3.0 for "large" text, 4.5 otherwise.
  */
-function legible_wcag_aa_threshold( $font_size_px, $bold ) {
+function fettle_wcag_aa_threshold( $font_size_px, $bold ) {
 	// 18pt = 24px, 14pt bold = ~18.67px, at the standard 96dpi/16px-root CSS px-to-pt ratio (1pt = 4/3px).
 	$is_large = $bold ? $font_size_px >= 18.67 : $font_size_px >= 24;
 
@@ -78,7 +78,7 @@ function legible_wcag_aa_threshold( $font_size_px, $bold ) {
  * @param array $rgb array( $r, $g, $b ).
  * @return string '#rrggbb'.
  */
-function legible_rgb_to_hex( $rgb ) {
+function fettle_rgb_to_hex( $rgb ) {
 	return sprintf( '#%02x%02x%02x', $rgb[0], $rgb[1], $rgb[2] );
 }
 
@@ -99,7 +99,7 @@ function legible_rgb_to_hex( $rgb ) {
  * @param string $bg_hex
  * @return string
  */
-function legible_contrast_instance_key( $tag, $text_hex, $bg_hex ) {
+function fettle_contrast_instance_key( $tag, $text_hex, $bg_hex ) {
 	return md5( $tag . '|' . $text_hex . '|' . $bg_hex );
 }
 
@@ -107,7 +107,7 @@ function legible_contrast_instance_key( $tag, $text_hex, $bg_hex ) {
  * @param string $hex '#rgb' or '#rrggbb'.
  * @return array|null array( $r, $g, $b ), or null if not a valid hex colour.
  */
-function legible_hex_to_rgb( $hex ) {
+function fettle_hex_to_rgb( $hex ) {
 	$hex = ltrim( trim( (string) $hex ), '#' );
 
 	if ( 3 === strlen( $hex ) && ctype_xdigit( $hex ) ) {
@@ -133,7 +133,7 @@ function legible_hex_to_rgb( $hex ) {
  *
  * @return array<string, array> slug => array( $r, $g, $b ).
  */
-function legible_get_color_palette_map() {
+function fettle_get_color_palette_map() {
 	static $map = null;
 	if ( null !== $map ) {
 		return $map;
@@ -151,7 +151,7 @@ function legible_get_color_palette_map() {
 			if ( empty( $entry['slug'] ) || ! isset( $entry['color'] ) ) {
 				continue;
 			}
-			$rgb = legible_resolve_color_value( $entry['color'] );
+			$rgb = fettle_resolve_color_value( $entry['color'] );
 			if ( $rgb ) {
 				$map[ $entry['slug'] ] = $rgb;
 			}
@@ -170,18 +170,18 @@ function legible_get_color_palette_map() {
  * @param string $value Raw CSS colour value.
  * @return array|null array( $r, $g, $b ), or null if not resolvable.
  */
-function legible_resolve_color_value( $value ) {
+function fettle_resolve_color_value( $value ) {
 	$value = trim( (string) $value );
 	if ( '' === $value ) {
 		return null;
 	}
 
 	if ( '#' === $value[0] ) {
-		return legible_hex_to_rgb( $value );
+		return fettle_hex_to_rgb( $value );
 	}
 
 	if ( preg_match( '/^var\(\s*--wp--preset--color--([a-z0-9-]+)\s*\)$/i', $value, $m ) ) {
-		$palette = legible_get_color_palette_map();
+		$palette = fettle_get_color_palette_map();
 		return $palette[ $m[1] ] ?? null;
 	}
 
@@ -195,8 +195,8 @@ function legible_resolve_color_value( $value ) {
  * @param string $slug Palette slug, e.g. 'vivid-cyan-blue'.
  * @return array|null
  */
-function legible_resolve_color_slug( $slug ) {
-	$palette = legible_get_color_palette_map();
+function fettle_resolve_color_slug( $slug ) {
+	$palette = fettle_get_color_palette_map();
 	return $palette[ $slug ] ?? null;
 }
 
@@ -211,7 +211,7 @@ function legible_resolve_color_slug( $slug ) {
  * @param string $style Element's style attribute value.
  * @return array{0: array, 1: array}|null array( $text_rgb, $bg_rgb ), or null.
  */
-function legible_extract_color_pair( $class, $style ) {
+function fettle_extract_color_pair( $class, $style ) {
 	$text_rgb = null;
 	$bg_rgb   = null;
 
@@ -221,20 +221,20 @@ function legible_extract_color_pair( $class, $style ) {
 	}
 
 	if ( preg_match( '/has-([a-z0-9-]+)-color(?!-)/i', $class, $m ) ) {
-		$text_rgb = legible_resolve_color_slug( $m[1] );
+		$text_rgb = fettle_resolve_color_slug( $m[1] );
 	}
 	if ( preg_match( '/has-([a-z0-9-]+)-background-color/i', $class, $m ) ) {
-		$bg_rgb = legible_resolve_color_slug( $m[1] );
+		$bg_rgb = fettle_resolve_color_slug( $m[1] );
 	}
 
 	if ( preg_match( '/(?:^|;)\s*color\s*:\s*([^;]+)/i', $style, $m ) ) {
-		$resolved = legible_resolve_color_value( trim( $m[1] ) );
+		$resolved = fettle_resolve_color_value( trim( $m[1] ) );
 		if ( $resolved ) {
 			$text_rgb = $resolved;
 		}
 	}
 	if ( preg_match( '/(?:^|;)\s*background-color\s*:\s*([^;]+)/i', $style, $m ) ) {
-		$resolved = legible_resolve_color_value( trim( $m[1] ) );
+		$resolved = fettle_resolve_color_value( trim( $m[1] ) );
 		if ( $resolved ) {
 			$bg_rgb = $resolved;
 		}
@@ -251,13 +251,13 @@ function legible_extract_color_pair( $class, $style ) {
  * Tags this check looks at: block-level elements that commonly carry an
  * explicit text+background colour pair in core Gutenberg markup.
  */
-const LEGIBLE_CONTRAST_TAGS = array( 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'span', 'a', 'button' );
+const FETTLE_CONTRAST_TAGS = array( 'p', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'div', 'span', 'a', 'button' );
 
 /**
  * @param string $html Rendered block HTML (post_content).
  * @return array[] Findings: each { type, severity, ratio, threshold, message, needs_review }.
  */
-function legible_check_contrast( $html ) {
+function fettle_check_contrast( $html ) {
 	if ( '' === trim( (string) $html ) || ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
 		return array();
 	}
@@ -268,7 +268,7 @@ function legible_check_contrast( $html ) {
 
 	while ( $processor->next_tag() ) {
 		$tag = strtolower( (string) $processor->get_tag() );
-		if ( ! in_array( $tag, LEGIBLE_CONTRAST_TAGS, true ) ) {
+		if ( ! in_array( $tag, FETTLE_CONTRAST_TAGS, true ) ) {
 			continue;
 		}
 
@@ -284,7 +284,7 @@ function legible_check_contrast( $html ) {
 		}
 		$seen_pairs[ $dedupe_key ] = true;
 
-		$pair = legible_extract_color_pair( $class, $style );
+		$pair = fettle_extract_color_pair( $class, $style );
 		if ( ! $pair ) {
 			continue;
 		}
@@ -292,8 +292,8 @@ function legible_check_contrast( $html ) {
 		list( $text_rgb, $bg_rgb ) = $pair;
 
 		$bold      = ( false !== stripos( $class, 'has-large-font-size' ) ) || preg_match( '/font-weight\s*:\s*(bold|[6-9]00)/i', $style );
-		$threshold = legible_wcag_aa_threshold( 16, (bool) $bold ); // Font-size in px is not reliably knowable without full cascade resolution; assume base body size (a documented limitation) unless a bold/large-size class says otherwise.
-		$ratio     = legible_contrast_ratio( $text_rgb, $bg_rgb );
+		$threshold = fettle_wcag_aa_threshold( 16, (bool) $bold ); // Font-size in px is not reliably knowable without full cascade resolution; assume base body size (a documented limitation) unless a bold/large-size class says otherwise.
+		$ratio     = fettle_contrast_ratio( $text_rgb, $bg_rgb );
 
 		if ( $ratio + 0.005 >= $threshold ) {
 			continue; // Passes AA, not a finding.
@@ -305,18 +305,18 @@ function legible_check_contrast( $html ) {
 			'tag'           => $tag,
 			'class'         => $class,
 			'style'         => $style,
-			'text_hex'      => legible_rgb_to_hex( $text_rgb ),
-			'bg_hex'        => legible_rgb_to_hex( $bg_rgb ),
+			'text_hex'      => fettle_rgb_to_hex( $text_rgb ),
+			'bg_hex'        => fettle_rgb_to_hex( $bg_rgb ),
 			'ratio'         => round( $ratio, 2 ),
 			'threshold'     => $threshold,
 			'message'       => sprintf(
 				/* translators: 1: measured contrast ratio, 2: required WCAG AA ratio */
-				__( 'Text/background contrast is %1$s:1, below the %2$s:1 WCAG AA minimum.', 'legible' ),
+				__( 'Text/background contrast is %1$s:1, below the %2$s:1 WCAG AA minimum.', 'fettle' ),
 				round( $ratio, 2 ),
 				$threshold
 			),
 			'needs_review'  => false,
-			'instance_key'  => legible_contrast_instance_key( $tag, legible_rgb_to_hex( $text_rgb ), legible_rgb_to_hex( $bg_rgb ) ),
+			'instance_key'  => fettle_contrast_instance_key( $tag, fettle_rgb_to_hex( $text_rgb ), fettle_rgb_to_hex( $bg_rgb ) ),
 		);
 	}
 

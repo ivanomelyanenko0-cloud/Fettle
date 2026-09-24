@@ -13,25 +13,25 @@ if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
 /**
  * @global wpdb $wpdb
  */
-function legible_uninstall_site() {
+function fettle_uninstall_site() {
 	global $wpdb;
 
 	// phpcs:ignore WordPress.DB.DirectDatabaseQuery.DirectQuery, WordPress.DB.DirectDatabaseQuery.NoCaching -- uninstalling: no object cache concern, and a per-row delete_post_meta() loop is needless work against a potentially large catalogue.
 	$wpdb->query(
 		$wpdb->prepare(
 			"DELETE FROM {$wpdb->postmeta} WHERE meta_key IN (%s, %s)",
-			'_legible_scan',
-			'_legible_dismissed'
+			'_fettle_scan',
+			'_fettle_dismissed'
 		)
 	);
 }
 
 if ( is_multisite() ) {
-	foreach ( get_sites( array( 'fields' => 'ids' ) ) as $legible_site_id ) {
-		switch_to_blog( $legible_site_id );
-		legible_uninstall_site();
+	foreach ( get_sites( array( 'fields' => 'ids' ) ) as $fettle_site_id ) {
+		switch_to_blog( $fettle_site_id );
+		fettle_uninstall_site();
 		restore_current_blog();
 	}
 } else {
-	legible_uninstall_site();
+	fettle_uninstall_site();
 }

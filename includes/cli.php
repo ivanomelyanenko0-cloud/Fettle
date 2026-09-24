@@ -1,6 +1,6 @@
 <?php
 /**
- * `wp legible check-phrases` - the enforcement half of
+ * `wp fettle check-phrases` - the enforcement half of
  * includes/forbidden-phrases.php. Scans every translatable string in the
  * plugin's own PHP files, plus readme.txt, for the banned phrases and
  * fails (non-zero exit) if it finds one. Meant to run before every
@@ -15,7 +15,7 @@ if ( ! defined( 'WP_CLI' ) || ! WP_CLI ) {
 	return;
 }
 
-class Legible_CLI_Check_Phrases {
+class Fettle_CLI_Check_Phrases {
 
 	/**
 	 * Scans this plugin's PHP source and readme.txt for banned phrases
@@ -23,18 +23,18 @@ class Legible_CLI_Check_Phrases {
 	 *
 	 * ## EXAMPLES
 	 *
-	 *     wp legible check-phrases
+	 *     wp fettle check-phrases
 	 *
 	 * @when before_wp_load
 	 */
 	public function __invoke( $args, $assoc_args ) {
 		$violations = array();
 
-		foreach ( $this->find_php_files( LEGIBLE_PLUGIN_DIR ) as $file ) {
+		foreach ( $this->find_php_files( FETTLE_PLUGIN_DIR ) as $file ) {
 			$violations = array_merge( $violations, $this->scan_php_file( $file ) );
 		}
 
-		$readme = LEGIBLE_PLUGIN_DIR . 'readme.txt';
+		$readme = FETTLE_PLUGIN_DIR . 'readme.txt';
 		if ( file_exists( $readme ) ) {
 			$violations = array_merge( $violations, $this->scan_plain_text_file( $readme ) );
 		}
@@ -97,9 +97,9 @@ class Legible_CLI_Check_Phrases {
 				continue;
 			}
 			foreach ( $matches[1] as $string_literal ) {
-				foreach ( legible_find_forbidden_phrases( $string_literal ) as $phrase ) {
+				foreach ( fettle_find_forbidden_phrases( $string_literal ) as $phrase ) {
 					$violations[] = array(
-						'file'    => str_replace( LEGIBLE_PLUGIN_DIR, '', $file ),
+						'file'    => str_replace( FETTLE_PLUGIN_DIR, '', $file ),
 						'line'    => $line_number + 1,
 						'phrase'  => $phrase,
 						'snippet' => $line,
@@ -123,7 +123,7 @@ class Legible_CLI_Check_Phrases {
 		}
 
 		foreach ( $lines as $line_number => $line ) {
-			foreach ( legible_find_forbidden_phrases( $line ) as $phrase ) {
+			foreach ( fettle_find_forbidden_phrases( $line ) as $phrase ) {
 				$violations[] = array(
 					'file'    => basename( $file ),
 					'line'    => $line_number + 1,
@@ -137,4 +137,4 @@ class Legible_CLI_Check_Phrases {
 	}
 }
 
-WP_CLI::add_command( 'legible check-phrases', 'Legible_CLI_Check_Phrases' );
+WP_CLI::add_command( 'fettle check-phrases', 'Fettle_CLI_Check_Phrases' );

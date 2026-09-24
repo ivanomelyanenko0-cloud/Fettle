@@ -8,7 +8,7 @@
  * visible text is a text *node*, not an attribute, and
  * WP_HTML_Tag_Processor only reads/writes attributes - it cannot replace
  * inner text. This locates the exact <a>...</a> occurrence with the same
- * position-tracked substring scan legible_check_link_text() itself uses to
+ * position-tracked substring scan fettle_check_link_text() itself uses to
  * read that text in the first place, then splices the replacement in.
  */
 
@@ -21,7 +21,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param string $href         The link's destination URL.
  * @return string
  */
-function legible_build_link_text_prompt( $current_text, $href ) {
+function fettle_build_link_text_prompt( $current_text, $href ) {
 	return sprintf(
 		'A hyperlink\'s visible text does not describe where it goes, which is an accessibility problem (screen reader users often navigate by a list of link text alone). '
 			. "Current link text: \"%s\". The link's destination URL: %s. "
@@ -34,25 +34,25 @@ function legible_build_link_text_prompt( $current_text, $href ) {
 
 /**
  * @param int   $post_id
- * @param array $finding A finding from legible_check_link_text().
+ * @param array $finding A finding from fettle_check_link_text().
  * @return string|WP_Error
  */
-function legible_generate_link_text_suggestion( $post_id, $finding ) {
-	if ( ! legible_ai_is_configured() ) {
-		return new WP_Error( 'legible_ai_not_configured', __( 'No AI provider is configured yet. Add an API key in Legible settings.', 'legible' ) );
+function fettle_generate_link_text_suggestion( $post_id, $finding ) {
+	if ( ! fettle_ai_is_configured() ) {
+		return new WP_Error( 'fettle_ai_not_configured', __( 'No AI provider is configured yet. Add an API key in Fettle settings.', 'fettle' ) );
 	}
 
-	$provider = legible_get_current_provider();
-	$prompt   = legible_build_link_text_prompt( $finding['link_text'] ?? '', $finding['href'] ?? '' );
+	$provider = fettle_get_current_provider();
+	$prompt   = fettle_build_link_text_prompt( $finding['link_text'] ?? '', $finding['href'] ?? '' );
 
-	$response = legible_ai_call_vision( $provider, legible_get_model_for_provider( $provider ), $prompt, null, legible_get_api_key_for_provider( $provider ), array( 'max_tokens' => 40 ) );
+	$response = fettle_ai_call_vision( $provider, fettle_get_model_for_provider( $provider ), $prompt, null, fettle_get_api_key_for_provider( $provider ), array( 'max_tokens' => 40 ) );
 	if ( is_wp_error( $response ) ) {
 		return $response;
 	}
 
 	$text = trim( $response, " \t\n\r\0\x0B\"'" );
 	if ( '' === $text ) {
-		return new WP_Error( 'legible_ai_empty_response', __( 'The AI provider returned an empty suggestion.', 'legible' ) );
+		return new WP_Error( 'fettle_ai_empty_response', __( 'The AI provider returned an empty suggestion.', 'fettle' ) );
 	}
 
 	return $text;
@@ -60,7 +60,7 @@ function legible_generate_link_text_suggestion( $post_id, $finding ) {
 
 /**
  * Re-locates the exact <a> occurrence a link-text finding refers to (same
- * algorithm as legible_check_link_text(), stopping at the matching
+ * algorithm as fettle_check_link_text(), stopping at the matching
  * instance_key instead of collecting all of them) and replaces its inner
  * text.
  *
@@ -69,13 +69,13 @@ function legible_generate_link_text_suggestion( $post_id, $finding ) {
  * @param string $new_text
  * @return true|WP_Error
  */
-function legible_apply_link_text_fix( $post_id, $instance_key, $new_text ) {
+function fettle_apply_link_text_fix( $post_id, $instance_key, $new_text ) {
 	$post = get_post( $post_id );
 	if ( ! $post ) {
-		return new WP_Error( 'legible_post_not_found', __( 'No post exists with that ID.', 'legible' ) );
+		return new WP_Error( 'fettle_post_not_found', __( 'No post exists with that ID.', 'fettle' ) );
 	}
 	if ( ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
-		return new WP_Error( 'legible_no_tag_processor', __( 'This WordPress version does not support the required HTML processor.', 'legible' ) );
+		return new WP_Error( 'fettle_no_tag_processor', __( 'This WordPress version does not support the required HTML processor.', 'fettle' ) );
 	}
 
 	$html        = $post->post_content;
@@ -122,5 +122,5 @@ function legible_apply_link_text_fix( $post_id, $instance_key, $new_text ) {
 		);
 	}
 
-	return new WP_Error( 'legible_finding_not_found', __( 'This link could not be found in the current content - it may have already changed since the last scan.', 'legible' ) );
+	return new WP_Error( 'fettle_finding_not_found', __( 'This link could not be found in the current content - it may have already changed since the last scan.', 'fettle' ) );
 }

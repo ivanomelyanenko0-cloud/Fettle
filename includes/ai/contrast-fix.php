@@ -11,7 +11,7 @@
  * style); adjusting text colour against a fixed background is the smaller,
  * safer edit and is what most real low-contrast cases actually need.
  *
- * Because legible_check_contrast() already deduplicates identical (tag,
+ * Because fettle_check_contrast() already deduplicates identical (tag,
  * class, style) combinations into one finding, applying a fix here updates
  * *every* element in the post that shares that exact combination, not just
  * one - the same set of elements the one finding represents.
@@ -27,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  * @param float  $threshold  Required contrast ratio.
  * @return string
  */
-function legible_build_contrast_prompt( $bg_hex, $text_hex, $threshold ) {
+function fettle_build_contrast_prompt( $bg_hex, $text_hex, $threshold ) {
 	return sprintf(
 		"A text colour needs to be changed so it has at least a %s:1 contrast ratio against a fixed background colour, per WCAG 2.1. "
 			. "Background colour (do not change this): %s. Current text colour (fails the contrast requirement): %s. "
@@ -43,10 +43,10 @@ function legible_build_contrast_prompt( $bg_hex, $text_hex, $threshold ) {
  * @param string $text Raw model response.
  * @return string|null '#rrggbb', or null if no hex colour could be parsed out.
  */
-function legible_extract_hex_from_text( $text ) {
+function fettle_extract_hex_from_text( $text ) {
 	if ( preg_match( '/#([0-9a-f]{6}|[0-9a-f]{3})\b/i', $text, $m ) ) {
-		$rgb = legible_hex_to_rgb( $m[0] );
-		return $rgb ? legible_rgb_to_hex( $rgb ) : null;
+		$rgb = fettle_hex_to_rgb( $m[0] );
+		return $rgb ? fettle_rgb_to_hex( $rgb ) : null;
 	}
 	return null;
 }
@@ -64,45 +64,45 @@ function legible_extract_hex_from_text( $text ) {
  * @param array $bg_rgb
  * @return string '#rrggbb'.
  */
-function legible_fallback_contrast_color( $bg_rgb ) {
-	$black_ratio = legible_contrast_ratio( array( 0, 0, 0 ), $bg_rgb );
-	$white_ratio = legible_contrast_ratio( array( 255, 255, 255 ), $bg_rgb );
+function fettle_fallback_contrast_color( $bg_rgb ) {
+	$black_ratio = fettle_contrast_ratio( array( 0, 0, 0 ), $bg_rgb );
+	$white_ratio = fettle_contrast_ratio( array( 255, 255, 255 ), $bg_rgb );
 
 	return $black_ratio >= $white_ratio ? '#000000' : '#ffffff';
 }
 
 /**
  * @param int   $post_id
- * @param array $finding A finding from legible_check_contrast().
+ * @param array $finding A finding from fettle_check_contrast().
  * @return array{color: string, used_fallback: bool}|WP_Error
  */
-function legible_generate_contrast_suggestion( $post_id, $finding ) {
-	if ( ! legible_ai_is_configured() ) {
-		return new WP_Error( 'legible_ai_not_configured', __( 'No AI provider is configured yet. Add an API key in Legible settings.', 'legible' ) );
+function fettle_generate_contrast_suggestion( $post_id, $finding ) {
+	if ( ! fettle_ai_is_configured() ) {
+		return new WP_Error( 'fettle_ai_not_configured', __( 'No AI provider is configured yet. Add an API key in Fettle settings.', 'fettle' ) );
 	}
 
-	$bg_rgb = legible_hex_to_rgb( $finding['bg_hex'] ?? '' );
+	$bg_rgb = fettle_hex_to_rgb( $finding['bg_hex'] ?? '' );
 	if ( ! $bg_rgb ) {
-		return new WP_Error( 'legible_invalid_finding', __( 'This finding is missing colour data - try scanning again.', 'legible' ) );
+		return new WP_Error( 'fettle_invalid_finding', __( 'This finding is missing colour data - try scanning again.', 'fettle' ) );
 	}
 
-	$provider = legible_get_current_provider();
-	$prompt   = legible_build_contrast_prompt( $finding['bg_hex'], $finding['text_hex'], $finding['threshold'] );
+	$provider = fettle_get_current_provider();
+	$prompt   = fettle_build_contrast_prompt( $finding['bg_hex'], $finding['text_hex'], $finding['threshold'] );
 
-	$response = legible_ai_call_vision( $provider, legible_get_model_for_provider( $provider ), $prompt, null, legible_get_api_key_for_provider( $provider ), array( 'max_tokens' => 20 ) );
+	$response = fettle_ai_call_vision( $provider, fettle_get_model_for_provider( $provider ), $prompt, null, fettle_get_api_key_for_provider( $provider ), array( 'max_tokens' => 20 ) );
 	if ( is_wp_error( $response ) ) {
 		return $response;
 	}
 
-	$proposed = legible_extract_hex_from_text( $response );
-	$rgb      = $proposed ? legible_hex_to_rgb( $proposed ) : null;
+	$proposed = fettle_extract_hex_from_text( $response );
+	$rgb      = $proposed ? fettle_hex_to_rgb( $proposed ) : null;
 
-	// The whole point of spec's "own deterministic function checks it" instruction: never trust the model's arithmetic, verify with the same legible_contrast_ratio() the check itself uses.
-	if ( $rgb && legible_contrast_ratio( $rgb, $bg_rgb ) + 0.005 >= $finding['threshold'] ) {
+	// The whole point of spec's "own deterministic function checks it" instruction: never trust the model's arithmetic, verify with the same fettle_contrast_ratio() the check itself uses.
+	if ( $rgb && fettle_contrast_ratio( $rgb, $bg_rgb ) + 0.005 >= $finding['threshold'] ) {
 		return array( 'color' => $proposed, 'used_fallback' => false );
 	}
 
-	return array( 'color' => legible_fallback_contrast_color( $bg_rgb ), 'used_fallback' => true );
+	return array( 'color' => fettle_fallback_contrast_color( $bg_rgb ), 'used_fallback' => true );
 }
 
 /**
@@ -111,7 +111,7 @@ function legible_generate_contrast_suggestion( $post_id, $finding ) {
  * @param string $value
  * @return string Updated style string, existing declaration order preserved, others untouched.
  */
-function legible_merge_style_declaration( $style, $property, $value ) {
+function fettle_merge_style_declaration( $style, $property, $value ) {
 	$declarations = array();
 	foreach ( explode( ';', (string) $style ) as $part ) {
 		$part = trim( $part );
@@ -141,13 +141,13 @@ function legible_merge_style_declaration( $style, $property, $value ) {
  * @param string $new_color '#rrggbb'.
  * @return true|WP_Error
  */
-function legible_apply_contrast_fix( $post_id, $instance_key, $new_color ) {
+function fettle_apply_contrast_fix( $post_id, $instance_key, $new_color ) {
 	$post = get_post( $post_id );
 	if ( ! $post ) {
-		return new WP_Error( 'legible_post_not_found', __( 'No post exists with that ID.', 'legible' ) );
+		return new WP_Error( 'fettle_post_not_found', __( 'No post exists with that ID.', 'fettle' ) );
 	}
 	if ( ! class_exists( 'WP_HTML_Tag_Processor' ) ) {
-		return new WP_Error( 'legible_no_tag_processor', __( 'This WordPress version does not support the required HTML processor.', 'legible' ) );
+		return new WP_Error( 'fettle_no_tag_processor', __( 'This WordPress version does not support the required HTML processor.', 'fettle' ) );
 	}
 
 	$processor = new WP_HTML_Tag_Processor( $post->post_content );
@@ -155,31 +155,31 @@ function legible_apply_contrast_fix( $post_id, $instance_key, $new_color ) {
 
 	while ( $processor->next_tag() ) {
 		$tag = strtolower( (string) $processor->get_tag() );
-		if ( ! in_array( $tag, LEGIBLE_CONTRAST_TAGS, true ) ) {
+		if ( ! in_array( $tag, FETTLE_CONTRAST_TAGS, true ) ) {
 			continue;
 		}
 
 		$class = (string) $processor->get_attribute( 'class' );
 		$style = (string) $processor->get_attribute( 'style' );
 
-		// Match by resolved colour, not the raw class/style string - see legible_contrast_instance_key() for why (rendering can add classes not present in raw post_content).
-		$pair = legible_extract_color_pair( $class, $style );
+		// Match by resolved colour, not the raw class/style string - see fettle_contrast_instance_key() for why (rendering can add classes not present in raw post_content).
+		$pair = fettle_extract_color_pair( $class, $style );
 		if ( ! $pair ) {
 			continue;
 		}
 		list( $text_rgb, $bg_rgb ) = $pair;
-		$key = legible_contrast_instance_key( $tag, legible_rgb_to_hex( $text_rgb ), legible_rgb_to_hex( $bg_rgb ) );
+		$key = fettle_contrast_instance_key( $tag, fettle_rgb_to_hex( $text_rgb ), fettle_rgb_to_hex( $bg_rgb ) );
 
 		if ( $key !== $instance_key ) {
 			continue;
 		}
 
-		$processor->set_attribute( 'style', legible_merge_style_declaration( $style, 'color', $new_color ) );
+		$processor->set_attribute( 'style', fettle_merge_style_declaration( $style, 'color', $new_color ) );
 		++$applied;
 	}
 
 	if ( 0 === $applied ) {
-		return new WP_Error( 'legible_finding_not_found', __( 'This element could not be found in the current content - it may have already changed since the last scan.', 'legible' ) );
+		return new WP_Error( 'fettle_finding_not_found', __( 'This element could not be found in the current content - it may have already changed since the last scan.', 'fettle' ) );
 	}
 
 	return wp_update_post(
