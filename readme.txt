@@ -42,6 +42,16 @@ No request is ever sent without you clicking that button for that specific findi
 3. Open **Legible** in the admin menu and click **Scan now**.
 4. Optional: open **Legible → Settings** to add an AI provider API key if you want AI-suggested alt text.
 
+== Screenshots ==
+
+1. Scan results: a plain-language digest at the top, then per-finding rows with severity, an explanation, and one-click actions.
+2. An AI-suggested fix, generated and shown for review before you decide to apply or discard it.
+3. Findings list showing the Apply / Discard / Not an issue actions for contrast, link text, and missing alt text.
+4. Theme landmarks check: results for the active theme's front page (main content area, navigation, footer regions).
+5. Settings page: pick an AI provider and paste your own API key - nothing is sent until you explicitly generate a fix.
+6. Site Health: shows which AI provider is configured, without making a live API call.
+7. Site Health "Test connection": an explicit, one-off check that your configured API key actually works.
+
 == Frequently Asked Questions ==
 
 = Does this add a widget or overlay to my site? =
