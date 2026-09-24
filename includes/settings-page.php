@@ -35,6 +35,30 @@ function fettle_register_settings_page() {
 	);
 }
 add_action( 'admin_menu', 'fettle_register_settings_page', 20 );
+add_action( 'admin_enqueue_scripts', 'fettle_enqueue_settings_assets' );
+
+/**
+ * Enqueues the provider-row-toggle script, only on Fettle's own settings
+ * screen - no inline <script> on the page, per wp.org review guidance. The
+ * hook suffix for a submenu of a top-level page is
+ * "{parent_slug}_page_{submenu_slug}" (WordPress's own convention, not
+ * something this plugin defines).
+ *
+ * @param string $hook_suffix
+ */
+function fettle_enqueue_settings_assets( $hook_suffix ) {
+	if ( 'fettle_page_fettle-settings' !== $hook_suffix ) {
+		return;
+	}
+
+	wp_enqueue_script(
+		'fettle-settings',
+		FETTLE_PLUGIN_URL . 'assets/js/settings.js',
+		array( 'jquery' ),
+		FETTLE_VERSION,
+		true
+	);
+}
 
 function fettle_render_settings_page() {
 	if ( ! current_user_can( 'manage_options' ) ) {
@@ -177,18 +201,6 @@ function fettle_render_settings_page() {
 					</tr>
 				<?php endforeach; ?>
 			</table>
-
-			<script>
-			( function ( $ ) {
-				function fettleToggleProviderRows() {
-					var provider = $( '#fettle-provider-select' ).val();
-					$( '.fettle-provider-row' ).hide();
-					$( '.fettle-provider-row-' + provider ).show();
-				}
-				$( document ).on( 'change', '#fettle-provider-select', fettleToggleProviderRows );
-				$( fettleToggleProviderRows );
-			} )( jQuery );
-			</script>
 
 			<?php submit_button( __( 'Save settings', 'fettle' ), 'primary', 'fettle_save_settings' ); ?>
 		</form>

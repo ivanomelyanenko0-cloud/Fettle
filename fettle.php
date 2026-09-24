@@ -13,10 +13,7 @@
  * Text Domain:       fettle
  * Domain Path:       /languages
  *
- * "Fettle" is a working name and may still change before the first public
- * release - every internal identifier lives behind the FETTLE_/fettle_
- * prefix below so a rename stays a mechanical find/replace instead of an
- * architecture change.
+ * Every internal identifier lives behind the FETTLE_/fettle_ prefix below.
  *
  * This is the full Free 1.0.0 scope - the rule-based audit engine
  * (contrast, heading order, form labels, link text, theme landmarks) plus

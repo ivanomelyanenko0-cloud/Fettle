@@ -33,7 +33,7 @@ Add your own API key for Gemini, Claude, OpenAI, Grok or OpenRouter, and Fettle 
 * **A replacement text colour** that passes contrast against its background
 * **Descriptive link text** based on where the link actually points
  
-Every suggestion is shown to you first. You apply it or discard it – nothing is ever changed automatically, and no request is sent until you click the button for that specific finding.
+Every suggestion is shown to you first. You apply it or discard it – nothing is ever changed automatically, and none of your content is sent until you click the button for that specific finding.
  
 = Built to stay out of your way =
  
@@ -62,7 +62,9 @@ Every check in this plugin works entirely locally and sends nothing anywhere. Th
 * For a contrast finding, only the two colour hex codes involved (background and failing text colour) are sent - no image, no content.
 * For a link-text finding, only the link's current visible text and its destination URL are sent - no image, no other page content.
  
-No request is ever sent without you clicking that button for that specific finding, and nothing is applied to your content until you separately click Apply. Without an API key configured, no such request is ever made, and every other check in this plugin is unaffected either way.
+None of your content is ever sent without you clicking that button for that specific finding, and nothing is applied to your content until you separately click Apply. Without an API key configured, no such request is ever made, and every other check in this plugin is unaffected either way.
+
+Once a key is saved, two other requests can go to that same provider, and neither sends any of your content: opening Fettle → Settings fetches the provider's list of available models (only your API key is sent; the list is cached for 24 hours so this doesn't happen on every page load), and the "Test connection" button sends one minimal, text-only request to confirm the key and model work.
 
 Depending on which provider you select in Settings, the plugin talks to one of the following:
 

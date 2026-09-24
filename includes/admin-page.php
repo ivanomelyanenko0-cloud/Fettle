@@ -146,6 +146,9 @@ function fettle_render_admin_page() {
 	if ( isset( $_POST['fettle_dismiss'] ) && check_admin_referer( 'fettle_dismiss' ) ) {
 		$dismiss_post_id = isset( $_POST['post_id'] ) ? (int) $_POST['post_id'] : 0;
 		$instance_key    = isset( $_POST['instance_key'] ) ? sanitize_text_field( wp_unslash( $_POST['instance_key'] ) ) : '';
+		if ( $dismiss_post_id && ! current_user_can( 'edit_post', $dismiss_post_id ) ) {
+			wp_die( esc_html__( 'Sorry, you are not allowed to edit this post.', 'fettle' ) );
+		}
 		if ( $dismiss_post_id && $instance_key ) {
 			fettle_dismiss_finding( $dismiss_post_id, $instance_key );
 			$notice = __( 'Marked as a false positive.', 'fettle' );
@@ -155,6 +158,9 @@ function fettle_render_admin_page() {
 	if ( isset( $_POST['fettle_generate_fix'] ) && check_admin_referer( 'fettle_generate_fix' ) ) {
 		$fix_post_id  = isset( $_POST['post_id'] ) ? (int) $_POST['post_id'] : 0;
 		$instance_key = isset( $_POST['instance_key'] ) ? sanitize_text_field( wp_unslash( $_POST['instance_key'] ) ) : '';
+		if ( $fix_post_id && ! current_user_can( 'edit_post', $fix_post_id ) ) {
+			wp_die( esc_html__( 'Sorry, you are not allowed to edit this post.', 'fettle' ) );
+		}
 		$scan         = $fix_post_id ? fettle_scan_post( $fix_post_id ) : null;
 		$finding      = $scan && ! is_wp_error( $scan ) ? fettle_find_finding_by_key( $scan, $instance_key ) : null;
 		$fix_type     = $finding['type'] ?? '';
@@ -178,6 +184,9 @@ function fettle_render_admin_page() {
 	if ( isset( $_POST['fettle_apply_fix'] ) && check_admin_referer( 'fettle_apply_fix' ) ) {
 		$fix_post_id  = isset( $_POST['post_id'] ) ? (int) $_POST['post_id'] : 0;
 		$instance_key = isset( $_POST['instance_key'] ) ? sanitize_text_field( wp_unslash( $_POST['instance_key'] ) ) : '';
+		if ( $fix_post_id && ! current_user_can( 'edit_post', $fix_post_id ) ) {
+			wp_die( esc_html__( 'Sorry, you are not allowed to edit this post.', 'fettle' ) );
+		}
 		$stored       = $fix_post_id ? fettle_get_pending_fix( $fix_post_id, $instance_key ) : false;
 		$decoded      = false !== $stored ? json_decode( $stored, true ) : null;
 
@@ -199,6 +208,9 @@ function fettle_render_admin_page() {
 	if ( isset( $_POST['fettle_discard_fix'] ) && check_admin_referer( 'fettle_discard_fix' ) ) {
 		$fix_post_id  = isset( $_POST['post_id'] ) ? (int) $_POST['post_id'] : 0;
 		$instance_key = isset( $_POST['instance_key'] ) ? sanitize_text_field( wp_unslash( $_POST['instance_key'] ) ) : '';
+		if ( $fix_post_id && ! current_user_can( 'edit_post', $fix_post_id ) ) {
+			wp_die( esc_html__( 'Sorry, you are not allowed to edit this post.', 'fettle' ) );
+		}
 		if ( $fix_post_id && $instance_key ) {
 			fettle_clear_pending_fix( $fix_post_id, $instance_key );
 			$notice = __( 'Suggestion discarded.', 'fettle' );

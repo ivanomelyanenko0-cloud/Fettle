@@ -30,7 +30,10 @@ function fettle_image_to_base64( $image ) {
 		return new WP_Error( 'fettle_ai_no_image', __( 'No image data or URL was provided.', 'fettle' ) );
 	}
 
-	$response = wp_remote_get(
+	// wp_safe_remote_get(), not wp_remote_get(): $image['url'] traces back to an <img src> pulled from post
+	// content, so it's attacker-influenced if a post author is untrusted - the safe variant blocks requests
+	// resolving to private/reserved IP ranges (SSRF hardening), which a plain fetch would not.
+	$response = wp_safe_remote_get(
 		$image['url'],
 		array(
 			'timeout' => 20,
