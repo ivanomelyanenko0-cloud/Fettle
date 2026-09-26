@@ -27,7 +27,7 @@ Most accessibility plugins bolt a JavaScript widget onto your front end and patc
  
 = Let AI draft the fix – you stay in control =
  
-Add your own API key for Gemini, Claude, OpenAI, Grok or OpenRouter, and Fettle can suggest a fix for any single finding:
+On WordPress 7.0 or later, Fettle can use the AI provider you've already set up for your whole site under Settings > Connectors – no extra key needed. Or add your own API key for Gemini, Claude, OpenAI, Grok or OpenRouter. Either way, Fettle can suggest a fix for any single finding:
  
 * **Alt text** written from the image itself
 * **A replacement text colour** that passes contrast against its background
@@ -56,17 +56,17 @@ No automated tool can certify a website against WCAG, and Fettle never pretends 
  
 == External services ==
  
-Every check in this plugin works entirely locally and sends nothing anywhere. The one exception, and it is entirely optional, is the AI-suggested fix feature: if you add your own API key for an AI provider (Gemini, Claude, OpenAI, Grok, or OpenRouter) in Fettle's settings, clicking "Generate AI fix" on a specific finding sends that finding's data to whichever provider you configured, to receive a suggestion back.
+Every check in this plugin works entirely locally and sends nothing anywhere. The one exception, and it is entirely optional, is the AI-suggested fix feature: clicking "Generate AI fix" on a specific finding sends that finding's data to the AI provider you configured, to receive a suggestion back. That provider is either the one set up for your whole site in WordPress under Settings > Connectors (WordPress 7.0+; the request then goes through WordPress's own AI Client, to whichever service that connector uses, under that service's terms), or – if you add your own API key in Fettle's settings – Gemini, Claude, OpenAI, Grok, or OpenRouter, called directly.
  
 * For a missing-alt-text finding, that one image - and, for a published public page, its public URL - is sent. For a draft, private, or password-protected post, the image is read from your server and sent directly instead, so its URL is never transmitted.
 * For a contrast finding, only the two colour hex codes involved (background and failing text colour) are sent - no image, no content.
 * For a link-text finding, only the link's current visible text and its destination URL are sent - no image, no other page content.
  
-None of your content is ever sent without you clicking that button for that specific finding, and nothing is applied to your content until you separately click Apply. Without an API key configured, no such request is ever made, and every other check in this plugin is unaffected either way.
+None of your content is ever sent without you clicking that button for that specific finding, and nothing is applied to your content until you separately click Apply. Without a provider configured, no such request is ever made, and every other check in this plugin is unaffected either way.
 
-Once a key is saved, two other requests can go to that same provider, and neither sends any of your content: opening Fettle → Settings fetches the provider's list of available models (only your API key is sent; the list is cached for 24 hours so this doesn't happen on every page load), and the "Test connection" button sends one minimal, text-only request to confirm the key and model work.
+Once a key is saved for a direct provider, two other requests can go to that same provider, and neither sends any of your content: opening Fettle → Settings fetches the provider's list of available models (only your API key is sent; the list is cached for 24 hours so this doesn't happen on every page load), and the "Test connection" button sends one minimal, text-only request to confirm the key and model work.
 
-Depending on which provider you select in Settings, the plugin talks to one of the following:
+When you use your own API key, depending on which provider you select in Settings, the plugin talks to one of the following:
 
 **Google Gemini**
 * Endpoint: `https://generativelanguage.googleapis.com/v1beta/models/`
@@ -99,7 +99,7 @@ Depending on which provider you select in Settings, the plugin talks to one of t
 1. Upload the `fettle` folder to `/wp-content/plugins/`, or install it from **Plugins → Add New**.
 2. Activate the plugin through the **Plugins** screen.
 3. Open **Fettle** in the admin menu and click **Scan now**.
-4. Optional: open **Fettle → Settings** and add an AI provider API key to enable AI-suggested fixes.
+4. Optional: open **Fettle → Settings** and pick an AI provider – WordPress AI (Settings > Connectors, WordPress 7.0+) or your own API key – to enable AI-suggested fixes.
  
 == Frequently Asked Questions ==
  
@@ -117,11 +117,11 @@ No single automated tool can promise that, and Fettle will never claim otherwise
  
 = Do I have to use the AI features? =
  
-No. Every rule-based check works with no AI provider configured at all. AI-suggested fixes are an entirely optional add-on you turn on yourself by adding an API key.
+No. Every rule-based check works with no AI provider configured at all. AI-suggested fixes are an entirely optional add-on you turn on yourself by choosing an AI provider.
  
 = How much do the AI fixes cost? =
  
-Fettle doesn't charge anything for them. You use your own API key, so any usage is billed by your chosen provider at their normal rates. Each suggestion is a single small request for one finding.
+Fettle doesn't charge anything for them. You use your own AI provider account – through WordPress's Connectors or your own API key – so any usage is billed by that provider at their normal rates. Each suggestion is a single small request for one finding.
  
 = Will the AI change my content without asking? =
  
@@ -151,6 +151,6 @@ Not in this version. Fettle currently checks Gutenberg block content and classic
 * First public release.
 * Rule-based checks: missing alt text, contrast, heading order, form labels, link text, theme landmarks.
 * Content-hash-cached scanning, per-instance false-positive dismissal, admin page with a plain-language digest.
-* Optional AI-suggested fixes, one finding at a time: alt text, contrast (replacement text colour), link text. Bring your own key for Gemini, Claude, OpenAI, Grok, or OpenRouter; always previewed and explicitly confirmed before anything is applied.
+* Optional AI-suggested fixes, one finding at a time: alt text, contrast (replacement text colour), link text. Uses the WordPress AI Client (Settings > Connectors) on WordPress 7.0+, or bring your own key for Gemini, Claude, OpenAI, Grok, or OpenRouter; always previewed and explicitly confirmed before anything is applied.
 * Site Health check for AI provider configuration (never makes a live API call automatically); a separate "Test connection" button for an explicit, one-off check.
 * `wp fettle check-phrases`: a release-time check against a list of accessibility-compliance claims this plugin never makes.

@@ -258,7 +258,7 @@ function fettle_render_admin_page() {
 					printf(
 						wp_kses(
 							/* translators: %s: URL to the Fettle AI settings page */
-							__( 'No AI provider is configured yet, so AI-suggested fixes aren\'t available. <a href="%s">Add an API key</a> to enable them - the rule-based checks below work either way.', 'fettle' ),
+							__( 'No AI provider is configured yet, so AI-suggested fixes aren\'t available. <a href="%s">Set up an AI provider</a> to enable them - the rule-based checks below work either way.', 'fettle' ),
 							array( 'a' => array( 'href' => true ) )
 						),
 						esc_url( admin_url( 'admin.php?page=fettle-settings' ) )

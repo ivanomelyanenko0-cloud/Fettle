@@ -1,9 +1,10 @@
 <?php
 /**
- * AI provider settings: pick an active provider, paste its API key (BYO -
- * Fettle never ships or proxies its own key), pick a model. A capability
- * check gate here, not just on the main page: API keys are more sensitive
- * than read-only findings.
+ * AI provider settings: pick an active provider - the WordPress AI Client
+ * (Settings > Connectors, core 7.0+) or a direct provider with your own
+ * API key (BYO - Fettle never ships or proxies its own key) and model. A
+ * capability check gate here, not just on the main page: API keys are more
+ * sensitive than read-only findings.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
@@ -70,7 +71,7 @@ function fettle_render_settings_page() {
 
 	if ( isset( $_POST['fettle_save_settings'] ) && check_admin_referer( 'fettle_save_settings' ) ) {
 		$provider = isset( $_POST['fettle_active_provider'] ) ? sanitize_key( wp_unslash( $_POST['fettle_active_provider'] ) ) : 'gemini';
-		if ( in_array( $provider, fettle_ai_providers(), true ) ) {
+		if ( in_array( $provider, fettle_selectable_providers(), true ) ) {
 			update_option( FETTLE_AI_PROVIDER_OPTION, $provider, false );
 		}
 
@@ -131,7 +132,7 @@ function fettle_render_settings_page() {
 			<div class="notice notice-<?php echo esc_attr( $notice_type ); ?>"><p><?php echo esc_html( $notice ); ?></p></div>
 		<?php endif; ?>
 
-		<p><?php esc_html_e( 'Fettle uses your own API key with an AI provider to suggest alt text for images. No key, no external call is ever made - the rule-based checks on the main Fettle page work regardless.', 'fettle' ); ?></p>
+		<p><?php esc_html_e( 'Fettle uses an AI provider to suggest fixes - either the one configured for the whole site in WordPress (Settings > Connectors), or your own API key entered below. With neither, no external call is ever made - the rule-based checks on the main Fettle page work regardless.', 'fettle' ); ?></p>
 
 		<form method="post">
 			<?php wp_nonce_field( 'fettle_save_settings' ); ?>
@@ -141,7 +142,7 @@ function fettle_render_settings_page() {
 					<th scope="row"><label for="fettle_active_provider"><?php esc_html_e( 'Active provider', 'fettle' ); ?></label></th>
 					<td>
 						<select name="fettle_active_provider" id="fettle-provider-select">
-							<?php foreach ( fettle_ai_providers() as $provider_slug ) : ?>
+							<?php foreach ( fettle_selectable_providers() as $provider_slug ) : ?>
 								<option value="<?php echo esc_attr( $provider_slug ); ?>" <?php selected( $active_provider, $provider_slug ); ?>>
 									<?php echo esc_html( fettle_ai_provider_label( $provider_slug ) ); ?>
 								</option>
@@ -150,6 +151,29 @@ function fettle_render_settings_page() {
 						<p class="description"><?php esc_html_e( 'Only the selected provider is used - its fields below are the ones that matter.', 'fettle' ); ?></p>
 					</td>
 				</tr>
+
+				<?php if ( fettle_wp_ai_available() ) : ?>
+					<tr class="fettle-provider-row fettle-provider-row-<?php echo esc_attr( FETTLE_WP_AI_PROVIDER ); ?>" style="display:none;">
+						<th scope="row"><?php esc_html_e( 'Connector', 'fettle' ); ?></th>
+						<td>
+							<p class="description">
+								<?php
+								printf(
+									wp_kses(
+										/* translators: %s: URL to the WordPress Connectors settings screen */
+										__( 'Uses whichever AI provider is configured for this site under <a href="%s">Settings &gt; Connectors</a>. Fettle stores no key of its own for it. Alt-text suggestions need a connector whose model accepts images.', 'fettle' ),
+										array( 'a' => array( 'href' => true ) )
+									),
+									esc_url( admin_url( 'options-connectors.php' ) )
+								);
+								?>
+							</p>
+							<p class="description">
+								<?php echo fettle_wp_ai_is_ready() ? esc_html__( 'A connector is configured.', 'fettle' ) : esc_html__( 'No connector is configured yet.', 'fettle' ); ?>
+							</p>
+						</td>
+					</tr>
+				<?php endif; ?>
 
 				<?php foreach ( fettle_ai_providers() as $provider_slug ) : ?>
 					<tr class="fettle-provider-row fettle-provider-row-<?php echo esc_attr( $provider_slug ); ?>" style="display:none;">
@@ -207,7 +231,7 @@ function fettle_render_settings_page() {
 
 		<?php if ( fettle_ai_is_configured() ) : ?>
 			<h2><?php esc_html_e( 'Test connection', 'fettle' ); ?></h2>
-			<p><?php esc_html_e( 'Sends one minimal, text-only request to the active provider to confirm the key and model work. This is the only thing on this page that makes a live API call.', 'fettle' ); ?></p>
+			<p><?php esc_html_e( 'Sends one minimal, text-only request to the active provider to confirm it works. This is the only thing on this page that sends a prompt to a provider.', 'fettle' ); ?></p>
 			<form method="post">
 				<?php wp_nonce_field( 'fettle_test_connection' ); ?>
 				<button type="submit" name="fettle_test_connection" value="1" class="button">

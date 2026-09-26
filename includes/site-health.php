@@ -54,12 +54,20 @@ function fettle_test_ai_provider() {
 		return fettle_health_result(
 			__( 'Fettle has no AI provider configured', 'fettle' ),
 			'recommended',
-			__( 'The rule-based accessibility checks work without this, but AI-suggested fixes (like alt text) need an API key for one provider.', 'fettle' )
+			__( 'The rule-based accessibility checks work without this, but AI-suggested fixes (like alt text) need an AI connector (Settings > Connectors) or an API key for one provider.', 'fettle' )
 		);
 	}
 
 	$provider = fettle_get_current_provider();
 	$model    = fettle_get_model_for_provider( $provider );
+
+	if ( FETTLE_WP_AI_PROVIDER === $provider ) {
+		return fettle_health_result(
+			__( 'Fettle is configured to use WordPress AI', 'fettle' ),
+			'good',
+			__( 'AI-suggested fixes go through the provider configured under Settings > Connectors. This does not confirm it actually works - use "Test connection" on the Fettle settings page for that.', 'fettle' )
+		);
+	}
 
 	return fettle_health_result(
 		sprintf(

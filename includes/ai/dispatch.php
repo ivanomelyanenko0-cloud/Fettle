@@ -15,6 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 require_once __DIR__ . '/providers/gemini.php';
 require_once __DIR__ . '/providers/openai-compatible.php';
 require_once __DIR__ . '/providers/anthropic.php';
+require_once __DIR__ . '/providers/wp-ai-client.php';
 
 /**
  * @param string $provider  Provider slug.
@@ -74,11 +75,15 @@ function fettle_ai_error_from_response( $provider, $http_code, $response_body, $
  * @param array|null $image    null for text-only, or array{
  *                                  base64?: string, url?: string, mime: string
  *                              } - exactly one of base64/url should be set.
- * @param string     $api_key  Raw API key for that provider.
+ * @param string     $api_key  Raw API key for that provider (unused for the WordPress AI Client).
  * @param array      $options  ['timeout' => 60].
  * @return string|WP_Error Raw text response on success, WP_Error on failure.
  */
 function fettle_ai_call_vision( $provider, $model, $prompt, $image, $api_key, $options = array() ) {
+	if ( FETTLE_WP_AI_PROVIDER === $provider ) {
+		return fettle_ai_call_vision_wp_ai( $prompt, $image, $options );
+	}
+
 	if ( '' === trim( (string) $api_key ) ) {
 		return new WP_Error( 'fettle_ai_no_key', __( 'No API key configured for this provider.', 'fettle' ) );
 	}
