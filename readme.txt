@@ -143,11 +143,11 @@ Not in this version. Fettle currently checks Gutenberg block content and classic
  
 1. Scan results: a plain-language digest at the top, then per-finding rows with severity, an explanation, and one-click actions.
 2. An AI-suggested fix, generated and shown for review before you decide to apply or discard it.
-3. Findings list showing the Apply / Discard / Not an issue actions for contrast, link text, and missing alt text.
+3. Findings across several posts: review a suggestion, generate a new one, or mark a result as "Not an issue".
 4. Theme landmarks check: results for the active theme's front page (main content area, navigation, footer regions).
 5. Settings page: use the AI provider set up under Settings > Connectors, or pick one and paste your own API key - nothing is sent until you explicitly generate a fix.
 6. Site Health: shows which AI provider is configured, without making a live API call.
-7. Site Health "Test connection": an explicit, one-off check that your configured API key actually works.
+7. "Test connection" on the settings page: an explicit, one-off check that your configured AI provider actually works.
  
 == Changelog ==
  
