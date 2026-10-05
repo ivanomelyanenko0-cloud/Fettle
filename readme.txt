@@ -14,12 +14,12 @@ Find the accessibility problems in your posts and pages, then fix them in the co
  
 Most accessibility plugins bolt a JavaScript widget onto your front end and patch the page every time someone loads it. Your actual content stays exactly as broken as it was.
  
-**Fettle works the other way around.** It reads your posts and pages from the admin side, tells you in plain language exactly what's wrong, and when you decide to fix something, the fix goes into the post itself. Nothing is added to your front end and nothing runs for your visitors, so your pages load exactly as fast as before.
+**Fettle works the other way around.** It reads your published posts and pages from the admin side, tells you in plain language exactly what's wrong, and when you decide to fix something, the fix goes into the post itself. Nothing is added to your front end and nothing runs for your visitors, so your pages load exactly as fast as before.
  
 = What Fettle checks =
  
 * **Missing alt text** – finds images with no alt attribute at all. Images you deliberately marked as decorative (`alt=""`) are respected, not flagged.
-* **Colour contrast** – uses the standard W3C relative-luminance formula and resolves colours from your active theme's palette (theme.json), so results reflect what visitors actually see rather than a guess.
+* **Colour contrast** – uses the standard W3C relative-luminance formula on blocks where both the text colour and the background colour are set, including colours picked from your theme's palette (theme.json). Blocks with only one of the two set, or with a gradient or image background, are skipped rather than guessed at.
 * **Heading order** – catches skipped levels, multiple H1s and empty headings that break screen reader navigation.
 * **Form labels** – flags `<input>`, `<select>` and `<textarea>` fields that a screen reader can't name.
 * **Link text** – spots "click here", bare URLs and other link text that doesn't say where the link goes.
@@ -58,7 +58,7 @@ No automated tool can certify a website against WCAG, and Fettle never pretends 
  
 Every check in this plugin works entirely locally and sends nothing anywhere. The one exception, and it is entirely optional, is the AI-suggested fix feature: clicking "Generate AI fix" on a specific finding sends that finding's data to the AI provider you configured, to receive a suggestion back. That provider is either the one set up for your whole site in WordPress under Settings > Connectors (WordPress 7.0+; the request then goes through WordPress's own AI Client, to whichever service that connector uses, under that service's terms), or – if you add your own API key in Fettle's settings – Gemini, Claude, OpenAI, Grok, or OpenRouter, called directly.
  
-* For a missing-alt-text finding, that one image - and, for a published public page, its public URL - is sent. For a draft, private, or password-protected post, the image is read from your server and sent directly instead, so its URL is never transmitted.
+* For a missing-alt-text finding, that one image - and, for a published public page, its public URL - is sent, together with up to 300 characters of the paragraph that follows the image in the post, so the suggestion fits its context. For a password-protected post, the image is read from your server and sent directly instead, so its URL is never transmitted.
 * For a contrast finding, only the two colour hex codes involved (background and failing text colour) are sent - no image, no content.
 * For a link-text finding, only the link's current visible text and its destination URL are sent - no image, no other page content.
  
@@ -131,6 +131,10 @@ Never. A suggestion is only generated when you click "Generate AI fix", and it i
  
 Only the data for the one finding you clicked – see the External services section above for the full breakdown.
  
+= Which content does Fettle check? =
+ 
+Published posts and pages. Drafts, private posts and other post types (such as WooCommerce products) are not scanned in this version.
+ 
 = Does this work with page builders like Elementor or Divi? =
  
 Not in this version. Fettle currently checks Gutenberg block content and classic-editor HTML. Page builder support is planned.
@@ -141,7 +145,7 @@ Not in this version. Fettle currently checks Gutenberg block content and classic
 2. An AI-suggested fix, generated and shown for review before you decide to apply or discard it.
 3. Findings list showing the Apply / Discard / Not an issue actions for contrast, link text, and missing alt text.
 4. Theme landmarks check: results for the active theme's front page (main content area, navigation, footer regions).
-5. Settings page: pick an AI provider and paste your own API key - nothing is sent until you explicitly generate a fix.
+5. Settings page: use the AI provider set up under Settings > Connectors, or pick one and paste your own API key - nothing is sent until you explicitly generate a fix.
 6. Site Health: shows which AI provider is configured, without making a live API call.
 7. Site Health "Test connection": an explicit, one-off check that your configured API key actually works.
  
