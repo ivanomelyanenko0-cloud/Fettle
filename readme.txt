@@ -12,9 +12,25 @@ Find the accessibility problems in your posts and pages, then fix them in the co
  
 == Description ==
  
-Most accessibility plugins bolt a JavaScript widget onto your front end and patch the page every time someone loads it. Your actual content stays exactly as broken as it was.
+**Accessibility problems live in your content – so that's where Fettle fixes them.**
  
-**Fettle works the other way around.** It reads your published posts and pages from the admin side, tells you in plain language exactly what's wrong, and when you decide to fix something, the fix goes into the post itself. Nothing is added to your front end and nothing runs for your visitors, so your pages load exactly as fast as before.
+Most accessibility plugins bolt a JavaScript widget onto your front end and patch the page every time someone loads it. Your actual content stays exactly as broken as it was, and overlay widgets are widely criticised by accessibility practitioners for exactly that reason.
+ 
+**Fettle works the other way around.** It reads your published posts and pages from the admin side, tells you in plain language exactly what's wrong and why it matters, and when you decide to fix something, the fix goes into the post itself. Nothing is added to your front end and nothing runs for your visitors, so your pages load exactly as fast as before.
+ 
+**[Visit the Fettle plugin page](https://cognitolab.net/products/fettle)** – screenshots, a feature-by-feature comparison of Free and Pro, and a live demo you can try in your browser without installing anything.
+ 
+= Why site owners choose Fettle =
+ 
+* **Real fixes, not a mask.** Every fix is written into your content – where screen readers, search engines and every visitor actually meet it – instead of being patched over on each page load.
+* **Minutes, not an audit project.** Install, click "Scan now" and get a plain-language list of what to fix first. No account, no API key, no setup.
+* **AI does the tedious part.** Alt text, a passing text colour or clearer link text, drafted in one click – and you review every suggestion before it touches your content.
+* **Nothing on your front end.** No widget, no script, no slowdown.
+* **Honest results.** Fettle tells you exactly which rules it checked and what it found. It never pretends a scan alone settles accessibility.
+ 
+= Try it in your browser first =
+ 
+Not ready to install on a real site? **[Open the live demo](https://founder.cognitolab.net/fettle-demo/index.html)** – a complete WordPress site running right in your browser, with sample pages full of real accessibility issues for you to scan, review and fix. Nothing to install, nothing to clean up afterwards.
  
 = What Fettle checks =
  
@@ -39,6 +55,17 @@ On WordPress 7.0 or later, Fettle can use the AI provider you've already set up 
 Some fixes don't need AI at all: marking an image whose alt text repeats nearby text as decorative, or reusing the alt text already saved for an image in your Media Library. They go through the same preview-and-confirm steps.
 
 Every suggestion is shown to you first. You apply it or discard it – nothing is ever changed automatically, and none of your content is sent until you click the button for that specific finding.
+ 
+= Need it across the whole site? Meet Fettle Pro =
+ 
+Free Fettle fixes one finding at a time, which is perfect for a small site. **[Fettle Pro](https://cognitolab.net/products/fettle)** is built for sites with hundreds of pages, and for agencies and freelancers looking after many of them:
+ 
+* **Bulk AI-fix review** – suggestions for every fixable finding are generated in the background (safe to close the browser), then one screen lets you tick and apply as many as you like. Nothing is applied without that review.
+* **Scheduled rescans with regression alerts** – weekly or monthly, and an email only when something genuinely new turns up, like a later edit that stripped an image's alt text. Never a repeat notice for something you already know about.
+* **Scan history and trends** – see whether each page, and the site as a whole, is getting better or worse over time.
+* **Accessibility audit summary** – a printable report organised by WCAG 2.1 success criteria, citing the actual findings behind each one. Ready to hand to a client or a manager. (An automated summary in a VPAT-inspired format – not an official VPAT, which needs expert manual review.)
+ 
+Fettle Pro comes with a **7-day free trial, no card required**. [Try the Pro demo](https://founder.cognitolab.net/fettle-pro-demo/index.html) or **[explore Fettle Pro and start your trial](https://cognitolab.net/products/fettle)**.
  
 = Built to stay out of your way =
  
@@ -141,6 +168,14 @@ No. Whether an image carries meaning is a judgement about your content, and a sc
 
 A table's structure lives in the block itself, and rewriting it from outside the editor risks breaking the block. Each table finding tells you exactly where to fix it instead – for a Table block, that is one "Header section" toggle in its settings.
 
+= What's the difference between Fettle and Fettle Pro? =
+ 
+Free Fettle runs every check and lets you fix findings one at a time, with or without AI. Fettle Pro adds bulk AI-fix review, scheduled rescans with regression-only email alerts, scan history and trends, and a printable WCAG 2.1 audit summary. See the full comparison and pricing on the [Fettle plugin page](https://cognitolab.net/products/fettle).
+ 
+= Can I try Fettle before installing it? =
+ 
+Yes. The [live demo](https://founder.cognitolab.net/fettle-demo/index.html) runs a complete WordPress site with Fettle in your browser, with sample content ready to scan and fix. There is a [Pro demo](https://founder.cognitolab.net/fettle-pro-demo/index.html) too.
+ 
 = What exactly is sent to the AI provider? =
  
 Only the data for the one finding you clicked – see the External services section above for the full breakdown.
