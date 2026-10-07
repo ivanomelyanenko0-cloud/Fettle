@@ -13,19 +13,34 @@ if ( ! defined( 'ABSPATH' ) ) {
 define( 'FETTLE_SCAN_META_KEY', '_fettle_scan' );
 
 /**
- * The checks Fettle 1.0.0 runs, as { type => callable }. Filterable so a
- * future Pro release (or this plugin's own later versions) can add checks
- * without touching the engine itself.
+ * Bumped whenever the set of checks or what they detect changes. A cached
+ * scan from an older ruleset is treated as stale even when the post's
+ * content hasn't changed - otherwise a plugin update's new checks would
+ * never run on existing posts until someone happened to edit them.
+ * Fettle Pro reads it too, to tell a ruleset change apart from a real
+ * regression.
+ */
+define( 'FETTLE_RULESET_VERSION', 2 );
+
+/**
+ * The checks Fettle runs, as { type => callable }. Each check returns
+ * findings of its own type key only. Filterable so a future Pro release (or
+ * this plugin's own later versions) can add checks without touching the
+ * engine itself.
  *
  * @return array<string, callable>
  */
 function fettle_get_registered_checks() {
 	$checks = array(
-		'contrast'      => 'fettle_check_contrast',
-		'heading-order' => 'fettle_check_heading_order',
-		'form-labels'   => 'fettle_check_form_labels',
-		'link-text'     => 'fettle_check_link_text',
-		'alt-text'      => 'fettle_check_alt_text',
+		'contrast'            => 'fettle_check_contrast',
+		'heading-order'       => 'fettle_check_heading_order',
+		'form-labels'         => 'fettle_check_form_labels',
+		'link-text'           => 'fettle_check_link_text',
+		'alt-text'            => 'fettle_check_alt_text',
+		'image-empty-alt'     => 'fettle_check_image_empty_alt',
+		'image-redundant-alt' => 'fettle_check_image_redundant_alt',
+		'image-alt-quality'   => 'fettle_check_image_alt_quality',
+		'table-headers'       => 'fettle_check_table_headers',
 	);
 
 	return apply_filters( 'fettle_checks', $checks );
@@ -52,6 +67,7 @@ function fettle_render_post_content( $post ) {
  * @param bool $force Bypass the content-hash cache.
  * @return array{
  *     hash: string,
+ *     ruleset: int,
  *     scanned_at: int,
  *     findings: array[],
  * }|WP_Error
@@ -65,7 +81,7 @@ function fettle_scan_post( $post_id, $force = false ) {
 	$hash  = md5( $post->post_content );
 	$cache = get_post_meta( $post_id, FETTLE_SCAN_META_KEY, true );
 
-	if ( ! $force && is_array( $cache ) && ( $cache['hash'] ?? '' ) === $hash ) {
+	if ( ! $force && is_array( $cache ) && ( $cache['hash'] ?? '' ) === $hash && (int) ( $cache['ruleset'] ?? 1 ) === FETTLE_RULESET_VERSION ) {
 		$result = $cache;
 	} else {
 		$html     = fettle_render_post_content( $post );
@@ -83,6 +99,7 @@ function fettle_scan_post( $post_id, $force = false ) {
 
 		$result = array(
 			'hash'       => $hash,
+			'ruleset'    => FETTLE_RULESET_VERSION,
 			'scanned_at' => time(),
 			'findings'   => $findings,
 		);

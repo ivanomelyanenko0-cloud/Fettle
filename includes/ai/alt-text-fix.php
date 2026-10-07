@@ -83,14 +83,33 @@ function fettle_get_image_reference_for_ai( $post_id, $src, $attachment_id ) {
 }
 
 /**
+ * The exact reply the alt-text prompt asks for when the model judges an
+ * image purely decorative.
+ */
+define( 'FETTLE_AI_DECORATIVE_REPLY', 'DECORATIVE' );
+
+/**
  * @param string $context_text Nearby paragraph text, or ''.
+ * @param string $link_href    When the image is the only content of a link,
+ *                             that link's URL - its alt text is then the
+ *                             link's name, and must describe the link.
  * @return string
  */
-function fettle_build_alt_text_prompt( $context_text ) {
-	$prompt = "Write concise, descriptive alt text for this image, for a screen reader user who cannot see it. "
-		. "One sentence, no more than 125 characters. Describe what is actually shown, not a guess at intent. "
-		. "Do not start with \"Image of\" or \"Picture of\" - a screen reader already announces it as an image. "
-		. 'Reply with only the alt text itself, nothing else.';
+function fettle_build_alt_text_prompt( $context_text, $link_href = '' ) {
+	if ( '' !== $link_href ) {
+		$prompt = "This image is the only content of a link, so its alt text is the only name screen reader users hear for that link. "
+			. "Write alt text that names where the link goes, in a few words a visitor would recognise - for example \"Meet our team\" or \"Shop women's shoes\". "
+			. "Use the link's URL and what the image shows to work out the destination. No more than 100 characters. "
+			. "Do not use the words \"link\", \"button\", \"image\" or \"picture\" - a screen reader already announces it as a link. "
+			. "The link points to: " . $link_href . " "
+			. 'Reply with only the alt text itself, nothing else.';
+	} else {
+		$prompt = "Write concise, descriptive alt text for this image, for a screen reader user who cannot see it. "
+			. "One sentence, no more than 125 characters. Describe what is actually shown, not a guess at intent. "
+			. "Do not start with \"Image of\" or \"Picture of\" - a screen reader already announces it as an image. "
+			. 'If the image is purely decorative - an ornament, divider, background texture or spacer that carries no information at all - reply with exactly the word ' . FETTLE_AI_DECORATIVE_REPLY . ' instead. Only do that when you are sure; if in doubt, describe it. '
+			. 'Otherwise reply with only the alt text itself, nothing else.';
+	}
 
 	if ( '' !== trim( $context_text ) ) {
 		$prompt .= "\n\nFor context, this is the text immediately next to the image on the page (use it to understand context, but describe the image itself, not the text): "
@@ -101,14 +120,34 @@ function fettle_build_alt_text_prompt( $context_text ) {
 }
 
 /**
+ * The suggestion shape for "make this image decorative": an empty alt, with
+ * a display text that says so plainly instead of showing an empty string.
+ *
+ * @param string $display
+ * @return array{value: string, display: string}
+ */
+function fettle_decorative_alt_suggestion( $display ) {
+	return array(
+		'value'   => '',
+		'display' => $display,
+	);
+}
+
+/**
  * Generates an alt-text suggestion for one finding. Does not apply
  * anything - the caller (admin-page.php) is responsible for the
  * preview/confirm step.
  *
+ * The model may judge the image purely decorative instead; that comes back
+ * as an empty-alt suggestion the admin confirms like any other. Never for an
+ * image that is a link's only content - a link always needs a name.
+ *
  * @param int   $post_id
- * @param array $finding A finding from fettle_check_alt_text(), i.e. has
- *                        'src', 'attachment_id', 'context_text'.
- * @return string|WP_Error Suggested alt text, or WP_Error.
+ * @param array $finding An image finding, i.e. has 'src', 'attachment_id',
+ *                       'context_text' and, for an image that names its
+ *                       link, 'link_href'.
+ * @return string|array|WP_Error Suggested alt text, an empty-alt suggestion
+ *                               from fettle_decorative_alt_suggestion(), or WP_Error.
  */
 function fettle_generate_alt_text_suggestion( $post_id, $finding ) {
 	if ( ! fettle_ai_is_configured() ) {
@@ -120,10 +159,11 @@ function fettle_generate_alt_text_suggestion( $post_id, $finding ) {
 		return $image;
 	}
 
-	$provider = fettle_get_current_provider();
-	$model    = fettle_get_model_for_provider( $provider );
-	$api_key  = fettle_get_api_key_for_provider( $provider );
-	$prompt   = fettle_build_alt_text_prompt( $finding['context_text'] ?? '' );
+	$link_href = (string) ( $finding['link_href'] ?? '' );
+	$provider  = fettle_get_current_provider();
+	$model     = fettle_get_model_for_provider( $provider );
+	$api_key   = fettle_get_api_key_for_provider( $provider );
+	$prompt    = fettle_build_alt_text_prompt( $finding['context_text'] ?? '', $link_href );
 
 	$result = fettle_ai_call_vision( $provider, $model, $prompt, $image, $api_key, array( 'max_tokens' => 200 ) );
 	if ( is_wp_error( $result ) ) {
@@ -137,7 +177,51 @@ function fettle_generate_alt_text_suggestion( $post_id, $finding ) {
 		return new WP_Error( 'fettle_ai_empty_response', __( 'The AI provider returned an empty suggestion.', 'fettle' ) );
 	}
 
+	if ( FETTLE_AI_DECORATIVE_REPLY === strtoupper( rtrim( $text, '.!' ) ) ) {
+		if ( '' !== $link_href ) {
+			return new WP_Error( 'fettle_ai_no_link_name', __( 'The AI could not suggest a name for this link. Write the alt text by hand in the editor.', 'fettle' ) );
+		}
+		return fettle_decorative_alt_suggestion( __( 'Empty alt (alt="") - the AI considers this image purely decorative.', 'fettle' ) );
+	}
+
 	return $text;
+}
+
+/**
+ * Suggestion for an image marked decorative that probably isn't: its own
+ * Media Library alt text when it has one - no AI call needed, and it's the
+ * text the site's own author already wrote for this image - otherwise an
+ * AI suggestion.
+ *
+ * @param int   $post_id
+ * @param array $finding An image-empty-alt finding.
+ * @return string|array|WP_Error
+ */
+function fettle_generate_empty_alt_suggestion( $post_id, $finding ) {
+	$library_alt = trim( (string) ( $finding['library_alt'] ?? '' ) );
+	if ( '' !== $library_alt ) {
+		return array(
+			'value'   => $library_alt,
+			/* translators: %s: alt text taken from the Media Library */
+			'display' => sprintf( __( '"%s" (from the Media Library)', 'fettle' ), $library_alt ),
+		);
+	}
+
+	return fettle_generate_alt_text_suggestion( $post_id, $finding );
+}
+
+/**
+ * Suggestion for an image whose alt only repeats nearby text (or
+ * contradicts role="presentation"): mark it decorative. Deterministic, no
+ * AI call.
+ *
+ * @param int   $post_id
+ * @param array $finding An image-redundant-alt finding.
+ * @return array{value: string, display: string}
+ */
+function fettle_generate_redundant_alt_suggestion( $post_id, $finding ) {
+	unset( $post_id, $finding );
+	return fettle_decorative_alt_suggestion( __( 'Empty alt (alt="") - mark this image as decorative, since the text next to it already says the same.', 'fettle' ) );
 }
 
 /**
@@ -189,7 +273,8 @@ function fettle_clear_pending_fix( $post_id, $instance_key ) {
  * specific <img> occurrence identified by instance_key, and - only if it
  * is currently unset, never overwriting a different existing value - the
  * attachment's own default alt text too, so later uses of the same image
- * benefit as well.
+ * benefit as well. An empty value (mark decorative) only touches this one
+ * occurrence: the same image can be decorative here and meaningful elsewhere.
  *
  * @param int    $post_id
  * @param string $instance_key
@@ -244,7 +329,7 @@ function fettle_apply_alt_text_fix( $post_id, $instance_key, $alt_text ) {
 		return $update;
 	}
 
-	if ( $attachment_id ) {
+	if ( $attachment_id && '' !== $alt_text ) {
 		$existing = get_post_meta( $attachment_id, '_wp_attachment_image_alt', true );
 		if ( '' === trim( (string) $existing ) ) {
 			update_post_meta( $attachment_id, '_wp_attachment_image_alt', $alt_text );

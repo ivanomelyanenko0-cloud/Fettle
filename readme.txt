@@ -3,7 +3,7 @@ Contributors: lukystile
 Tags: accessibility, accessibility checker, wcag, alt text, contrast checker
 Requires at least: 6.2
 Tested up to: 7.1
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -18,7 +18,10 @@ Most accessibility plugins bolt a JavaScript widget onto your front end and patc
  
 = What Fettle checks =
  
-* **Missing alt text** – finds images with no alt attribute at all. Images you deliberately marked as decorative (`alt=""`) are respected, not flagged.
+* **Missing alt text** – finds images with no alt attribute at all.
+* **Decorative or meaningful images** – an empty alt (`alt=""`) is the right way to mark a purely decorative image, and Fettle respects it – except where there is clear evidence the image carries meaning: it is the only content of a link (so the link has no name at all), or its Media Library entry has alt text. It also flags alt text that only repeats the text right next to it (the link's own text, or the image's caption), so screen readers don't read the same words twice.
+* **Meaningless alt text** – alt text that is really a file name (`IMG_2041.jpg`) or a placeholder like "image" or "photo".
+* **Table headers** – data tables with no header cells, a bold first row that only looks like a header, `headers` attributes that point nowhere, and two-way tables whose header cells don't say whether they head a row or a column.
 * **Colour contrast** – uses the standard W3C relative-luminance formula on blocks where both the text colour and the background colour are set, including colours picked from your theme's palette (theme.json). Blocks with only one of the two set, or with a gradient or image background, are skipped rather than guessed at.
 * **Heading order** – catches skipped levels, multiple H1s and empty headings that break screen reader navigation.
 * **Form labels** – flags `<input>`, `<select>` and `<textarea>` fields that a screen reader can't name.
@@ -29,10 +32,12 @@ Most accessibility plugins bolt a JavaScript widget onto your front end and patc
  
 On WordPress 7.0 or later, Fettle can use the AI provider you've already set up for your whole site under Settings > Connectors – no extra key needed. Or add your own API key for Gemini, Claude, OpenAI, Grok or OpenRouter. Either way, Fettle can suggest a fix for any single finding:
  
-* **Alt text** written from the image itself
+* **Alt text** written from the image itself – or, for an image that is purely decorative, a suggestion to mark it as such. For an image that is a link's only content, the alt text names where the link goes.
 * **A replacement text colour** that passes contrast against its background
 * **Descriptive link text** based on where the link actually points
  
+Some fixes don't need AI at all: marking an image whose alt text repeats nearby text as decorative, or reusing the alt text already saved for an image in your Media Library. They go through the same preview-and-confirm steps.
+
 Every suggestion is shown to you first. You apply it or discard it – nothing is ever changed automatically, and none of your content is sent until you click the button for that specific finding.
  
 = Built to stay out of your way =
@@ -58,7 +63,8 @@ No automated tool can certify a website against WCAG, and Fettle never pretends 
  
 Every check in this plugin works entirely locally and sends nothing anywhere. The one exception, and it is entirely optional, is the AI-suggested fix feature: clicking "Generate AI fix" on a specific finding sends that finding's data to the AI provider you configured, to receive a suggestion back. That provider is either the one set up for your whole site in WordPress under Settings > Connectors (WordPress 7.0+; the request then goes through WordPress's own AI Client, to whichever service that connector uses, under that service's terms), or – if you add your own API key in Fettle's settings – Gemini, Claude, OpenAI, Grok, or OpenRouter, called directly.
  
-* For a missing-alt-text finding, that one image - and, for a published public page, its public URL - is sent, together with up to 300 characters of the paragraph that follows the image in the post, so the suggestion fits its context. For a password-protected post, the image is read from your server and sent directly instead, so its URL is never transmitted.
+* For an alt-text finding (a missing alt, or alt text that is a file name or placeholder), that one image - and, for a published public page, its public URL - is sent, together with up to 300 characters of the paragraph that follows the image in the post, so the suggestion fits its context. If the image is the only content of a link, the link's destination URL is sent too, so the suggested alt text can name where the link goes. For a password-protected post, the image is read from your server and sent directly instead, so its URL is never transmitted.
+* "Mark as decorative" and "Use Media Library alt text" make no external request at all.
 * For a contrast finding, only the two colour hex codes involved (background and failing text colour) are sent - no image, no content.
 * For a link-text finding, only the link's current visible text and its destination URL are sent - no image, no other page content.
  
@@ -127,6 +133,14 @@ Fettle doesn't charge anything for them. You use your own AI provider account �
  
 Never. A suggestion is only generated when you click "Generate AI fix", and it is only written into your post when you click Apply.
  
+= Does Fettle decide which images are decorative? =
+
+No. Whether an image carries meaning is a judgement about your content, and a scanner can't make it reliably. Fettle only flags images where there is clear evidence one way or the other, and when an AI suggestion says an image looks purely decorative, that is still only a suggestion you can apply or discard. Images with ordinary-looking alt text are never second-guessed.
+
+= Why doesn't Fettle fix table headers for me? =
+
+A table's structure lives in the block itself, and rewriting it from outside the editor risks breaking the block. Each table finding tells you exactly where to fix it instead – for a Table block, that is one "Header section" toggle in its settings.
+
 = What exactly is sent to the AI provider? =
  
 Only the data for the one finding you clicked – see the External services section above for the full breakdown.
@@ -150,6 +164,16 @@ Not in this version. Fettle currently checks Gutenberg block content and classic
 7. "Test connection" on the settings page: an explicit, one-off check that your configured AI provider actually works.
  
 == Changelog ==
+
+= 1.1.0 =
+* New: decorative-vs-meaningful image checks – an empty alt on an image that is a link's only content or has Media Library alt text, and alt text that only repeats the link text or caption next to it.
+* New: alt text that is a file name or a placeholder ("IMG_2041.jpg", "image", "photo") is flagged.
+* New: table header checks – no header cells, a bold first row that only looks like a header, broken `headers` references, missing `scope` on two-way tables, empty header cells, and layout tables using data-table markup. Each finding includes how to fix it.
+* New: AI alt-text suggestions can say an image is purely decorative and propose an empty alt instead; for an image that is a link's only content, the suggestion names where the link goes.
+* New: "Mark as decorative" and "Use Media Library alt text" fixes that work without an AI provider.
+* Improved: the Check column shows a readable name for each check.
+* Improved: after a plugin update that adds checks, existing posts are rescanned automatically instead of waiting for their content to change.
+* Fixed: AI context for an image could come from the paragraph after an earlier image on the same page.
  
 = 1.0.0 =
 * First public release.

@@ -2,9 +2,11 @@
 /**
  * Admin page: a plain-language digest first, then per-post findings with a
  * "mark as false positive" action on each instance, plus a
- * one-issue-at-a-time AI-fix flow for alt-text, contrast, and link-text
- * findings (generate -> preview -> explicit Apply/Discard, never
- * auto-applied).
+ * one-issue-at-a-time fix flow for image, contrast, and link-text findings
+ * (generate -> preview -> explicit Apply/Discard, never auto-applied).
+ * Most fixes are AI-suggested; a few image fixes are deterministic (mark
+ * decorative, reuse the Media Library alt) and go through the same
+ * preview-and-confirm steps without an AI call.
  *
  * Synchronous scan-on-request and synchronous AI-fix generation for this
  * first pass, not the AJAX-batched pattern from IntelliDesc's duplicate
@@ -34,30 +36,102 @@ function fettle_register_admin_page() {
 add_action( 'admin_menu', 'fettle_register_admin_page' );
 
 /**
- * The three finding types with an AI-fix, and the pair of functions each
- * one plugs into the generate -> preview -> confirm flow below. Every
- * generate callback takes ( $post_id, $finding ) and returns a suggestion
- * (string, or array{color, used_fallback} for contrast) or WP_Error; every
- * apply callback takes ( $post_id, $instance_key, $value ) and returns
- * true-ish or WP_Error.
+ * The finding types with a fix, and the pair of functions each one plugs
+ * into the generate -> preview -> confirm flow below. Every generate
+ * callback takes ( $post_id, $finding ) and returns a suggestion (string,
+ * array{value, display}, or array{color, used_fallback} for contrast) or
+ * WP_Error; every apply callback takes ( $post_id, $instance_key, $value )
+ * and returns true-ish or WP_Error. Every image type applies through the
+ * same alt-attribute writer, since they all share one instance_key scheme.
  *
  * @return array<string, array{generate: callable, apply: callable}>
  */
 function fettle_ai_fix_registry() {
 	return array(
-		'alt-text'  => array(
+		'alt-text'            => array(
 			'generate' => 'fettle_generate_alt_text_suggestion',
 			'apply'    => 'fettle_apply_alt_text_fix',
 		),
-		'contrast'  => array(
+		'image-empty-alt'     => array(
+			'generate' => 'fettle_generate_empty_alt_suggestion',
+			'apply'    => 'fettle_apply_alt_text_fix',
+		),
+		'image-redundant-alt' => array(
+			'generate' => 'fettle_generate_redundant_alt_suggestion',
+			'apply'    => 'fettle_apply_alt_text_fix',
+		),
+		'image-alt-quality'   => array(
+			'generate' => 'fettle_generate_alt_text_suggestion',
+			'apply'    => 'fettle_apply_alt_text_fix',
+		),
+		'contrast'            => array(
 			'generate' => 'fettle_generate_contrast_suggestion',
 			'apply'    => 'fettle_apply_contrast_fix',
 		),
-		'link-text' => array(
+		'link-text'           => array(
 			'generate' => 'fettle_generate_link_text_suggestion',
 			'apply'    => 'fettle_apply_link_text_fix',
 		),
 	);
+}
+
+/**
+ * Whether generating a fix for this finding calls the AI provider. The
+ * deterministic fixes (mark decorative, reuse the Media Library alt) work
+ * without one.
+ *
+ * @param array $finding
+ * @return bool
+ */
+function fettle_fix_needs_ai( $finding ) {
+	$type = $finding['type'] ?? '';
+	if ( 'image-redundant-alt' === $type ) {
+		return false;
+	}
+	if ( 'image-empty-alt' === $type ) {
+		return '' === trim( (string) ( $finding['library_alt'] ?? '' ) );
+	}
+	return true;
+}
+
+/**
+ * @param array $finding
+ * @return string The label of the button that generates this finding's fix.
+ */
+function fettle_fix_button_label( $finding ) {
+	if ( 'image-redundant-alt' === ( $finding['type'] ?? '' ) ) {
+		return __( 'Mark as decorative', 'fettle' );
+	}
+	if ( ! fettle_fix_needs_ai( $finding ) ) {
+		return __( 'Use Media Library alt text', 'fettle' );
+	}
+	return __( 'Generate AI fix', 'fettle' );
+}
+
+/**
+ * @return string[] The finding types that are about one <img>.
+ */
+function fettle_image_finding_types() {
+	return array( 'alt-text', 'image-empty-alt', 'image-redundant-alt', 'image-alt-quality' );
+}
+
+/**
+ * @param string $type A finding type.
+ * @return string Short human-readable name for the Check column.
+ */
+function fettle_finding_type_label( $type ) {
+	$labels = array(
+		'contrast'            => __( 'Contrast', 'fettle' ),
+		'heading-order'       => __( 'Heading order', 'fettle' ),
+		'form-labels'         => __( 'Form labels', 'fettle' ),
+		'link-text'           => __( 'Link text', 'fettle' ),
+		'alt-text'            => __( 'Missing alt text', 'fettle' ),
+		'image-empty-alt'     => __( 'Image marked decorative', 'fettle' ),
+		'image-redundant-alt' => __( 'Repeated alt text', 'fettle' ),
+		'image-alt-quality'   => __( 'Alt text quality', 'fettle' ),
+		'table-headers'       => __( 'Table headers', 'fettle' ),
+	);
+	return $labels[ $type ] ?? $type;
 }
 
 /**
@@ -111,8 +185,9 @@ function fettle_find_finding_by_key( $result, $instance_key ) {
 /**
  * Normalises a generate callback's return value into { value, display } -
  * "value" is what the apply callback expects, "display" is what the admin
- * sees in the preview. Only contrast's generator returns the richer
- * array{color, used_fallback} shape today.
+ * sees in the preview. Contrast's generator returns array{color,
+ * used_fallback}; the image generators can return array{value, display}
+ * when the value alone wouldn't read well (an empty alt, a reused alt).
  *
  * @param string|array $suggestion
  * @return array{value: string, display: string}
@@ -124,6 +199,13 @@ function fettle_normalise_ai_suggestion( $suggestion ) {
 			$display .= ' ' . __( '(the AI\'s own suggestion did not actually pass verification, so this is a black/white fallback that reliably passes instead)', 'fettle' );
 		}
 		return array( 'value' => $suggestion['color'], 'display' => $display );
+	}
+
+	if ( is_array( $suggestion ) && array_key_exists( 'value', $suggestion ) ) {
+		return array(
+			'value'   => (string) $suggestion['value'],
+			'display' => (string) ( $suggestion['display'] ?? $suggestion['value'] ),
+		);
 	}
 
 	return array( 'value' => (string) $suggestion, 'display' => (string) $suggestion );
@@ -351,12 +433,19 @@ function fettle_render_admin_page() {
 							?>
 							<tr>
 								<td><strong><?php echo esc_html( 'critical' === ( $finding['severity'] ?? '' ) ? __( 'Critical', 'fettle' ) : __( 'Warning', 'fettle' ) ); ?></strong></td>
-								<td><code><?php echo esc_html( $fix_type ); ?></code></td>
+								<td><?php echo esc_html( fettle_finding_type_label( $fix_type ) ); ?><br /><code style="font-size: 0.85em;"><?php echo esc_html( $fix_type ); ?></code></td>
 								<td>
 									<?php echo esc_html( $finding['message'] ?? '' ); ?>
 
-									<?php if ( 'alt-text' === $fix_type && ! empty( $finding['src'] ) ) : ?>
+									<?php if ( ! empty( $finding['hint'] ) ) : ?>
+										<br /><em><?php esc_html_e( 'How to fix:', 'fettle' ); ?></em> <?php echo esc_html( $finding['hint'] ); ?>
+									<?php endif; ?>
+
+									<?php if ( in_array( $fix_type, fettle_image_finding_types(), true ) && ! empty( $finding['src'] ) ) : ?>
 										<br /><img src="<?php echo esc_url( $finding['src'] ); ?>" alt="" style="max-width: 80px; max-height: 60px; margin-top: 0.5em;" />
+										<?php if ( ! empty( $finding['link_href'] ) ) : ?>
+											<br /><?php esc_html_e( 'Links to:', 'fettle' ); ?> <code style="font-size: 0.9em;"><?php echo esc_html( $finding['link_href'] ); ?></code>
+										<?php endif; ?>
 									<?php elseif ( 'contrast' === $fix_type && ! empty( $finding['bg_hex'] ) ) : ?>
 										<br />
 										<span style="display: inline-block; padding: 0.3em 0.6em; margin-top: 0.5em; background: <?php echo esc_attr( $finding['bg_hex'] ); ?>; color: <?php echo esc_attr( $finding['text_hex'] ); ?>;">
@@ -369,7 +458,11 @@ function fettle_render_admin_page() {
 									<?php if ( is_array( $decoded ) ) : ?>
 										<p style="margin-top: 0.5em;">
 											<strong><?php esc_html_e( 'Suggestion:', 'fettle' ); ?></strong>
-											"<?php echo esc_html( $decoded['display'] ?? '' ); ?>"
+											<?php if ( ( $decoded['display'] ?? '' ) !== ( $decoded['value'] ?? '' ) ) : // A display text of its own (an empty alt, a reused alt) is already phrased for reading, not quoted as-is. ?>
+												<?php echo esc_html( $decoded['display'] ?? '' ); ?>
+											<?php else : ?>
+												"<?php echo esc_html( $decoded['display'] ?? '' ); ?>"
+											<?php endif; ?>
 											<?php if ( 'contrast' === $fix_type && ! empty( $finding['bg_hex'] ) && ! empty( $decoded['value'] ) ) : ?>
 												<br />
 												<span style="display: inline-block; padding: 0.3em 0.6em; margin-top: 0.3em; background: <?php echo esc_attr( $finding['bg_hex'] ); ?>; color: <?php echo esc_attr( $decoded['value'] ); ?>;">
@@ -398,13 +491,13 @@ function fettle_render_admin_page() {
 													<?php esc_html_e( 'Discard', 'fettle' ); ?>
 												</button>
 											</form>
-										<?php elseif ( fettle_ai_is_configured() ) : ?>
+										<?php elseif ( ! fettle_fix_needs_ai( $finding ) || fettle_ai_is_configured() ) : ?>
 											<form method="post" style="display: inline-block; margin-right: 0.3em;">
 												<?php wp_nonce_field( 'fettle_generate_fix' ); ?>
 												<input type="hidden" name="post_id" value="<?php echo esc_attr( $post_id ); ?>" />
 												<input type="hidden" name="instance_key" value="<?php echo esc_attr( $finding['instance_key'] ); ?>" />
 												<button type="submit" name="fettle_generate_fix" value="1" class="button button-small">
-													<?php esc_html_e( 'Generate AI fix', 'fettle' ); ?>
+													<?php echo esc_html( fettle_fix_button_label( $finding ) ); ?>
 												</button>
 											</form>
 										<?php endif; ?>

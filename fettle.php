@@ -3,7 +3,7 @@
  * Plugin Name:       Fettle
  * Plugin URI:        https://cognitolab.net/products/fettle
  * Description:       Accessibility audit and one-at-a-time AI-assisted remediation: real WCAG 2.1 AA checks, not another overlay widget.
- * Version:           1.0.0
+ * Version:           1.1.0
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            CognitoLab
@@ -15,17 +15,18 @@
  *
  * Every internal identifier lives behind the FETTLE_/fettle_ prefix below.
  *
- * This is the full Free 1.0.0 scope - the rule-based audit engine
- * (contrast, heading order, form labels, link text, theme landmarks) plus
- * the one-at-a-time AI-suggested alt-text/contrast/link-text fix flow,
- * always previewed and explicitly confirmed before anything is applied.
+ * The rule-based audit engine (contrast, heading order, form labels, link
+ * text, images - missing, misused or meaningless alt text - table headers,
+ * theme landmarks) plus the one-at-a-time fix flow for image, contrast and
+ * link-text findings, always previewed and explicitly confirmed before
+ * anything is applied.
  */
 
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'FETTLE_VERSION', '1.0.0' );
+define( 'FETTLE_VERSION', '1.1.0' );
 define( 'FETTLE_PLUGIN_FILE', __FILE__ );
 define( 'FETTLE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FETTLE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -44,7 +45,10 @@ require_once FETTLE_PLUGIN_DIR . 'includes/checks/contrast.php';
 require_once FETTLE_PLUGIN_DIR . 'includes/checks/heading-order.php';
 require_once FETTLE_PLUGIN_DIR . 'includes/checks/form-labels.php';
 require_once FETTLE_PLUGIN_DIR . 'includes/checks/link-text.php';
+require_once FETTLE_PLUGIN_DIR . 'includes/checks/image-scan.php';
 require_once FETTLE_PLUGIN_DIR . 'includes/checks/alt-text.php';
+require_once FETTLE_PLUGIN_DIR . 'includes/checks/image-alt.php';
+require_once FETTLE_PLUGIN_DIR . 'includes/checks/table-headers.php';
 require_once FETTLE_PLUGIN_DIR . 'includes/checks/aria-landmarks.php';
 require_once FETTLE_PLUGIN_DIR . 'includes/scan-engine.php';
 require_once FETTLE_PLUGIN_DIR . 'includes/admin-page.php';
