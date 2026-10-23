@@ -375,6 +375,11 @@ function fettle_render_admin_page() {
 			<button type="submit" name="fettle_scan" value="1" class="button button-primary">
 				<?php esc_html_e( 'Scan now', 'fettle' ); ?>
 			</button>
+			<?php if ( $summary['total'] > 0 ) : ?>
+				<a class="button" style="margin-left: 0.5em;" href="<?php echo esc_url( wp_nonce_url( admin_url( 'admin-post.php?action=fettle_export_csv' ), 'fettle_export_csv' ) ); ?>">
+					<?php esc_html_e( 'Download the list as CSV', 'fettle' ); ?>
+				</a>
+			<?php endif; ?>
 		</form>
 
 		<h2><?php esc_html_e( 'Theme landmarks', 'fettle' ); ?></h2>

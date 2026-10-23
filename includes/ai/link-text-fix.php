@@ -19,16 +19,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * @param string $current_text Current (unhelpful) link text.
  * @param string $href         The link's destination URL.
+ * @param string $language     Language instruction from
+ *                             fettle_ai_language_instruction(), or ''.
  * @return string
  */
-function fettle_build_link_text_prompt( $current_text, $href ) {
-	return sprintf(
-		'A hyperlink\'s visible text does not describe where it goes, which is an accessibility problem (screen reader users often navigate by a list of link text alone). '
-			. "Current link text: \"%s\". The link's destination URL: %s. "
-			. 'Suggest a short, specific replacement (3-6 words) that describes the destination, inferring what it likely is from the URL. '
-			. 'Reply with only the replacement text itself, nothing else, no quotes.',
-		$current_text,
-		$href
+function fettle_build_link_text_prompt( $current_text, $href, $language = '' ) {
+	return trim(
+		sprintf(
+			'A hyperlink\'s visible text does not describe where it goes, which is an accessibility problem (screen reader users often navigate by a list of link text alone). '
+				. "Current link text: \"%s\". The link's destination URL: %s. "
+				. 'Suggest a short, specific replacement (3-6 words) that describes the destination, inferring what it likely is from the URL. '
+				. 'Reply with only the replacement text itself, nothing else, no quotes. %s',
+			$current_text,
+			$href,
+			$language
+		)
 	);
 }
 
@@ -43,7 +48,7 @@ function fettle_generate_link_text_suggestion( $post_id, $finding ) {
 	}
 
 	$provider = fettle_get_current_provider();
-	$prompt   = fettle_build_link_text_prompt( $finding['link_text'] ?? '', $finding['href'] ?? '' );
+	$prompt   = fettle_build_link_text_prompt( $finding['link_text'] ?? '', $finding['href'] ?? '', fettle_ai_language_instruction( $post_id ) );
 
 	$response = fettle_ai_call_vision( $provider, fettle_get_model_for_provider( $provider ), $prompt, null, fettle_get_api_key_for_provider( $provider ), array( 'max_tokens' => 40 ) );
 	if ( is_wp_error( $response ) ) {

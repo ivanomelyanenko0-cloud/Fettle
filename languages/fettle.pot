@@ -1,0 +1,710 @@
+# Copyright (C) 2026 CognitoLab
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Fettle 1.2.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/fettle\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-10-23T19:42:24+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.7.1\n"
+"X-Domain: fettle\n"
+
+#. Plugin Name of the plugin
+#: includes/admin-page.php:27
+#: includes/admin-page.php:28
+#: includes/admin-page.php:330
+#: includes/site-health.php:39
+msgid "Fettle"
+msgstr ""
+
+#. Plugin URI of the plugin
+msgid "https://cognitolab.net/products/fettle"
+msgstr ""
+
+#. Description of the plugin
+msgid "Accessibility audit and one-at-a-time AI-assisted remediation: real WCAG 2.1 AA checks, not another overlay widget."
+msgstr ""
+
+#. Author of the plugin
+msgid "CognitoLab"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://cognitolab.net"
+msgstr ""
+
+#: includes/admin-page.php:103
+msgid "Mark as decorative"
+msgstr ""
+
+#: includes/admin-page.php:106
+msgid "Use Media Library alt text"
+msgstr ""
+
+#: includes/admin-page.php:108
+msgid "Generate AI fix"
+msgstr ""
+
+#: includes/admin-page.php:124
+msgid "Contrast"
+msgstr ""
+
+#: includes/admin-page.php:125
+msgid "Heading order"
+msgstr ""
+
+#: includes/admin-page.php:126
+msgid "Form labels"
+msgstr ""
+
+#: includes/admin-page.php:127
+msgid "Link text"
+msgstr ""
+
+#: includes/admin-page.php:128
+msgid "Missing alt text"
+msgstr ""
+
+#: includes/admin-page.php:129
+msgid "Image marked decorative"
+msgstr ""
+
+#: includes/admin-page.php:130
+msgid "Repeated alt text"
+msgstr ""
+
+#: includes/admin-page.php:131
+msgid "Alt text quality"
+msgstr ""
+
+#: includes/admin-page.php:132
+msgid "Table headers"
+msgstr ""
+
+#: includes/admin-page.php:199
+msgid "(the AI's own suggestion did not actually pass verification, so this is a black/white fallback that reliably passes instead)"
+msgstr ""
+
+#: includes/admin-page.php:225
+msgid "Scan complete."
+msgstr ""
+
+#: includes/admin-page.php:232
+#: includes/admin-page.php:244
+#: includes/admin-page.php:270
+#: includes/admin-page.php:294
+msgid "Sorry, you are not allowed to edit this post."
+msgstr ""
+
+#: includes/admin-page.php:236
+msgid "Marked as a false positive."
+msgstr ""
+
+#: includes/admin-page.php:251
+msgid "Could not find that issue - try scanning again."
+msgstr ""
+
+#: includes/admin-page.php:261
+msgid "Suggestion generated - review it below before applying."
+msgstr ""
+
+#: includes/admin-page.php:276
+msgid "That suggestion expired - generate it again."
+msgstr ""
+
+#: includes/admin-page.php:285
+msgid "Fix applied."
+msgstr ""
+
+#: includes/admin-page.php:298
+msgid "Suggestion discarded."
+msgstr ""
+
+#: includes/admin-page.php:308
+msgid "Theme landmark check complete."
+msgstr ""
+
+#. translators: %s: URL to the Fettle AI settings page
+#: includes/admin-page.php:343
+msgid "No AI provider is configured yet, so AI-suggested fixes aren't available. <a href=\"%s\">Set up an AI provider</a> to enable them - the rule-based checks below work either way."
+msgstr ""
+
+#: includes/admin-page.php:355
+msgid "No accessibility issues found in the last scan of your published posts and pages."
+msgstr ""
+
+#. translators: 1: number of issues, 2: number of critical issues, 3: number of posts/pages affected
+#: includes/admin-page.php:360
+msgid "%1$d issues found (%2$d critical) across %3$d posts and pages."
+msgstr ""
+
+#: includes/admin-page.php:373
+msgid "Rescan everything, ignoring the cache"
+msgstr ""
+
+#: includes/admin-page.php:376
+msgid "Scan now"
+msgstr ""
+
+#: includes/admin-page.php:380
+msgid "Download the list as CSV"
+msgstr ""
+
+#: includes/admin-page.php:385
+msgid "Theme landmarks"
+msgstr ""
+
+#: includes/admin-page.php:386
+msgid "Checked once per active theme (not per post) - landmark regions like the main content area come from your theme's templates, not your post content."
+msgstr ""
+
+#: includes/admin-page.php:390
+msgid "No landmark issues found on the front page."
+msgstr ""
+
+#: includes/admin-page.php:394
+msgid "Critical:"
+msgstr ""
+
+#: includes/admin-page.php:394
+msgid "Warning:"
+msgstr ""
+
+#. translators: %s: human-readable time, e.g. "5 minutes ago"
+#: includes/admin-page.php:402
+msgid "Last checked %s ago."
+msgstr ""
+
+#: includes/admin-page.php:408
+msgid "Not checked yet for the current theme."
+msgstr ""
+
+#: includes/admin-page.php:413
+msgid "Check theme landmarks now"
+msgstr ""
+
+#: includes/admin-page.php:425
+#: includes/report.php:139
+msgid "Severity"
+msgstr ""
+
+#: includes/admin-page.php:426
+#: includes/report.php:136
+msgid "Check"
+msgstr ""
+
+#: includes/admin-page.php:427
+#: includes/report.php:140
+msgid "Issue"
+msgstr ""
+
+#: includes/admin-page.php:428
+msgid "Action"
+msgstr ""
+
+#: includes/admin-page.php:440
+msgid "Critical"
+msgstr ""
+
+#: includes/admin-page.php:440
+msgid "Warning"
+msgstr ""
+
+#: includes/admin-page.php:446
+msgid "How to fix:"
+msgstr ""
+
+#: includes/admin-page.php:452
+msgid "Links to:"
+msgstr ""
+
+#: includes/admin-page.php:457
+msgid "Sample text (current)"
+msgstr ""
+
+#: includes/admin-page.php:465
+msgid "Suggestion:"
+msgstr ""
+
+#: includes/admin-page.php:474
+msgid "Sample text (proposed)"
+msgstr ""
+
+#: includes/admin-page.php:488
+msgid "Apply"
+msgstr ""
+
+#: includes/admin-page.php:496
+msgid "Discard"
+msgstr ""
+
+#: includes/admin-page.php:516
+msgid "Not an issue"
+msgstr ""
+
+#: includes/ai/alt-text-fix.php:64
+msgid "This image is too large to send to an AI provider (over 8MB)."
+msgstr ""
+
+#: includes/ai/alt-text-fix.php:68
+msgid "Could not read the image file from disk."
+msgstr ""
+
+#: includes/ai/alt-text-fix.php:79
+msgid "This image has no readable source."
+msgstr ""
+
+#: includes/ai/alt-text-fix.php:163
+#: includes/ai/contrast-fix.php:81
+#: includes/ai/link-text-fix.php:47
+msgid "No AI provider is configured yet. Add an API key in Fettle settings."
+msgstr ""
+
+#: includes/ai/alt-text-fix.php:186
+#: includes/ai/link-text-fix.php:60
+msgid "The AI provider returned an empty suggestion."
+msgstr ""
+
+#: includes/ai/alt-text-fix.php:191
+msgid "The AI could not suggest a name for this link. Write the alt text by hand in the editor."
+msgstr ""
+
+#: includes/ai/alt-text-fix.php:193
+msgid "Empty alt (alt=\"\") - the AI considers this image purely decorative."
+msgstr ""
+
+#. translators: %s: alt text taken from the Media Library
+#: includes/ai/alt-text-fix.php:215
+msgid "\"%s\" (from the Media Library)"
+msgstr ""
+
+#: includes/ai/alt-text-fix.php:233
+msgid "Empty alt (alt=\"\") - mark this image as decorative, since the text next to it already says the same."
+msgstr ""
+
+#: includes/ai/alt-text-fix.php:296
+#: includes/ai/contrast-fix.php:147
+#: includes/ai/link-text-fix.php:80
+#: includes/scan-engine.php:78
+msgid "No post exists with that ID."
+msgstr ""
+
+#: includes/ai/alt-text-fix.php:299
+#: includes/ai/contrast-fix.php:150
+#: includes/ai/link-text-fix.php:83
+msgid "This WordPress version does not support the required HTML processor."
+msgstr ""
+
+#: includes/ai/alt-text-fix.php:326
+msgid "This image could not be found in the current content - it may have already changed since the last scan."
+msgstr ""
+
+#: includes/ai/contrast-fix.php:86
+msgid "This finding is missing colour data - try scanning again."
+msgstr ""
+
+#: includes/ai/contrast-fix.php:182
+msgid "This element could not be found in the current content - it may have already changed since the last scan."
+msgstr ""
+
+#. translators: %s: AI provider name (e.g. Gemini, Claude)
+#: includes/ai/dispatch.php:43
+msgid "Bad request to %s. The request may be malformed or the image too large."
+msgstr ""
+
+#. translators: %s: AI provider name (e.g. Gemini, Claude)
+#: includes/ai/dispatch.php:45
+msgid "Invalid %s API key. Check it in Fettle settings."
+msgstr ""
+
+#. translators: %s: AI provider name (e.g. Gemini, Claude)
+#: includes/ai/dispatch.php:47
+msgid "Access denied by %s. Check your account permissions/billing."
+msgstr ""
+
+#. translators: %s: AI provider name (e.g. Gemini, Claude)
+#: includes/ai/dispatch.php:49
+msgid "Model not found on %s. It may have been renamed or removed."
+msgstr ""
+
+#. translators: %s: AI provider name (e.g. Gemini, Claude)
+#: includes/ai/dispatch.php:51
+msgid "%s rate limit exceeded. Wait a moment and try again."
+msgstr ""
+
+#. translators: %s: AI provider name (e.g. Gemini, Claude)
+#: includes/ai/dispatch.php:53
+msgid "%s internal server error. Try again in a few moments."
+msgstr ""
+
+#. translators: %s: AI provider name (e.g. Gemini, Claude)
+#: includes/ai/dispatch.php:55
+msgid "%s is temporarily unavailable (overloaded or maintenance)."
+msgstr ""
+
+#. translators: 1: AI provider name, 2: HTTP status code
+#: includes/ai/dispatch.php:61
+msgid "%1$s returned an unexpected error (HTTP %2$d)."
+msgstr ""
+
+#: includes/ai/dispatch.php:88
+msgid "No API key configured for this provider."
+msgstr ""
+
+#: includes/ai/image-helpers.php:30
+msgid "No image data or URL was provided."
+msgstr ""
+
+#: includes/ai/image-helpers.php:45
+msgid "Could not fetch the image to send to the AI provider: "
+msgstr ""
+
+#: includes/ai/image-helpers.php:49
+msgid "Could not fetch the image to send to the AI provider (unexpected HTTP status)."
+msgstr ""
+
+#: includes/ai/image-helpers.php:54
+msgid "The fetched image was empty."
+msgstr ""
+
+#: includes/ai/link-text-fix.php:130
+msgid "This link could not be found in the current content - it may have already changed since the last scan."
+msgstr ""
+
+#: includes/ai/providers/anthropic.php:83
+#: includes/ai/providers/gemini.php:61
+#: includes/ai/providers/openai-compatible.php:82
+msgid "Connection failed: "
+msgstr ""
+
+#: includes/ai/providers/anthropic.php:103
+msgid "Unexpected API response structure from Claude."
+msgstr ""
+
+#: includes/ai/providers/gemini.php:74
+msgid "Gemini blocked the response due to safety filters."
+msgstr ""
+
+#: includes/ai/providers/gemini.php:76
+msgid "Unexpected API response structure from Gemini."
+msgstr ""
+
+#. translators: %s: AI provider name
+#: includes/ai/providers/openai-compatible.php:97
+msgid "Unexpected API response structure from %s."
+msgstr ""
+
+#: includes/ai/providers/wp-ai-client.php:20
+msgid "The WordPress AI Client is not available on this site."
+msgstr ""
+
+#: includes/ai/providers/wp-ai-client.php:46
+msgid "No AI connector configured under Settings > Connectors supports image input. Configure one that does, or pick a provider with your own API key in Fettle settings."
+msgstr ""
+
+#: includes/ai/providers/wp-ai-client.php:47
+msgid "No AI connector is configured under Settings > Connectors."
+msgstr ""
+
+#. translators: %s: error message from the WordPress AI Client
+#: includes/ai/providers/wp-ai-client.php:61
+msgid "WordPress AI request failed: %s"
+msgstr ""
+
+#: includes/ai/settings.php:152
+msgid "WordPress AI (Settings > Connectors)"
+msgstr ""
+
+#: includes/checks/alt-text.php:38
+msgid "Image has no alt attribute - screen reader users get no description of it at all."
+msgstr ""
+
+#: includes/checks/aria-landmarks.php:61
+msgid "No <main> landmark found on the front page - screen reader users have no quick way to skip to the main content."
+msgstr ""
+
+#. translators: %d: number of <main> elements found
+#: includes/checks/aria-landmarks.php:69
+msgid "%d <main> landmarks found on the front page - there should be exactly one."
+msgstr ""
+
+#: includes/checks/aria-landmarks.php:79
+msgid "No navigation landmark (<nav> or role=\"navigation\") found on the front page."
+msgstr ""
+
+#: includes/checks/aria-landmarks.php:87
+msgid "No footer landmark (<footer> or role=\"contentinfo\") found on the front page."
+msgstr ""
+
+#: includes/checks/aria-landmarks.php:95
+msgid "No banner landmark (<header> or role=\"banner\") found on the front page."
+msgstr ""
+
+#. translators: %d: HTTP status code
+#: includes/checks/aria-landmarks.php:142
+msgid "Unexpected response fetching the front page (HTTP %d)."
+msgstr ""
+
+#. translators: 1: measured contrast ratio, 2: required WCAG AA ratio
+#: includes/checks/contrast.php:314
+msgid "Text/background contrast is %1$s:1, below the %2$s:1 WCAG AA minimum."
+msgstr ""
+
+#. translators: %s: element tag, e.g. "input"
+#: includes/checks/form-labels.php:79
+msgid "A <%s> field has no associated label, aria-label, or aria-labelledby - screen reader users cannot tell what it is for."
+msgstr ""
+
+#. translators: %d: number of H1 headings found
+#: includes/checks/heading-order.php:75
+msgid "This content has %d H1 headings; a page should normally have one."
+msgstr ""
+
+#. translators: %s: heading tag, e.g. "H3"
+#: includes/checks/heading-order.php:90
+msgid "Empty %s heading - screen reader users hear nothing where a heading is announced."
+msgstr ""
+
+#. translators: 1: previous heading level e.g. "H2", 2: skipped-to heading level e.g. "H4"
+#: includes/checks/heading-order.php:103
+msgid "Heading level jumps from %1$s to %2$s, skipping a level."
+msgstr ""
+
+#: includes/checks/image-alt.php:102
+msgid "This image is the only content of a link, but its alt text is empty - so the link has no name, and screen readers announce just \"link\" or the raw URL."
+msgstr ""
+
+#. translators: %s: the image's alt text from the Media Library
+#: includes/checks/image-alt.php:123
+msgid "This image is marked as decorative (empty alt), but its Media Library entry has alt text (\"%s\") - it may carry meaning here too."
+msgstr ""
+
+#. translators: %s: the role attribute value, e.g. "presentation"
+#: includes/checks/image-alt.php:136
+msgid "This image has alt text but is also marked role=\"%s\" - the two contradict each other. If it is decorative, its alt should be empty."
+msgstr ""
+
+#. translators: %s: the image's current alt text
+#: includes/checks/image-alt.php:148
+msgid "The alt text \"%s\" is a file name, not a description of the image."
+msgstr ""
+
+#: includes/checks/image-alt.php:160
+msgid "The alt text repeats the link's own text, so screen readers read the same words twice."
+msgstr ""
+
+#: includes/checks/image-alt.php:168
+msgid "The alt text repeats the image's caption, so screen readers read the same words twice."
+msgstr ""
+
+#. translators: %s: the image's current alt text
+#: includes/checks/image-alt.php:178
+msgid "The alt text \"%s\" is a placeholder, not a description of the image."
+msgstr ""
+
+#: includes/checks/link-text.php:95
+msgid "Link text is a bare URL, which is hard to understand out of context when read aloud."
+msgstr ""
+
+#. translators: %s: the link's actual visible text
+#: includes/checks/link-text.php:98
+msgid "Link text \"%s\" does not describe where the link goes."
+msgstr ""
+
+#: includes/checks/table-headers.php:198
+msgid "This table is marked role=\"presentation\" (layout only) but uses data-table markup - header cells or a caption."
+msgstr ""
+
+#: includes/checks/table-headers.php:199
+msgid "If it holds data, remove role=\"presentation\". If it is only for layout, use regular <td> cells and no caption."
+msgstr ""
+
+#: includes/checks/table-headers.php:204
+msgid "In the block editor, select the table, open its block settings and turn on \"Header section\", then put the header text there. In a Custom HTML block, change the header cells from <td> to <th>."
+msgstr ""
+
+#: includes/checks/table-headers.php:222
+msgid "The first row of this table looks like a header (every cell is bold) but is marked up as ordinary cells, so screen readers don't treat it as one."
+msgstr ""
+
+#: includes/checks/table-headers.php:232
+msgid "This table has no header cells (<th>), so screen readers can't tell which column or row a value belongs to."
+msgstr ""
+
+#: includes/checks/table-headers.php:259
+msgid "A cell's headers attribute points to an id that doesn't exist in this table, so that cell is tied to no header at all."
+msgstr ""
+
+#: includes/checks/table-headers.php:260
+msgid "Every id listed in a cell's headers attribute must match the id of a header cell in the same table - correct or remove it in the table's HTML."
+msgstr ""
+
+#: includes/checks/table-headers.php:283
+msgid "This table has both column and row headers, but some header cells have no scope attribute - screen readers may pair values with the wrong header."
+msgstr ""
+
+#: includes/checks/table-headers.php:284
+msgid "Add scope=\"col\" to column header cells and scope=\"row\" to row header cells (in a Custom HTML block, or with \"Edit as HTML\" on the block)."
+msgstr ""
+
+#: includes/checks/table-headers.php:302
+msgid "This table has an empty header cell, which gives screen reader users a header with nothing to announce."
+msgstr ""
+
+#: includes/checks/table-headers.php:303
+msgid "Give the header cell text, or make it a regular <td> cell if it isn't really a header."
+msgstr ""
+
+#: includes/report.php:133
+msgid "Post ID"
+msgstr ""
+
+#: includes/report.php:134
+msgid "Title"
+msgstr ""
+
+#: includes/report.php:135
+msgid "URL"
+msgstr ""
+
+#: includes/report.php:137
+msgid "Check ID"
+msgstr ""
+
+#: includes/report.php:138
+msgid "WCAG criterion"
+msgstr ""
+
+#: includes/report.php:141
+msgid "How to fix"
+msgstr ""
+
+#: includes/report.php:161
+msgid "Sorry, you are not allowed to export this report."
+msgstr ""
+
+#: includes/settings-page.php:31
+#: includes/settings-page.php:129
+msgid "Fettle Settings"
+msgstr ""
+
+#: includes/settings-page.php:32
+msgid "Settings"
+msgstr ""
+
+#: includes/settings-page.php:101
+msgid "Settings saved."
+msgstr ""
+
+#. translators: %s: AI provider name
+#: includes/settings-page.php:120
+msgid "Connection to %s succeeded."
+msgstr ""
+
+#: includes/settings-page.php:135
+msgid "Fettle uses an AI provider to suggest fixes - either the one configured for the whole site in WordPress (Settings > Connectors), or your own API key entered below. With neither, no external call is ever made - the rule-based checks on the main Fettle page work regardless."
+msgstr ""
+
+#: includes/settings-page.php:142
+msgid "Active provider"
+msgstr ""
+
+#: includes/settings-page.php:151
+msgid "Only the selected provider is used - its fields below are the ones that matter."
+msgstr ""
+
+#: includes/settings-page.php:157
+msgid "Connector"
+msgstr ""
+
+#. translators: %s: URL to the WordPress Connectors settings screen
+#: includes/settings-page.php:164
+msgid "Uses whichever AI provider is configured for this site under <a href=\"%s\">Settings &gt; Connectors</a>. Fettle stores no key of its own for it. Alt-text suggestions need a connector whose model accepts images."
+msgstr ""
+
+#: includes/settings-page.php:172
+msgid "A connector is configured."
+msgstr ""
+
+#: includes/settings-page.php:172
+msgid "No connector is configured yet."
+msgstr ""
+
+#: includes/settings-page.php:180
+msgid "API key"
+msgstr ""
+
+#: includes/settings-page.php:191
+msgid "A key is configured. Leave unchanged to keep it, or clear the field and save to remove it."
+msgstr ""
+
+#: includes/settings-page.php:191
+msgid "Not configured."
+msgstr ""
+
+#: includes/settings-page.php:196
+msgid "Model"
+msgstr ""
+
+#: includes/settings-page.php:203
+msgid "Save a valid API key first to fetch the available models."
+msgstr ""
+
+#: includes/settings-page.php:220
+msgid "Refresh model list"
+msgstr ""
+
+#: includes/settings-page.php:229
+msgid "Save settings"
+msgstr ""
+
+#: includes/settings-page.php:233
+msgid "Test connection"
+msgstr ""
+
+#: includes/settings-page.php:234
+msgid "Sends one minimal, text-only request to the active provider to confirm it works. This is the only thing on this page that sends a prompt to a provider."
+msgstr ""
+
+#: includes/settings-page.php:238
+msgid "Test connection now"
+msgstr ""
+
+#: includes/site-health.php:19
+msgid "Fettle AI provider"
+msgstr ""
+
+#: includes/site-health.php:46
+msgid "Go to Fettle settings"
+msgstr ""
+
+#: includes/site-health.php:55
+msgid "Fettle has no AI provider configured"
+msgstr ""
+
+#: includes/site-health.php:57
+msgid "The rule-based accessibility checks work without this, but AI-suggested fixes (like alt text) need an AI connector (Settings > Connectors) or an API key for one provider."
+msgstr ""
+
+#: includes/site-health.php:66
+msgid "Fettle is configured to use WordPress AI"
+msgstr ""
+
+#: includes/site-health.php:68
+msgid "AI-suggested fixes go through the provider configured under Settings > Connectors. This does not confirm it actually works - use \"Test connection\" on the Fettle settings page for that."
+msgstr ""
+
+#. translators: %s: AI provider name, e.g. "Gemini"
+#: includes/site-health.php:75
+msgid "Fettle is configured to use %s"
+msgstr ""
+
+#. translators: 1: AI provider name, 2: model id
+#: includes/site-health.php:81
+msgid "Provider: %1$s, model: %2$s. This does not confirm the key actually works - use \"Test connection\" on the Fettle settings page for that."
+msgstr ""

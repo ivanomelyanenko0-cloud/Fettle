@@ -3,7 +3,7 @@ Contributors: lukystile
 Tags: accessibility, accessibility checker, wcag, alt text, contrast checker
 Requires at least: 6.2
 Tested up to: 7.1
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -51,6 +51,8 @@ On WordPress 7.0 or later, Fettle can use the AI provider you've already set up 
 * **Alt text** written from the image itself – or, for an image that is purely decorative, a suggestion to mark it as such. For an image that is a link's only content, the alt text names where the link goes.
 * **A replacement text colour** that passes contrast against its background
 * **Descriptive link text** based on where the link actually points
+
+Suggestions are written in your site's language, so a Ukrainian or German site gets Ukrainian or German alt text, not English.
  
 Some fixes don't need AI at all: marking an image whose alt text repeats nearby text as decorative, or reusing the alt text already saved for an image in your Media Library. They go through the same preview-and-confirm steps.
 
@@ -73,6 +75,8 @@ Fettle Pro comes with a **7-day free trial, no card required**. [Try the Pro dem
 * **Smart caching** – a page is re-scanned only when its content actually changes.
 * **Per-finding dismissal** – mark a single result as "Not an issue" without switching off the whole check.
 * **Plain-language digest** – a short summary at the top of your results tells you where to start.
+* **CSV export** – download every finding (page, check, WCAG criterion, severity, how to fix) as a spreadsheet to share with your team or a developer.
+* **WP-CLI** – `wp fettle scan` runs the same scan from the command line, with table, CSV or JSON output and an exit code a deploy or CI job can fail on.
 * **Site Health integration** – see which AI provider is configured at a glance, plus an explicit "Test connection" button when you want it.
 * **Works fully without AI** – every check runs locally. No key, no account, no signup.
  
@@ -180,6 +184,14 @@ Yes. The [live demo](https://founder.cognitolab.net/fettle-demo/index.html) runs
  
 Only the data for the one finding you clicked – see the External services section above for the full breakdown.
  
+= Which language are the AI suggestions written in? =
+
+Your site's language (Settings > General > Site Language). On a multilingual site, Fettle Pro writes each suggestion in the language of the post it's for (WPML and Polylang).
+
+= Can I run Fettle from the command line? =
+
+Yes. `wp fettle scan` scans your published posts and pages and lists the findings. Add post IDs to scan only those, `--type=alt-text,contrast` to limit the checks, `--format=csv` or `--format=json` for other tools, and `--fail-on=critical` to make the command exit with an error when critical issues are found.
+
 = Which content does Fettle check? =
  
 Published posts and pages. Drafts, private posts and other post types (such as WooCommerce products) are not scanned in this version.
@@ -199,6 +211,13 @@ Not in this version. Fettle currently checks Gutenberg block content and classic
 7. "Test connection" on the settings page: an explicit, one-off check that your configured AI provider actually works.
  
 == Changelog ==
+
+= 1.2.0 =
+* New: download the list of findings as a CSV file from the Fettle page, with the page, check, WCAG criterion, severity and how to fix for each one.
+* New: `wp fettle scan` WP-CLI command – scan all or selected posts, filter by check, output as a table, CSV, JSON or a count, and fail with `--fail-on=critical` for deploy or CI checks.
+* Improved: AI suggestions (alt text, link text) are now written in your site's language. Before, they came back in English even on non-English sites.
+* New: a translation template (`languages/fettle.pot`) and a complete Ukrainian translation (`languages/fettle-uk.po`) for translate.wordpress.org.
+* For developers: new `fettle_ai_content_locale` filter (the language of an AI suggestion, per post) and `fettle_check_wcag_criteria` filter.
 
 = 1.1.0 =
 * New: decorative-vs-meaningful image checks – an empty alt on an image that is a link's only content or has Media Library alt text, and alt text that only repeats the link text or caption next to it.

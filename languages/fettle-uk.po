@@ -1,0 +1,699 @@
+# Copyright (C) 2026 CognitoLab
+# This file is distributed under the GPLv2 or later.
+msgid ""
+msgstr "Project-Id-Version: Fettle 1.2.0\nReport-Msgid-Bugs-To: https://wordpress.org/support/plugin/fettle\nLast-Translator: CognitoLab\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit\nPOT-Creation-Date: 2026-10-23T19:42:24+00:00\nX-Generator: WP-CLI 2.7.1\nX-Domain: fettle\nLanguage: uk\nPlural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#. Plugin Name of the plugin
+#: includes/admin-page.php:27
+#: includes/admin-page.php:28
+#: includes/admin-page.php:330
+#: includes/site-health.php:39
+msgid "Fettle"
+msgstr "Fettle"
+
+#. Plugin URI of the plugin
+msgid "https://cognitolab.net/products/fettle"
+msgstr "https://cognitolab.net/products/fettle"
+
+#. Description of the plugin
+msgid "Accessibility audit and one-at-a-time AI-assisted remediation: real WCAG 2.1 AA checks, not another overlay widget."
+msgstr "Аудит доступності й виправлення з допомогою AI, по одному: справжні перевірки WCAG 2.1 AA, а не ще один віджет-оверлей."
+
+#. Author of the plugin
+msgid "CognitoLab"
+msgstr "CognitoLab"
+
+#. Author URI of the plugin
+msgid "https://cognitolab.net"
+msgstr "https://cognitolab.net"
+
+#: includes/admin-page.php:103
+msgid "Mark as decorative"
+msgstr "Позначити як декоративне"
+
+#: includes/admin-page.php:106
+msgid "Use Media Library alt text"
+msgstr "Взяти alt-текст із Медіатеки"
+
+#: includes/admin-page.php:108
+msgid "Generate AI fix"
+msgstr "Запропонувати виправлення (AI)"
+
+#: includes/admin-page.php:124
+msgid "Contrast"
+msgstr "Контраст"
+
+#: includes/admin-page.php:125
+msgid "Heading order"
+msgstr "Порядок заголовків"
+
+#: includes/admin-page.php:126
+msgid "Form labels"
+msgstr "Підписи полів форм"
+
+#: includes/admin-page.php:127
+msgid "Link text"
+msgstr "Текст посилань"
+
+#: includes/admin-page.php:128
+msgid "Missing alt text"
+msgstr "Немає alt-тексту"
+
+#: includes/admin-page.php:129
+msgid "Image marked decorative"
+msgstr "Зображення позначене декоративним"
+
+#: includes/admin-page.php:130
+msgid "Repeated alt text"
+msgstr "Повторений alt-текст"
+
+#: includes/admin-page.php:131
+msgid "Alt text quality"
+msgstr "Якість alt-тексту"
+
+#: includes/admin-page.php:132
+msgid "Table headers"
+msgstr "Заголовки таблиць"
+
+#: includes/admin-page.php:199
+msgid "(the AI's own suggestion did not actually pass verification, so this is a black/white fallback that reliably passes instead)"
+msgstr "(власна пропозиція AI не пройшла перевірку, тому це запасний чорний або білий колір, який перевірку гарантовано проходить)"
+
+#: includes/admin-page.php:225
+msgid "Scan complete."
+msgstr "Сканування завершено."
+
+#: includes/admin-page.php:232
+#: includes/admin-page.php:244
+#: includes/admin-page.php:270
+#: includes/admin-page.php:294
+msgid "Sorry, you are not allowed to edit this post."
+msgstr "На жаль, у вас немає прав редагувати цей запис."
+
+#: includes/admin-page.php:236
+msgid "Marked as a false positive."
+msgstr "Позначено як хибне спрацювання."
+
+#: includes/admin-page.php:251
+msgid "Could not find that issue - try scanning again."
+msgstr "Не вдалося знайти цю проблему. Запустіть сканування ще раз."
+
+#: includes/admin-page.php:261
+msgid "Suggestion generated - review it below before applying."
+msgstr "Пропозицію створено. Перегляньте її нижче, перш ніж застосувати."
+
+#: includes/admin-page.php:276
+msgid "That suggestion expired - generate it again."
+msgstr "Час дії пропозиції минув. Створіть її знову."
+
+#: includes/admin-page.php:285
+msgid "Fix applied."
+msgstr "Виправлення застосовано."
+
+#: includes/admin-page.php:298
+msgid "Suggestion discarded."
+msgstr "Пропозицію відхилено."
+
+#: includes/admin-page.php:308
+msgid "Theme landmark check complete."
+msgstr "Перевірку орієнтирів теми завершено."
+
+#. translators: %s: URL to the Fettle AI settings page
+#: includes/admin-page.php:343
+msgid "No AI provider is configured yet, so AI-suggested fixes aren't available. <a href=\"%s\">Set up an AI provider</a> to enable them - the rule-based checks below work either way."
+msgstr "AI-провайдера ще не налаштовано, тому виправлення від AI недоступні. <a href=\"%s\">Налаштуйте AI-провайдера</a>, щоб їх увімкнути. Перевірки за правилами нижче працюють і без нього."
+
+#: includes/admin-page.php:355
+msgid "No accessibility issues found in the last scan of your published posts and pages."
+msgstr "Останнє сканування опублікованих записів і сторінок не знайшло проблем із доступністю."
+
+#. translators: 1: number of issues, 2: number of critical issues, 3: number of posts/pages affected
+#: includes/admin-page.php:360
+msgid "%1$d issues found (%2$d critical) across %3$d posts and pages."
+msgstr "Знайдено проблем: %1$d (критичних: %2$d). Записів і сторінок із проблемами: %3$d."
+
+#: includes/admin-page.php:373
+msgid "Rescan everything, ignoring the cache"
+msgstr "Пересканувати все, ігноруючи кеш"
+
+#: includes/admin-page.php:376
+msgid "Scan now"
+msgstr "Сканувати зараз"
+
+#: includes/admin-page.php:380
+msgid "Download the list as CSV"
+msgstr "Завантажити список у CSV"
+
+#: includes/admin-page.php:385
+msgid "Theme landmarks"
+msgstr "Орієнтири теми"
+
+#: includes/admin-page.php:386
+msgid "Checked once per active theme (not per post) - landmark regions like the main content area come from your theme's templates, not your post content."
+msgstr "Перевіряється один раз для активної теми, а не для кожного запису: області-орієнтири, як-от основний вміст, задають шаблони теми, а не вміст записів."
+
+#: includes/admin-page.php:390
+msgid "No landmark issues found on the front page."
+msgstr "На головній сторінці проблем з орієнтирами не знайдено."
+
+#: includes/admin-page.php:394
+msgid "Critical:"
+msgstr "Критично:"
+
+#: includes/admin-page.php:394
+msgid "Warning:"
+msgstr "Попередження:"
+
+#. translators: %s: human-readable time, e.g. "5 minutes ago"
+#: includes/admin-page.php:402
+msgid "Last checked %s ago."
+msgstr "Востаннє перевірено %s тому."
+
+#: includes/admin-page.php:408
+msgid "Not checked yet for the current theme."
+msgstr "Для поточної теми ще не перевірялось."
+
+#: includes/admin-page.php:413
+msgid "Check theme landmarks now"
+msgstr "Перевірити орієнтири теми зараз"
+
+#: includes/admin-page.php:425
+#: includes/report.php:139
+msgid "Severity"
+msgstr "Серйозність"
+
+#: includes/admin-page.php:426
+#: includes/report.php:136
+msgid "Check"
+msgstr "Перевірка"
+
+#: includes/admin-page.php:427
+#: includes/report.php:140
+msgid "Issue"
+msgstr "Проблема"
+
+#: includes/admin-page.php:428
+msgid "Action"
+msgstr "Дія"
+
+#: includes/admin-page.php:440
+msgid "Critical"
+msgstr "Критично"
+
+#: includes/admin-page.php:440
+msgid "Warning"
+msgstr "Попередження"
+
+#: includes/admin-page.php:446
+msgid "How to fix:"
+msgstr "Як виправити:"
+
+#: includes/admin-page.php:452
+msgid "Links to:"
+msgstr "Веде на:"
+
+#: includes/admin-page.php:457
+msgid "Sample text (current)"
+msgstr "Зразок тексту (зараз)"
+
+#: includes/admin-page.php:465
+msgid "Suggestion:"
+msgstr "Пропозиція:"
+
+#: includes/admin-page.php:474
+msgid "Sample text (proposed)"
+msgstr "Зразок тексту (пропозиція)"
+
+#: includes/admin-page.php:488
+msgid "Apply"
+msgstr "Застосувати"
+
+#: includes/admin-page.php:496
+msgid "Discard"
+msgstr "Відхилити"
+
+#: includes/admin-page.php:516
+msgid "Not an issue"
+msgstr "Це не проблема"
+
+#: includes/ai/alt-text-fix.php:64
+msgid "This image is too large to send to an AI provider (over 8MB)."
+msgstr "Зображення завелике, щоб надіслати його AI-провайдеру (понад 8 МБ)."
+
+#: includes/ai/alt-text-fix.php:68
+msgid "Could not read the image file from disk."
+msgstr "Не вдалося прочитати файл зображення з диска."
+
+#: includes/ai/alt-text-fix.php:79
+msgid "This image has no readable source."
+msgstr "У цього зображення немає джерела, яке можна прочитати."
+
+#: includes/ai/alt-text-fix.php:163
+#: includes/ai/contrast-fix.php:81
+#: includes/ai/link-text-fix.php:47
+msgid "No AI provider is configured yet. Add an API key in Fettle settings."
+msgstr "AI-провайдера ще не налаштовано. Додайте API-ключ у налаштуваннях Fettle."
+
+#: includes/ai/alt-text-fix.php:186
+#: includes/ai/link-text-fix.php:60
+msgid "The AI provider returned an empty suggestion."
+msgstr "AI-провайдер повернув порожню пропозицію."
+
+#: includes/ai/alt-text-fix.php:191
+msgid "The AI could not suggest a name for this link. Write the alt text by hand in the editor."
+msgstr "AI не зміг запропонувати назву для цього посилання. Напишіть alt-текст вручну в редакторі."
+
+#: includes/ai/alt-text-fix.php:193
+msgid "Empty alt (alt=\"\") - the AI considers this image purely decorative."
+msgstr "Порожній alt (alt=\"\"): AI вважає це зображення суто декоративним."
+
+#. translators: %s: alt text taken from the Media Library
+#: includes/ai/alt-text-fix.php:215
+msgid "\"%s\" (from the Media Library)"
+msgstr "«%s» (з Медіатеки)"
+
+#: includes/ai/alt-text-fix.php:233
+msgid "Empty alt (alt=\"\") - mark this image as decorative, since the text next to it already says the same."
+msgstr "Порожній alt (alt=\"\"): позначити зображення декоративним, бо текст поруч уже каже те саме."
+
+#: includes/ai/alt-text-fix.php:296
+#: includes/ai/contrast-fix.php:147
+#: includes/ai/link-text-fix.php:80
+#: includes/scan-engine.php:78
+msgid "No post exists with that ID."
+msgstr "Запису з таким ID не існує."
+
+#: includes/ai/alt-text-fix.php:299
+#: includes/ai/contrast-fix.php:150
+#: includes/ai/link-text-fix.php:83
+msgid "This WordPress version does not support the required HTML processor."
+msgstr "Ця версія WordPress не підтримує потрібний HTML-процесор."
+
+#: includes/ai/alt-text-fix.php:326
+msgid "This image could not be found in the current content - it may have already changed since the last scan."
+msgstr "Це зображення не знайдено в поточному вмісті. Можливо, вміст змінився після останнього сканування."
+
+#: includes/ai/contrast-fix.php:86
+msgid "This finding is missing colour data - try scanning again."
+msgstr "У цієї знахідки бракує даних про колір. Запустіть сканування ще раз."
+
+#: includes/ai/contrast-fix.php:182
+msgid "This element could not be found in the current content - it may have already changed since the last scan."
+msgstr "Цей елемент не знайдено в поточному вмісті. Можливо, вміст змінився після останнього сканування."
+
+#. translators: %s: AI provider name (e.g. Gemini, Claude)
+#: includes/ai/dispatch.php:43
+msgid "Bad request to %s. The request may be malformed or the image too large."
+msgstr "Помилковий запит до %s. Можливо, запит сформовано неправильно або зображення завелике."
+
+#. translators: %s: AI provider name (e.g. Gemini, Claude)
+#: includes/ai/dispatch.php:45
+msgid "Invalid %s API key. Check it in Fettle settings."
+msgstr "Недійсний API-ключ %s. Перевірте його в налаштуваннях Fettle."
+
+#. translators: %s: AI provider name (e.g. Gemini, Claude)
+#: includes/ai/dispatch.php:47
+msgid "Access denied by %s. Check your account permissions/billing."
+msgstr "%s відмовив у доступі. Перевірте права й оплату свого облікового запису."
+
+#. translators: %s: AI provider name (e.g. Gemini, Claude)
+#: includes/ai/dispatch.php:49
+msgid "Model not found on %s. It may have been renamed or removed."
+msgstr "Модель не знайдено в %s. Можливо, її перейменували або видалили."
+
+#. translators: %s: AI provider name (e.g. Gemini, Claude)
+#: includes/ai/dispatch.php:51
+msgid "%s rate limit exceeded. Wait a moment and try again."
+msgstr "Перевищено ліміт запитів %s. Зачекайте трохи й спробуйте знову."
+
+#. translators: %s: AI provider name (e.g. Gemini, Claude)
+#: includes/ai/dispatch.php:53
+msgid "%s internal server error. Try again in a few moments."
+msgstr "Внутрішня помилка сервера %s. Спробуйте ще раз за кілька хвилин."
+
+#. translators: %s: AI provider name (e.g. Gemini, Claude)
+#: includes/ai/dispatch.php:55
+msgid "%s is temporarily unavailable (overloaded or maintenance)."
+msgstr "%s тимчасово недоступний (перевантаження або технічні роботи)."
+
+#. translators: 1: AI provider name, 2: HTTP status code
+#: includes/ai/dispatch.php:61
+msgid "%1$s returned an unexpected error (HTTP %2$d)."
+msgstr "%1$s повернув неочікувану помилку (HTTP %2$d)."
+
+#: includes/ai/dispatch.php:88
+msgid "No API key configured for this provider."
+msgstr "Для цього провайдера не налаштовано API-ключ."
+
+#: includes/ai/image-helpers.php:30
+msgid "No image data or URL was provided."
+msgstr "Не передано ні даних зображення, ні URL."
+
+#: includes/ai/image-helpers.php:45
+msgid "Could not fetch the image to send to the AI provider: "
+msgstr "Не вдалося завантажити зображення, щоб надіслати його AI-провайдеру: "
+
+#: includes/ai/image-helpers.php:49
+msgid "Could not fetch the image to send to the AI provider (unexpected HTTP status)."
+msgstr "Не вдалося завантажити зображення, щоб надіслати його AI-провайдеру (неочікуваний HTTP-статус)."
+
+#: includes/ai/image-helpers.php:54
+msgid "The fetched image was empty."
+msgstr "Завантажене зображення порожнє."
+
+#: includes/ai/link-text-fix.php:130
+msgid "This link could not be found in the current content - it may have already changed since the last scan."
+msgstr "Це посилання не знайдено в поточному вмісті. Можливо, вміст змінився після останнього сканування."
+
+#: includes/ai/providers/anthropic.php:83
+#: includes/ai/providers/gemini.php:61
+#: includes/ai/providers/openai-compatible.php:82
+msgid "Connection failed: "
+msgstr "Не вдалося з'єднатися: "
+
+#: includes/ai/providers/anthropic.php:103
+msgid "Unexpected API response structure from Claude."
+msgstr "Неочікувана структура відповіді API від Claude."
+
+#: includes/ai/providers/gemini.php:74
+msgid "Gemini blocked the response due to safety filters."
+msgstr "Gemini заблокував відповідь через фільтри безпеки."
+
+#: includes/ai/providers/gemini.php:76
+msgid "Unexpected API response structure from Gemini."
+msgstr "Неочікувана структура відповіді API від Gemini."
+
+#. translators: %s: AI provider name
+#: includes/ai/providers/openai-compatible.php:97
+msgid "Unexpected API response structure from %s."
+msgstr "Неочікувана структура відповіді API від %s."
+
+#: includes/ai/providers/wp-ai-client.php:20
+msgid "The WordPress AI Client is not available on this site."
+msgstr "WordPress AI Client на цьому сайті недоступний."
+
+#: includes/ai/providers/wp-ai-client.php:46
+msgid "No AI connector configured under Settings > Connectors supports image input. Configure one that does, or pick a provider with your own API key in Fettle settings."
+msgstr "Жоден AI-конектор у «Налаштування > Конектори» не приймає зображень. Налаштуйте такий або виберіть провайдера з власним API-ключем у налаштуваннях Fettle."
+
+#: includes/ai/providers/wp-ai-client.php:47
+msgid "No AI connector is configured under Settings > Connectors."
+msgstr "У «Налаштування > Конектори» не налаштовано жодного AI-конектора."
+
+#. translators: %s: error message from the WordPress AI Client
+#: includes/ai/providers/wp-ai-client.php:61
+msgid "WordPress AI request failed: %s"
+msgstr "Запит до WordPress AI не вдався: %s"
+
+#: includes/ai/settings.php:152
+msgid "WordPress AI (Settings > Connectors)"
+msgstr "WordPress AI («Налаштування > Конектори»)"
+
+#: includes/checks/alt-text.php:38
+msgid "Image has no alt attribute - screen reader users get no description of it at all."
+msgstr "У зображення немає атрибута alt: користувачі зчитувачів екрана не отримують жодного опису."
+
+#: includes/checks/aria-landmarks.php:61
+msgid "No <main> landmark found on the front page - screen reader users have no quick way to skip to the main content."
+msgstr "На головній сторінці немає орієнтира <main>: користувачі зчитувачів екрана не можуть швидко перейти до основного вмісту."
+
+#. translators: %d: number of <main> elements found
+#: includes/checks/aria-landmarks.php:69
+msgid "%d <main> landmarks found on the front page - there should be exactly one."
+msgstr "На головній сторінці орієнтирів <main>: %d. Має бути рівно один."
+
+#: includes/checks/aria-landmarks.php:79
+msgid "No navigation landmark (<nav> or role=\"navigation\") found on the front page."
+msgstr "На головній сторінці немає орієнтира навігації (<nav> або role=\"navigation\")."
+
+#: includes/checks/aria-landmarks.php:87
+msgid "No footer landmark (<footer> or role=\"contentinfo\") found on the front page."
+msgstr "На головній сторінці немає орієнтира підвалу (<footer> або role=\"contentinfo\")."
+
+#: includes/checks/aria-landmarks.php:95
+msgid "No banner landmark (<header> or role=\"banner\") found on the front page."
+msgstr "На головній сторінці немає орієнтира шапки (<header> або role=\"banner\")."
+
+#. translators: %d: HTTP status code
+#: includes/checks/aria-landmarks.php:142
+msgid "Unexpected response fetching the front page (HTTP %d)."
+msgstr "Неочікувана відповідь під час завантаження головної сторінки (HTTP %d)."
+
+#. translators: 1: measured contrast ratio, 2: required WCAG AA ratio
+#: includes/checks/contrast.php:314
+msgid "Text/background contrast is %1$s:1, below the %2$s:1 WCAG AA minimum."
+msgstr "Контраст тексту й фону %1$s:1, нижче за мінімум WCAG AA %2$s:1."
+
+#. translators: %s: element tag, e.g. "input"
+#: includes/checks/form-labels.php:79
+msgid "A <%s> field has no associated label, aria-label, or aria-labelledby - screen reader users cannot tell what it is for."
+msgstr "Поле <%s> не має пов'язаного label, aria-label чи aria-labelledby: користувачі зчитувачів екрана не дізнаються, для чого воно."
+
+#. translators: %d: number of H1 headings found
+#: includes/checks/heading-order.php:75
+msgid "This content has %d H1 headings; a page should normally have one."
+msgstr "Заголовків H1 у цьому вмісті: %d. Зазвичай на сторінці має бути один."
+
+#. translators: %s: heading tag, e.g. "H3"
+#: includes/checks/heading-order.php:90
+msgid "Empty %s heading - screen reader users hear nothing where a heading is announced."
+msgstr "Порожній заголовок %s: там, де оголошується заголовок, користувачі зчитувачів екрана нічого не чують."
+
+#. translators: 1: previous heading level e.g. "H2", 2: skipped-to heading level e.g. "H4"
+#: includes/checks/heading-order.php:103
+msgid "Heading level jumps from %1$s to %2$s, skipping a level."
+msgstr "Рівень заголовка стрибає з %1$s на %2$s, пропускаючи рівень."
+
+#: includes/checks/image-alt.php:102
+msgid "This image is the only content of a link, but its alt text is empty - so the link has no name, and screen readers announce just \"link\" or the raw URL."
+msgstr "Це зображення єдиний вміст посилання, але його alt-текст порожній. Тож посилання не має назви, і зчитувачі екрана оголошують лише «посилання» або сирий URL."
+
+#. translators: %s: the image's alt text from the Media Library
+#: includes/checks/image-alt.php:123
+msgid "This image is marked as decorative (empty alt), but its Media Library entry has alt text (\"%s\") - it may carry meaning here too."
+msgstr "Зображення позначене декоративним (порожній alt), але в Медіатеці для нього є alt-текст («%s»). Можливо, тут воно теж має значення."
+
+#. translators: %s: the role attribute value, e.g. "presentation"
+#: includes/checks/image-alt.php:136
+msgid "This image has alt text but is also marked role=\"%s\" - the two contradict each other. If it is decorative, its alt should be empty."
+msgstr "Зображення має alt-текст, але також позначене role=\"%s\", і це суперечить одне одному. Якщо воно декоративне, alt має бути порожнім."
+
+#. translators: %s: the image's current alt text
+#: includes/checks/image-alt.php:148
+msgid "The alt text \"%s\" is a file name, not a description of the image."
+msgstr "Alt-текст «%s» це назва файлу, а не опис зображення."
+
+#: includes/checks/image-alt.php:160
+msgid "The alt text repeats the link's own text, so screen readers read the same words twice."
+msgstr "Alt-текст повторює текст самого посилання, тож зчитувачі екрана читають ті самі слова двічі."
+
+#: includes/checks/image-alt.php:168
+msgid "The alt text repeats the image's caption, so screen readers read the same words twice."
+msgstr "Alt-текст повторює підпис зображення, тож зчитувачі екрана читають ті самі слова двічі."
+
+#. translators: %s: the image's current alt text
+#: includes/checks/image-alt.php:178
+msgid "The alt text \"%s\" is a placeholder, not a description of the image."
+msgstr "Alt-текст «%s» це заглушка, а не опис зображення."
+
+#: includes/checks/link-text.php:95
+msgid "Link text is a bare URL, which is hard to understand out of context when read aloud."
+msgstr "Текст посилання це голий URL: коли його читають уголос, без контексту його важко зрозуміти."
+
+#. translators: %s: the link's actual visible text
+#: includes/checks/link-text.php:98
+msgid "Link text \"%s\" does not describe where the link goes."
+msgstr "Текст посилання «%s» не пояснює, куди воно веде."
+
+#: includes/checks/table-headers.php:198
+msgid "This table is marked role=\"presentation\" (layout only) but uses data-table markup - header cells or a caption."
+msgstr "Таблиця позначена role=\"presentation\" (лише для верстки), але має розмітку таблиці даних: клітинки-заголовки або підпис."
+
+#: includes/checks/table-headers.php:199
+msgid "If it holds data, remove role=\"presentation\". If it is only for layout, use regular <td> cells and no caption."
+msgstr "Якщо в ній дані, приберіть role=\"presentation\". Якщо вона лише для верстки, використовуйте звичайні клітинки <td> без підпису."
+
+#: includes/checks/table-headers.php:204
+msgid "In the block editor, select the table, open its block settings and turn on \"Header section\", then put the header text there. In a Custom HTML block, change the header cells from <td> to <th>."
+msgstr "У редакторі блоків виберіть таблицю, відкрийте налаштування блоку, увімкніть «Розділ заголовка» й перенесіть туди текст заголовків. У блоці «Довільний HTML» замініть клітинки-заголовки з <td> на <th>."
+
+#: includes/checks/table-headers.php:222
+msgid "The first row of this table looks like a header (every cell is bold) but is marked up as ordinary cells, so screen readers don't treat it as one."
+msgstr "Перший рядок таблиці схожий на заголовок (усі клітинки жирні), але розмічений як звичайні клітинки, тож зчитувачі екрана не сприймають його як заголовок."
+
+#: includes/checks/table-headers.php:232
+msgid "This table has no header cells (<th>), so screen readers can't tell which column or row a value belongs to."
+msgstr "У таблиці немає клітинок-заголовків (<th>), тож зчитувачі екрана не можуть сказати, до якого стовпця чи рядка належить значення."
+
+#: includes/checks/table-headers.php:259
+msgid "A cell's headers attribute points to an id that doesn't exist in this table, so that cell is tied to no header at all."
+msgstr "Атрибут headers клітинки посилається на id, якого немає в цій таблиці, тож клітинка не прив'язана до жодного заголовка."
+
+#: includes/checks/table-headers.php:260
+msgid "Every id listed in a cell's headers attribute must match the id of a header cell in the same table - correct or remove it in the table's HTML."
+msgstr "Кожен id в атрибуті headers клітинки має збігатися з id клітинки-заголовка в тій самій таблиці. Виправте або приберіть його в HTML таблиці."
+
+#: includes/checks/table-headers.php:283
+msgid "This table has both column and row headers, but some header cells have no scope attribute - screen readers may pair values with the wrong header."
+msgstr "Таблиця має заголовки і стовпців, і рядків, але частина клітинок-заголовків без атрибута scope: зчитувачі екрана можуть пов'язати значення не з тим заголовком."
+
+#: includes/checks/table-headers.php:284
+msgid "Add scope=\"col\" to column header cells and scope=\"row\" to row header cells (in a Custom HTML block, or with \"Edit as HTML\" on the block)."
+msgstr "Додайте scope=\"col\" заголовкам стовпців і scope=\"row\" заголовкам рядків (у блоці «Довільний HTML» або через «Редагувати як HTML» у блоці)."
+
+#: includes/checks/table-headers.php:302
+msgid "This table has an empty header cell, which gives screen reader users a header with nothing to announce."
+msgstr "У таблиці є порожня клітинка-заголовок: користувачі зчитувачів екрана отримують заголовок, у якому нічого оголосити."
+
+#: includes/checks/table-headers.php:303
+msgid "Give the header cell text, or make it a regular <td> cell if it isn't really a header."
+msgstr "Додайте текст у клітинку-заголовок або зробіть її звичайною клітинкою <td>, якщо це насправді не заголовок."
+
+#: includes/report.php:133
+msgid "Post ID"
+msgstr "ID запису"
+
+#: includes/report.php:134
+msgid "Title"
+msgstr "Заголовок"
+
+#: includes/report.php:135
+msgid "URL"
+msgstr "URL"
+
+#: includes/report.php:137
+msgid "Check ID"
+msgstr "ID перевірки"
+
+#: includes/report.php:138
+msgid "WCAG criterion"
+msgstr "Критерій WCAG"
+
+#: includes/report.php:141
+msgid "How to fix"
+msgstr "Як виправити"
+
+#: includes/report.php:161
+msgid "Sorry, you are not allowed to export this report."
+msgstr "На жаль, у вас немає прав експортувати цей звіт."
+
+#: includes/settings-page.php:31
+#: includes/settings-page.php:129
+msgid "Fettle Settings"
+msgstr "Налаштування Fettle"
+
+#: includes/settings-page.php:32
+msgid "Settings"
+msgstr "Налаштування"
+
+#: includes/settings-page.php:101
+msgid "Settings saved."
+msgstr "Налаштування збережено."
+
+#. translators: %s: AI provider name
+#: includes/settings-page.php:120
+msgid "Connection to %s succeeded."
+msgstr "З'єднання з %s успішне."
+
+#: includes/settings-page.php:135
+msgid "Fettle uses an AI provider to suggest fixes - either the one configured for the whole site in WordPress (Settings > Connectors), or your own API key entered below. With neither, no external call is ever made - the rule-based checks on the main Fettle page work regardless."
+msgstr "Fettle пропонує виправлення через AI-провайдера: або того, що налаштований для всього сайту у WordPress («Налаштування > Конектори»), або через ваш власний API-ключ, введений нижче. Без жодного з них зовнішніх запитів не буде взагалі, а перевірки за правилами на головній сторінці Fettle працюють у будь-якому разі."
+
+#: includes/settings-page.php:142
+msgid "Active provider"
+msgstr "Активний провайдер"
+
+#: includes/settings-page.php:151
+msgid "Only the selected provider is used - its fields below are the ones that matter."
+msgstr "Використовується лише вибраний провайдер, тож важать тільки його поля нижче."
+
+#: includes/settings-page.php:157
+msgid "Connector"
+msgstr "Конектор"
+
+#. translators: %s: URL to the WordPress Connectors settings screen
+#: includes/settings-page.php:164
+msgid "Uses whichever AI provider is configured for this site under <a href=\"%s\">Settings &gt; Connectors</a>. Fettle stores no key of its own for it. Alt-text suggestions need a connector whose model accepts images."
+msgstr "Використовує AI-провайдера, налаштованого для цього сайту в <a href=\"%s\">«Налаштування &gt; Конектори»</a>. Fettle не зберігає для нього власного ключа. Для пропозицій alt-тексту потрібен конектор, модель якого приймає зображення."
+
+#: includes/settings-page.php:172
+msgid "A connector is configured."
+msgstr "Конектор налаштовано."
+
+#: includes/settings-page.php:172
+msgid "No connector is configured yet."
+msgstr "Конектор ще не налаштовано."
+
+#: includes/settings-page.php:180
+msgid "API key"
+msgstr "API-ключ"
+
+#: includes/settings-page.php:191
+msgid "A key is configured. Leave unchanged to keep it, or clear the field and save to remove it."
+msgstr "Ключ налаштовано. Залиште поле як є, щоб його зберегти, або очистьте й збережіть, щоб видалити."
+
+#: includes/settings-page.php:191
+msgid "Not configured."
+msgstr "Не налаштовано."
+
+#: includes/settings-page.php:196
+msgid "Model"
+msgstr "Модель"
+
+#: includes/settings-page.php:203
+msgid "Save a valid API key first to fetch the available models."
+msgstr "Спершу збережіть дійсний API-ключ, щоб отримати список доступних моделей."
+
+#: includes/settings-page.php:220
+msgid "Refresh model list"
+msgstr "Оновити список моделей"
+
+#: includes/settings-page.php:229
+msgid "Save settings"
+msgstr "Зберегти налаштування"
+
+#: includes/settings-page.php:233
+msgid "Test connection"
+msgstr "Перевірка з'єднання"
+
+#: includes/settings-page.php:234
+msgid "Sends one minimal, text-only request to the active provider to confirm it works. This is the only thing on this page that sends a prompt to a provider."
+msgstr "Надсилає активному провайдеру один мінімальний текстовий запит, щоб переконатися, що він працює. Це єдине на цій сторінці, що надсилає провайдеру промпт."
+
+#: includes/settings-page.php:238
+msgid "Test connection now"
+msgstr "Перевірити з'єднання зараз"
+
+#: includes/site-health.php:19
+msgid "Fettle AI provider"
+msgstr "AI-провайдер Fettle"
+
+#: includes/site-health.php:46
+msgid "Go to Fettle settings"
+msgstr "До налаштувань Fettle"
+
+#: includes/site-health.php:55
+msgid "Fettle has no AI provider configured"
+msgstr "У Fettle не налаштовано AI-провайдера"
+
+#: includes/site-health.php:57
+msgid "The rule-based accessibility checks work without this, but AI-suggested fixes (like alt text) need an AI connector (Settings > Connectors) or an API key for one provider."
+msgstr "Перевірки доступності за правилами працюють і без цього, але для виправлень від AI (наприклад, alt-тексту) потрібен AI-конектор («Налаштування > Конектори») або API-ключ одного з провайдерів."
+
+#: includes/site-health.php:66
+msgid "Fettle is configured to use WordPress AI"
+msgstr "Fettle налаштовано на WordPress AI"
+
+#: includes/site-health.php:68
+msgid "AI-suggested fixes go through the provider configured under Settings > Connectors. This does not confirm it actually works - use \"Test connection\" on the Fettle settings page for that."
+msgstr "Виправлення від AI йдуть через провайдера з «Налаштування > Конектори». Це не підтверджує, що він справді працює: для цього скористайтеся «Перевіркою з'єднання» на сторінці налаштувань Fettle."
+
+#. translators: %s: AI provider name, e.g. "Gemini"
+#: includes/site-health.php:75
+msgid "Fettle is configured to use %s"
+msgstr "Fettle налаштовано на %s"
+
+#. translators: 1: AI provider name, 2: model id
+#: includes/site-health.php:81
+msgid "Provider: %1$s, model: %2$s. This does not confirm the key actually works - use \"Test connection\" on the Fettle settings page for that."
+msgstr "Провайдер: %1$s, модель: %2$s. Це не підтверджує, що ключ справді працює: для цього скористайтеся «Перевіркою з'єднання» на сторінці налаштувань Fettle."

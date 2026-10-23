@@ -93,9 +93,11 @@ define( 'FETTLE_AI_DECORATIVE_REPLY', 'DECORATIVE' );
  * @param string $link_href    When the image is the only content of a link,
  *                             that link's URL - its alt text is then the
  *                             link's name, and must describe the link.
+ * @param string $language     Language instruction from
+ *                             fettle_ai_language_instruction(), or ''.
  * @return string
  */
-function fettle_build_alt_text_prompt( $context_text, $link_href = '' ) {
+function fettle_build_alt_text_prompt( $context_text, $link_href = '', $language = '' ) {
 	if ( '' !== $link_href ) {
 		$prompt = "This image is the only content of a link, so its alt text is the only name screen reader users hear for that link. "
 			. "Write alt text that names where the link goes, in a few words a visitor would recognise - for example \"Meet our team\" or \"Shop women's shoes\". "
@@ -109,6 +111,13 @@ function fettle_build_alt_text_prompt( $context_text, $link_href = '' ) {
 			. "Do not start with \"Image of\" or \"Picture of\" - a screen reader already announces it as an image. "
 			. 'If the image is purely decorative - an ornament, divider, background texture or spacer that carries no information at all - reply with exactly the word ' . FETTLE_AI_DECORATIVE_REPLY . ' instead. Only do that when you are sure; if in doubt, describe it. '
 			. 'Otherwise reply with only the alt text itself, nothing else.';
+	}
+
+	if ( '' !== $language ) {
+		$prompt .= ' ' . $language;
+		if ( '' === $link_href ) {
+			$prompt .= ' The word ' . FETTLE_AI_DECORATIVE_REPLY . ' is the one exception: it always stays exactly as written.';
+		}
 	}
 
 	if ( '' !== trim( $context_text ) ) {
@@ -163,7 +172,7 @@ function fettle_generate_alt_text_suggestion( $post_id, $finding ) {
 	$provider  = fettle_get_current_provider();
 	$model     = fettle_get_model_for_provider( $provider );
 	$api_key   = fettle_get_api_key_for_provider( $provider );
-	$prompt    = fettle_build_alt_text_prompt( $finding['context_text'] ?? '', $link_href );
+	$prompt    = fettle_build_alt_text_prompt( $finding['context_text'] ?? '', $link_href, fettle_ai_language_instruction( $post_id ) );
 
 	$result = fettle_ai_call_vision( $provider, $model, $prompt, $image, $api_key, array( 'max_tokens' => 200 ) );
 	if ( is_wp_error( $result ) ) {
