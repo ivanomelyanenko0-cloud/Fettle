@@ -1,4 +1,4 @@
-=== Fettle ===
+=== Fettle – Accessibility Checker with AI Alt Text & WCAG Fixes ===
 Contributors: lukystile
 Tags: accessibility, accessibility checker, wcag, alt text, contrast checker
 Requires at least: 6.2
@@ -8,7 +8,7 @@ Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
  
-Find the accessibility problems in your posts and pages, then fix them in the content itself – with optional AI help. No overlay widget.
+Accessibility checker for WordPress: find WCAG issues in posts and pages and fix them in your content with AI alt text. No overlay widget.
  
 == Description ==
  
@@ -16,7 +16,7 @@ Find the accessibility problems in your posts and pages, then fix them in the co
  
 Most accessibility plugins bolt a JavaScript widget onto your front end and patch the page every time someone loads it. Your actual content stays exactly as broken as it was, and overlay widgets are widely criticised by accessibility practitioners for exactly that reason.
  
-**Fettle works the other way around.** It reads your published posts and pages from the admin side, tells you in plain language exactly what's wrong and why it matters, and when you decide to fix something, the fix goes into the post itself. Nothing is added to your front end and nothing runs for your visitors, so your pages load exactly as fast as before.
+**Fettle is an accessibility checker that fixes your content instead of covering it with an overlay.** It reads your published posts and pages from the admin side, tells you in plain language exactly what's wrong and why it matters, and when you decide to fix something, the fix goes into the post itself. Nothing is added to your front end and nothing runs for your visitors, so your pages load exactly as fast as before.
  
 **[Visit the Fettle plugin page](https://cognitolab.net/products/fettle)** – screenshots, a feature-by-feature comparison of Free and Pro, and a live demo you can try in your browser without installing anything.
  
@@ -32,7 +32,7 @@ Most accessibility plugins bolt a JavaScript widget onto your front end and patc
  
 Not ready to install on a real site? **[Open the live demo](https://founder.cognitolab.net/fettle-demo/index.html)** – a complete WordPress site running right in your browser, with sample pages full of real accessibility issues for you to scan, review and fix. Nothing to install, nothing to clean up afterwards.
  
-= What Fettle checks =
+= What the accessibility checker finds =
  
 * **Missing alt text** – finds images with no alt attribute at all.
 * **Decorative or meaningful images** – an empty alt (`alt=""`) is the right way to mark a purely decorative image, and Fettle respects it – except where there is clear evidence the image carries meaning: it is the only content of a link (so the link has no name at all), or its Media Library entry has alt text. It also flags alt text that only repeats the text right next to it (the link's own text, or the image's caption), so screen readers don't read the same words twice.
@@ -44,7 +44,7 @@ Not ready to install on a real site? **[Open the live demo](https://founder.cogn
 * **Link text** – spots "click here", bare URLs and other link text that doesn't say where the link goes.
 * **Theme landmarks** – checks your active theme's front page once for a main content area, navigation, banner and footer region.
  
-= Let AI draft the fix – you stay in control =
+= AI alt text and fixes – you stay in control =
  
 On WordPress 7.0 or later, Fettle can use the AI provider you've already set up for your whole site under Settings > Connectors – no extra key needed. Or add your own API key for Gemini, Claude, OpenAI, Grok or OpenRouter. Either way, Fettle can suggest a fix for any single finding:
  
@@ -139,6 +139,14 @@ When you use your own API key, depending on which provider you select in Setting
 4. Optional: open **Fettle → Settings** and pick an AI provider – WordPress AI (Settings > Connectors, WordPress 7.0+) or your own API key – to enable AI-suggested fixes.
  
 == Frequently Asked Questions ==
+
+= How do I check my WordPress site for accessibility issues? =
+
+Install Fettle, open **Fettle** in the admin menu and click **Scan now**. It checks your published posts and pages for missing or meaningless alt text, low colour contrast, skipped headings, unlabelled form fields, vague link text and table headers, and lists what to fix first in plain language. No account or API key is needed for the scan.
+
+= Can Fettle generate alt text with AI? =
+
+Yes, optionally. For an image with missing or meaningless alt text, click "Generate AI fix" and Fettle drafts alt text from the image itself, in your site's language. You review it and click Apply; nothing is written without that. It uses the AI provider set up under Settings > Connectors (WordPress 7.0+) or your own Gemini, Claude, OpenAI, Grok or OpenRouter key.
  
 = Does this add a widget or overlay to my site? =
  

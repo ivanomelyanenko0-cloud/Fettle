@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       Fettle
+ * Plugin Name:       Fettle – Accessibility Checker with AI Alt Text & WCAG Fixes
  * Plugin URI:        https://cognitolab.net/products/fettle
  * Description:       Accessibility audit and one-at-a-time AI-assisted remediation: real WCAG 2.1 AA checks, not another overlay widget.
  * Version:           1.2.0
