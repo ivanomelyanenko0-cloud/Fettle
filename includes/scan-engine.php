@@ -20,7 +20,7 @@ define( 'FETTLE_SCAN_META_KEY', '_fettle_scan' );
  * Fettle Pro reads it too, to tell a ruleset change apart from a real
  * regression.
  */
-define( 'FETTLE_RULESET_VERSION', 2 );
+define( 'FETTLE_RULESET_VERSION', 3 );
 
 /**
  * The checks Fettle runs, as { type => callable }. Each check returns
@@ -41,6 +41,12 @@ function fettle_get_registered_checks() {
 		'image-redundant-alt' => 'fettle_check_image_redundant_alt',
 		'image-alt-quality'   => 'fettle_check_image_alt_quality',
 		'table-headers'       => 'fettle_check_table_headers',
+		'empty-link'          => 'fettle_check_empty_link',
+		'empty-button'        => 'fettle_check_empty_button',
+		'iframe-title'        => 'fettle_check_iframe_title',
+		'media-captions'      => 'fettle_check_media_captions',
+		'media-autoplay'      => 'fettle_check_media_autoplay',
+		'new-tab-link'        => 'fettle_check_new_tab_link',
 	);
 
 	return apply_filters( 'fettle_checks', $checks );

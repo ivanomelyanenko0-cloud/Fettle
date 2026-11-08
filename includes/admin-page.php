@@ -130,6 +130,12 @@ function fettle_finding_type_label( $type ) {
 		'image-redundant-alt' => __( 'Repeated alt text', 'fettle' ),
 		'image-alt-quality'   => __( 'Alt text quality', 'fettle' ),
 		'table-headers'       => __( 'Table headers', 'fettle' ),
+		'empty-link'          => __( 'Empty link', 'fettle' ),
+		'empty-button'        => __( 'Empty button', 'fettle' ),
+		'iframe-title'        => __( 'Frame title', 'fettle' ),
+		'media-captions'      => __( 'Video captions', 'fettle' ),
+		'media-autoplay'      => __( 'Autoplaying sound', 'fettle' ),
+		'new-tab-link'        => __( 'Opens in new tab', 'fettle' ),
 	);
 	return $labels[ $type ] ?? $type;
 }

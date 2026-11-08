@@ -28,6 +28,12 @@ function fettle_check_wcag_criteria() {
 		'image-redundant-alt' => '1.1.1',
 		'image-alt-quality'   => '1.1.1',
 		'table-headers'       => '1.3.1',
+		'empty-link'          => '2.4.4',
+		'empty-button'        => '4.1.2',
+		'iframe-title'        => '4.1.2',
+		'media-captions'      => '1.2.2',
+		'media-autoplay'      => '1.4.2',
+		'new-tab-link'        => '3.2.5',
 	);
 
 	/**

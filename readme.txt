@@ -3,7 +3,7 @@ Contributors: lukystile
 Tags: accessibility, accessibility checker, wcag, alt text, contrast checker
 Requires at least: 6.2
 Tested up to: 7.1
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -42,6 +42,10 @@ Not ready to install on a real site? **[Open the live demo](https://founder.cogn
 * **Heading order** – catches skipped levels, multiple H1s and empty headings that break screen reader navigation.
 * **Form labels** – flags `<input>`, `<select>` and `<textarea>` fields that a screen reader can't name.
 * **Link text** – spots "click here", bare URLs and other link text that doesn't say where the link goes.
+* **Empty links and buttons** – an icon-only link or button with no text or label, which a screen reader can only announce as "link" or "button".
+* **Embedded frames** – an `<iframe>` (map, form, video player) without a title that says what it contains.
+* **Video and audio** – a self-hosted video without a captions track, and audio or video with sound that starts playing on its own.
+* **Links that open a new tab** – a link that opens a new tab or window without saying so (listed as advice, not a strict requirement).
 * **Theme landmarks** – checks your active theme's front page once for a main content area, navigation, banner and footer region.
  
 = AI alt text and fixes – you stay in control =
@@ -219,6 +223,15 @@ Not in this version. Fettle currently checks Gutenberg block content and classic
 7. "Test connection" on the settings page: an explicit, one-off check that your configured AI provider actually works.
  
 == Changelog ==
+
+= 1.3.0 =
+* New: empty link and empty button checks – an icon-only link or button with no text, aria-label or other name. Links whose only content is an image stay with the image checks, so nothing is reported twice.
+* New: embedded frame check – an `<iframe>` without a title.
+* New: video and audio checks – a self-hosted video without a captions or subtitles track (a muted background video is left alone), and audio or video with sound that autoplays.
+* New: links that open in a new tab or window without saying so in the link text. Wording such as "(opens in a new tab)" is recognised in English, Ukrainian and several other languages.
+* Every new finding includes how to fix it, and appears in the CSV export and `wp fettle scan` with its WCAG criterion.
+* Existing posts are rescanned automatically after the update so the new checks run on them.
+* For developers: `fettle_new_tab_warning_phrases` filter.
 
 = 1.2.0 =
 * New: download the list of findings as a CSV file from the Fettle page, with the page, check, WCAG criterion, severity and how to fix for each one.

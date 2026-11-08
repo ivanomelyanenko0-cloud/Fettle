@@ -3,7 +3,7 @@
  * Plugin Name:       Fettle – Accessibility Checker with AI Alt Text & WCAG Fixes
  * Plugin URI:        https://cognitolab.net/products/fettle
  * Description:       Accessibility audit and one-at-a-time AI-assisted remediation: real WCAG 2.1 AA checks, not another overlay widget.
- * Version:           1.2.0
+ * Version:           1.3.0
  * Requires at least: 6.2
  * Requires PHP:      7.4
  * Author:            CognitoLab
@@ -17,6 +17,7 @@
  *
  * The rule-based audit engine (contrast, heading order, form labels, link
  * text, images - missing, misused or meaningless alt text - table headers,
+ * empty links and buttons, frame titles, captions, autoplay, new-tab links,
  * theme landmarks) plus the one-at-a-time fix flow for image, contrast and
  * link-text findings, always previewed and explicitly confirmed before
  * anything is applied.
@@ -26,7 +27,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'FETTLE_VERSION', '1.2.0' );
+define( 'FETTLE_VERSION', '1.3.0' );
 define( 'FETTLE_PLUGIN_FILE', __FILE__ );
 define( 'FETTLE_PLUGIN_DIR', plugin_dir_path( __FILE__ ) );
 define( 'FETTLE_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
@@ -50,6 +51,7 @@ require_once FETTLE_PLUGIN_DIR . 'includes/checks/image-scan.php';
 require_once FETTLE_PLUGIN_DIR . 'includes/checks/alt-text.php';
 require_once FETTLE_PLUGIN_DIR . 'includes/checks/image-alt.php';
 require_once FETTLE_PLUGIN_DIR . 'includes/checks/table-headers.php';
+require_once FETTLE_PLUGIN_DIR . 'includes/checks/accessible-names.php';
 require_once FETTLE_PLUGIN_DIR . 'includes/checks/aria-landmarks.php';
 require_once FETTLE_PLUGIN_DIR . 'includes/scan-engine.php';
 require_once FETTLE_PLUGIN_DIR . 'includes/report.php';
